@@ -14,12 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    # Try commenting and uncommenting this to see the changes in the interface!
-    # when this is uncommented, Django will instead redirect traffic to our index.html
-    # (take a peek in ui/urls.py and ui/views.py)
-    # path('', include('ui.urls')),
 ]
