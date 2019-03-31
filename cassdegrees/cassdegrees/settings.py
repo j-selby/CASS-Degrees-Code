@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '@+xqva1f8_gb_srx&kv&70v@ffzzyio8#_p)swcva3ee6ajglf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True  # TODO: Change this before we go into production
 
 ALLOWED_HOSTS = []
 
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.postgres',  # added this for our postgresql database
     'django.contrib.staticfiles',
     'rest_framework',  # added this for the REST framework
     'ui',  # our UI app
@@ -84,8 +85,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cassdegrees',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'USER': 'postgres',  # TODO: Change this before we go into production
+        'PASSWORD': 'postgres',  # TODO: Change this before we go into production
         'HOST': 'localhost',
         'PORT': '5432',
     }
