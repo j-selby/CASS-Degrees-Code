@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import SampleList
+from .views import SampleList, SampleRecord
 
 urlpatterns = [
-    path('sample/', SampleList.as_view()),
+    path('sample/', SampleList.as_view()),  # View all objects in a table and add additional records
+    path('sample/<str:pk>/', SampleRecord.as_view()),  # Can view individual records and can modify contents and remove it.
 ]
