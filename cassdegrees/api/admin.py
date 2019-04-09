@@ -3,4 +3,5 @@ from .models import *
 
 # Register your models here.
 admin.site.register(SampleModel)
-admin.site.register(databaseModel_courses)
+admin.site.register(CourseModel)
+admin.site.register(SubplanModel)

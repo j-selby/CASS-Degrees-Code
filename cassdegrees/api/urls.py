@@ -20,5 +20,8 @@ from .views import *
 urlpatterns = [
     path('sample/', SampleList.as_view()),  # View all objects in a table and add additional records
     path('sample/<str:pk>/', SampleRecord.as_view()),  # Can view individual records and can modify contents and remove it.
-    path('courses/', CoursesList.as_view()),  # View all objects in a table and add additional records
+    path('course/', CourseList.as_view()),
+    path('course/<str:pk>/', CourseRecord.as_view()),
+    path('subplan/', SubplanList.as_view()),
+    path('subplan/<str:pk>/', SubplanRecord.as_view()),
 ]

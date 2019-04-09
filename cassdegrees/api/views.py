@@ -9,6 +9,7 @@ class SampleList(generics.ListCreateAPIView):
     queryset = SampleModel.objects.all()
     serializer_class = SampleSerializer
 
+
 # Create view for browsing individual record in the 'Sample' model.
 # Browsable by appending the id of object from the SampleList view (e.g. api/sample/3452/)
 class SampleRecord(generics.RetrieveUpdateDestroyAPIView):
@@ -16,10 +17,21 @@ class SampleRecord(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SampleSerializer
 
 
-class CoursesList(generics.ListCreateAPIView):
-    queryset = databaseModel_courses.objects.all()
-    serializer_class = CoursesSerializer
+class CourseList(generics.ListCreateAPIView):
+    queryset = CourseModel.objects.all()
+    serializer_class = CourseSerializer
 
-class CoursesRecord(generics.RetrieveUpdateDestroyAPIView):
-    queryset = databaseModel_courses.objects.all()
-    serializer_class = CoursesSerializer
+
+class CourseRecord(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CourseModel.objects.all()
+    serializer_class = CourseSerializer
+
+
+class SubplanList(generics.ListCreateAPIView):
+    queryset = SubplanModel.objects.all()
+    serializer_class = SubplanSerializer
+
+
+class SubplanRecord(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SubplanModel.objects.all()
+    serializer_class = SubplanSerializer

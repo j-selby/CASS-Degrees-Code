@@ -8,7 +8,14 @@ class SampleSerializer(serializers.HyperlinkedModelSerializer):
         model = SampleModel
         fields = ('id', 'text')
 
-class CoursesSerializer(serializers.HyperlinkedModelSerializer):
+
+class CourseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = databaseModel_courses
-        fields = ([f.name for f in databaseModel_courses._meta.get_fields()])
+        model = CourseModel
+        fields = ([f.name for f in CourseModel._meta.get_fields()])
+
+
+class SubplanSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = SubplanModel
+        fields = ([f.name for f in SubplanModel._meta.get_fields()])
