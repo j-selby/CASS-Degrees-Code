@@ -19,7 +19,8 @@ def sampleform(request):
         post_data = request.POST
         actual_request = post_data.get('_method')
 
-        print(request.POST)
+        # This method of transferring data to the API was inspired by:
+        # https://stackoverflow.com/questions/11663945/calling-a-rest-api-from-django-view
         if actual_request == "post":
             # Create a python dictionary with exactly the same fields as the model (in this case, sampleModel)
             samplefields = \
