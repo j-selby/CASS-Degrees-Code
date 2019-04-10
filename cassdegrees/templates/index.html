@@ -8,60 +8,20 @@
 
 {#    https://www.w3schools.com/CSS/css3_flexbox.asp #}
 <div class = "splash_menu_container">
-    <div class = "img_btn_container">
-        <div>
-            <a href="/api/model/degree/">
-                <img src="../static/img/create_plan_img.png" alt="Create Plan">
-            </a>
+
+    {# generate splash menu based on buttons defined in ui/views.py   #}
+    {% for button in buttons %}
+        <div class = "img_btn_container">
+            <div>
+                <a href={{ button.url }}>
+                    <img src={{ button.img }} alt={{ button.label }}>
+                </a>
+            </div>
+
+            <div class="btn_label"><h3>{{ button.label }}</h3></div>
         </div>
+    {%  endfor %}
 
-        <div class="btn_label"><h3>Create Plan</h3></div>
-
-
-    </div>
-
-    <div class="img_btn_container">
-        <div><a href="/api/model/subplan/">
-            <img src="../static/img/create_subplan_img.png" alt="Create Subplan">
-        </a></div>
-
-        <div class="btn_label"><h3>Create Subplan</h3></div>
-
-    </div>
-
-    <div class="img_btn_container">
-    {# update with list url #}
-        <div><a href="">
-            <img src="../static/img/create_list_img.png" alt="Create List">
-        </a></div>
-
-        <div class="btn_label"><h3>Create List</h3></div>
-
-    </div>
-
-    <div class="img_btn_container">
-    {# update with view url when available #}
-        <div><a href="">
-            <img src="../static/img/open_existing_img.png" alt="Open Existing">
-        </a></div>
-
-        <div class="btn_label"><h3>Open Existing</h3></div>
-    </div>
-
-    <div class="img_btn_container">
-    {# modify to course view splash page when available #}
-        <div><a href="/api/model/course/">
-            <img src="../static/img/manage_courses_img.png" alt="Manage Courses">
-        </a></div>
-
-        <div class="btn_label"><h3>Manage Courses</h3></div>
-    </div>
 </div>
-
-
-
-
-
-
 
 {% endblock %}
