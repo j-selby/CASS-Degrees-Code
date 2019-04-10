@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block page-title %}Edit Sample Records{% endblock %}
+
+{% block subtitle %}Add, edit or delete sample records{% endblock %}
+
+{% block content %}
 --------------- Add record ----------------
     <form action="/sampleform/" method="post">
         {% csrf_token %}
@@ -47,5 +47,4 @@
 
         <input type ="submit" value="Submit">
     </form>
-</body>
-</html>
+{% endblock %}
