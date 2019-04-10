@@ -55,3 +55,8 @@ class DegreeList(generics.ListCreateAPIView):
 class DegreeRecord(generics.RetrieveUpdateDestroyAPIView):
     queryset = DegreeModel.objects.all()
     serializer_class = DegreeSerializer
+
+
+def create_subplan(request):
+    # add button parameters to be rendered on the main menu
+    return render(request, 'createSubplan.html', context={})
