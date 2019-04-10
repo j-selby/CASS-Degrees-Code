@@ -7,18 +7,28 @@ class SampleModel(models.Model):
 
 
 class CourseModel(models.Model):
+    id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=32)
     year = models.PositiveIntegerField()
     name = models.CharField(max_length=256)
     units = models.PositiveIntegerField()
-    offered_sem1 = models.BooleanField()
-    offered_sem2 = models.BooleanField()
+    offeredSem1 = models.BooleanField()
+    offeredSem2 = models.BooleanField()
 
     class Meta:
         unique_together = (("code", "year"),)
 
 
+class CoursesInSubplanModel(models.Model):
+    subplanId = models.ForeignKey('SubplanModel', on_delete=models.CASCADE)
+    courseId = models.ForeignKey('CourseModel', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("subplanId", "courseId"),)
+
+
 class SubplanModel(models.Model):
+    id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=32)
     year = models.PositiveIntegerField()
     name = models.CharField(max_length=256)
@@ -27,9 +37,10 @@ class SubplanModel(models.Model):
     major = "MAJ"
     minor = "MIN"
     specialisation = "SPEC"
-    subplan_choices = ((major, "Major"), (minor, "Minor"), (specialisation, "Specialisation"))
+    subplanChoices = ((major, "Major"), (minor, "Minor"), (specialisation, "Specialisation"))
 
-    plan_type = models.CharField(max_length = 4, choices=subplan_choices)
+    planType = models.CharField(max_length=4, choices=subplanChoices)
+    courses = models.ManyToManyField(CourseModel, through=CoursesInSubplanModel)
 
     class Meta:
         unique_together = (("code", "year"),)

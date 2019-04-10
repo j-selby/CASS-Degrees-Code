@@ -35,3 +35,13 @@ class SubplanList(generics.ListCreateAPIView):
 class SubplanRecord(generics.RetrieveUpdateDestroyAPIView):
     queryset = SubplanModel.objects.all()
     serializer_class = SubplanSerializer
+
+
+class CoursesInSubplanList(generics.ListCreateAPIView):
+    queryset = CoursesInSubplanModel.objects.all()
+    serializer_class = CoursesInSubplanSerializer
+
+
+class CoursesInSubplanRecord(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CoursesInSubplanModel.objects.all()
+    serializer_class = CoursesInSubplanSerializer
