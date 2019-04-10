@@ -12,15 +12,13 @@ class SampleSerializer(serializers.HyperlinkedModelSerializer):
 class CourseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CourseModel
-        fields = ('id', 'code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2')#([f.name for f in CourseModel._meta.get_fields()])
-        lookup_field = 'id'
+        fields = ('id', 'code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2')
 
 
 class SubplanSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SubplanModel
-        fields = ('id', 'code', 'year', 'name', 'units', 'planType')#([f.name for f in SubplanModel._meta.get_fields()])
-        lookup_field = 'id'
+        fields = ('id', 'code', 'year', 'name', 'units', 'planType')
 
 
 class CourseIDSerializer(serializers.PrimaryKeyRelatedField):
@@ -48,3 +46,8 @@ class CoursesInSubplanSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CoursesInSubplanModel
         fields = ('id', 'courseId', 'subplanId')
+
+class DegreeSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = DegreeModel
+        fields = ('id', 'code', 'year', 'name', 'units', 'degreeType')

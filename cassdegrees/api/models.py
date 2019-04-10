@@ -44,3 +44,31 @@ class SubplanModel(models.Model):
 
     class Meta:
         unique_together = (("code", "year"),)
+
+
+class DegreeModel(models.Model):
+    id = models.AutoField(primary_key=True)
+    code = models.CharField(max_length=32)
+    year = models.PositiveIntegerField()
+    name = models.CharField(max_length=256)
+    units = models.PositiveIntegerField()
+
+    undergrad_single = "ugrad-sing"
+    undergrad_double = "ugrad-doub"
+    honours = "hon"
+    masters_single = "mast-sing"
+    masters_adv = "mast-adv"
+    masters_double = "mast-doub"
+    vertical_double = "vert_doub"
+    degreeChoices = ((undergrad_single, "Undergraduate Single Pass Degree"),
+                     (undergrad_double, "Undergraduate Flexible Double Degree"),
+                     (honours, "Honours Degree"),
+                     (masters_single, "Masters Single Degree"),
+                     (masters_adv, "Masters (Advanced) Degree"),
+                     (masters_double, "Masters Flexible Double Degree"),
+                     (vertical_double, "Vertical Flexible Double Degree"))
+
+    degreeType = models.CharField(max_length=10, choices=degreeChoices)
+
+    class Meta:
+        unique_together = (("code", "year"),)

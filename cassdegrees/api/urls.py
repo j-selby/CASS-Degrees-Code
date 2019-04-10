@@ -26,4 +26,6 @@ urlpatterns = [
     path('subplan/<str:pk>/', SubplanRecord.as_view()),
     path('course-subplan/', CoursesInSubplanList.as_view()),
     path('course-subplan/<str:pk>/', CoursesInSubplanRecord.as_view()),
+    path('degree/', DegreeList.as_view()),
+    path('degree/<str:pk>/', DegreeRecord.as_view()),
 ]
