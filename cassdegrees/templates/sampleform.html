@@ -5,12 +5,46 @@
     <title>Title</title>
 </head>
 <body>
+--------------- Add record ----------------
     <form action="/sampleform/" method="post">
         {% csrf_token %}
+        <!-- As HTML forms only support get or post methods,
+        add this hidden input for consistency with the rest of the forms -->
+        <input type="hidden" name="_method" value="post">
+
         <label for="id">ID:</label>
         <input id="id" type="text" name="id">
+
         <label for="text">Text:</label>
         <input id="text" type="text" name="text">
+
+        <input type ="submit" value="Submit">
+    </form>
+--------------- Modify record ----------------
+    <form action="/sampleform/" method="post">
+        {% csrf_token %}
+        <!-- As HTML forms only support get or post methods,
+        add this hidden input to hint that it is actually a put request. -->
+        <input type="hidden" name="_method" value="patch">
+
+        <label for="id">ID:</label>
+        <input id="id" type="text" name="id">
+
+        <label for="text">Text:</label>
+        <input id="text" type="text" name="text">
+
+        <input type ="submit" value="Submit">
+    </form>
+--------------- Delete record ----------------
+    <form action="/sampleform/" method="post">
+        {% csrf_token %}
+        <!-- As HTML forms only support get or post methods,
+        add this hidden input to hint that it is actually a delete request. -->
+        <input type="hidden" name="_method" value="delete">
+
+        <label for="id">ID:</label>
+        <input id="id" type="text" name="id">
+
         <input type ="submit" value="Submit">
     </form>
 </body>
