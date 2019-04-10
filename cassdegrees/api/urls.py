@@ -22,7 +22,7 @@ urlpatterns = [
     path('model/sample/<str:pk>/', SampleRecord.as_view()),  # Can view individual records and can modify contents and remove it.
     path('model/course/', CourseList.as_view()),
     path('model/course/<str:pk>/', CourseRecord.as_view()),
-    path('model/subplan/', createSubplan),
+    path('model/subplan/', SubplanList.as_view()),
     path('model/subplan/<str:pk>/', SubplanRecord.as_view()),
     path('model/course-subplan/', CoursesInSubplanList.as_view()),
     path('model/course-subplan/<str:pk>/', CoursesInSubplanRecord.as_view()),
