@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block page-title %}Template/Subplan List{% endblock %}
+
+{% block subtitle %}Templates/Subplans{% endblock %}
+
+{% block content %}
+    <table id="contentTable" class="fullwidth tbl-cell-bdr">
+    </table>
+
+    <script>
+        var data = JSON.parse("{{ data }}".replace(/&quot;/g,'"'));
+
+        // Generate headers for table
+        var headers = Object.keys(data[0]);
+        var content = "<tr>";
+        for (var i=0; i<headers.length; i++)
+            content += "<th>"+headers[i]+"</th>";
+        content += "</tr>";
+
+        // Generate data for table
+
+        for (var i=0; i<data.length; i++) {
+            content += "<tr>";
+            for (var j = 0; j < headers.length; j++)
+                content += "<td>" + data[i][headers[j]] + "</td>";
+            content += "</tr>";
+        }
+
+        // Create table based on content
+        document.getElementById("contentTable").innerHTML = content;
+    </script>
+{% endblock %}
