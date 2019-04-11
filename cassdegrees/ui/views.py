@@ -28,7 +28,7 @@ def planList(request):
     """
     subplans = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
     degree = requests.get(request.build_absolute_uri('/api/model/degree/?format=json')).json()
-    print("TEST", type(render(request, 'list.html', context={'subplans': subplans, 'degrees': degree})))
+    
     return render(request, 'list.html', context={'subplans': subplans, 'degrees': degree})
 
 # I went through this tutorial to create the form html file and this view:
