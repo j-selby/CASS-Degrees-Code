@@ -11,9 +11,11 @@ def index(request):
 def planList(request):
     # Generates a table based on whatever JSON object is stored in 'data'
     # NOTE: data must be an array of dictionaries, with matching labels for each item
-    data = [{"id":"1","text":"Test"}, {"id":"2","text":"Test2"}]
-    # response = requests.get('/api/sample/?format=json').json()
-    return render(request, 'list.html', context={'data': data})
+    #data = [{"id":"1","text":"Test"}, {"id":"2","text":"Test2"}]
+    subplans = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
+    degree = requests.get(request.build_absolute_uri('/api/model/degree/?format=json')).json()
+
+    return render(request, 'list.html', context={'subplans': subplans, 'degrees': degree})
 
 # I went through this tutorial to create the form html file and this view:
 # https://docs.djangoproject.com/en/2.2/topics/forms/
