@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block page-title %}Template/Subplan List{% endblock %}
+{% block page-title %}Template/Subplan/Course List{% endblock %}
 
-{% block subtitle %}Template and Subplan List{% endblock %}
+{% block subtitle %}Template, Subplan, and Course List{% endblock %}
 
 {% block content %}
     {# Generates the tabs based on the keys to 'data' #}
@@ -20,15 +20,26 @@
             <table class="fullwidth tbl-cell-bdr">
                 {# Add title row based on what was in the dictionary #}
                 <tr>
-                    {% for item in content.0 %}
-                        <th>{{ item }}</th>
+                    {% for key in content.0 %}
+                        {% if key != "id" %}
+                            <th>{{ key }}</th>
+                        {% else %}
+                            <th>{{ title }}</th>
+                        {% endif %}
                     {% endfor %}
                 </tr>
                 {# Add rows containing the contents of each json data instance #}
                 {% for row in content %}
                     <tr>
-                        {% for item in row.values %}
-                            <td>{{ item }}</td>
+                        {% for key, item in row.items %}
+                            <td>
+                                {# If the item is in the ID column, generate a link to it instead #}
+                                {% if key != "id" %}
+                                    {{ item }}
+                                {% else %}
+                                    (<a href="/api/model/{{ title.lower }}/{{ item }}/">View</a>)
+                                {% endif %}
+                            </td>
                         {% endfor %}
                     </tr>
                 {% endfor %}

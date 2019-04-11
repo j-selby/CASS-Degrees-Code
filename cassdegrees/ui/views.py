@@ -15,7 +15,7 @@ def index(request):
         {'url': "/api/model/subplan/", 'img': "../static/img/create_subplan_img.png", 'label': "Create Subplan"},
         {'url': "", 'img': "../static/img/create_list_img.png", 'label': "Create List"},
         {'url': "/list/", 'img': "../static/img/open_existing_img.png", 'label': "Open Existing"},
-        {'url': "/api/model/course/", 'img': "../static/img/manage_courses_img.png", 'label': "Manage Courses"}
+        {'url': "/list/?view=Course", 'img': "../static/img/manage_courses_img.png", 'label': "Manage Courses"}
     ]
 
     return render(request, 'index.html', context={'buttons': buttons})
