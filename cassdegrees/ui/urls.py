@@ -20,5 +20,5 @@ from .views import index, sampleform, planList
 urlpatterns = [
     path('', index),
     path('sampleform/', sampleform),
-    path('list', planList),
+    path('list/', planList),
 ]
