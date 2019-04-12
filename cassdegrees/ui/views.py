@@ -97,7 +97,7 @@ def create_subplan(request):
     return render(request, 'createsubplan.html')
 
 
-# inspired by the samepleform function creatd by Daniel
+# inspired by the samepleform function creatd by Daniel Jang
 def manage_courses(request):
     courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
     # If POST request, redirect the received information to the backend:
