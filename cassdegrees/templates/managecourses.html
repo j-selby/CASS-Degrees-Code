@@ -31,7 +31,7 @@
             </p>
 
             <p>
-                <label for="text">Semester:</label>
+                <label for="text">Semester(s):</label>
                 <select name="semester[]" size="2" multiple>
                     <option value="semester1">Semester 1</option>
                     <option value="semester2">Semester 2</option>
@@ -41,6 +41,24 @@
              <p>
                 <label for="text">Units:</label>
                 <input class="text" id="number" type="number" name="units" min="6" max="48" step="6" aria-required="true" required>
+            </p>
+
+            <p>
+                <label for="text">Requisite Course(s):</label>
+                <select name="semester[]" size="5" multiple>
+                    {% for course in courses %}
+                        <option value="{{ course.code }}_{{ course.year }}">{{ course.code }}_{{ course.year }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <p>
+                <label for="text">Incompatible Course(s):</label>
+                <select name="semester[]" size="5" multiple>
+                    {% for course in courses %}
+                        <option value="{{ course.code }}_{{ course.year }}">{{ course.code }}_{{ course.year }}</option>
+                    {% endfor %}
+                </select>
             </p>
         </fieldset>
         <p class="text-right">

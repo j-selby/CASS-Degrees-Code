@@ -99,6 +99,7 @@ def create_subplan(request):
 
 # inspired by the samepleform function creatd by Daniel
 def manage_courses(request):
+    courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
     # If POST request, redirect the received information to the backend:
     if request.method == 'POST':
         # hard coded url; only temporary
@@ -156,4 +157,4 @@ def manage_courses(request):
             else:
                 return HttpResponse('Failed to delete record!')
     else:
-        return render(request, 'managecourses.html')
+        return render(request, 'managecourses.html', context={'courses': courses})
