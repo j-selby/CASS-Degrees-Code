@@ -32,7 +32,7 @@ def planList(request):
     """
     degree = requests.get(request.build_absolute_uri('/api/model/degree/?format=json')).json()
     subplan = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
-    course  = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
+    course = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
 
     return render(request, 'list.html', context={'data': {'Degree': degree, 'Subplan': subplan, 'Course': course}})
 
@@ -95,3 +95,65 @@ def sampleform(request):
 
 def create_subplan(request):
     return render(request, 'createsubplan.html')
+
+
+# inspired by the samepleform function creatd by Daniel
+def manage_courses(request):
+    # If POST request, redirect the received information to the backend:
+    if request.method == 'POST':
+        # hard coded url; only temporary
+        model_api_url = 'http://127.0.0.1:8000/api/model/course/'
+        post_data = request.POST
+        actual_request = post_data.get('_method')
+
+        # This method of transferring data to the API was inspired by:
+        # https://stackoverflow.com/questions/11663945/calling-a-rest-api-from-django-view
+        if actual_request == "post":
+            # Create a python dictionary with exactly the same fields as the model (in this case, CourseModel)
+            offered_sems = post_data.getlist('semester[]')
+            course_instance = \
+                {
+                    'code': post_data.get('code'),
+                    'year': post_data.get('year'),
+                    'name': post_data.get('name'),
+                    'units': post_data.get('units'),
+                    'offeredSem1': 'semester1' in offered_sems,
+                    'offeredSem2': 'semester2' in offered_sems
+                }
+            # Submit a POST request to the course API with course_instance as data
+            rest_api = requests.post(model_api_url, data=course_instance)
+            if rest_api.status_code == 201:
+                return HttpResponse('Course successfully created!')
+            # detects if the course already exists
+            elif rest_api.status_code == 400 and \
+                    rest_api.json()['non_field_errors'] == ['The fields code, year must make a unique set.']:
+                return HttpResponse('Course already exists!')
+            else:
+                return HttpResponse('Failed to submit!')
+        # to be implemented, currently has the sample model code
+        elif actual_request == "patch":
+            id_to_edit = post_data.get('id')
+            # Patch requests (editing an already existing resource only requires fields that are changed
+            course_instance = \
+                {
+                    'text': post_data.get('text')
+                }
+
+            rest_api = requests.patch(model_api_url + id_to_edit + '/', data=course_instance)
+
+            if rest_api.status_code == 200:
+                return HttpResponse('Record successfully edited!')
+            else:
+                return HttpResponse('Failed to edit record!')
+        # to be implemented, currently has the sample model code
+        else:
+            id_to_delete = post_data.get('id')
+
+            rest_api = requests.delete(model_api_url + id_to_delete + '/')
+
+            if rest_api.status_code == 204:
+                return HttpResponse('Record successfully deleted!')
+            else:
+                return HttpResponse('Failed to delete record!')
+    else:
+        return render(request, 'managecourses.html')
