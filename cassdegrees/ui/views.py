@@ -103,7 +103,7 @@ def manage_courses(request):
     # If POST request, redirect the received information to the backend:
     if request.method == 'POST':
         # hard coded url; only temporary
-        model_api_url = 'http://127.0.0.1:8000/api/model/course/'
+        model_api_url = request.build_absolute_uri('/api/model/course/')
         post_data = request.POST
         actual_request = post_data.get('_method')
 
