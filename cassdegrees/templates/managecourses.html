@@ -32,7 +32,7 @@
 
             <p>
                 <label for="text">Semester(s):</label>
-                <select name="semester[]" size="2" multiple>
+                <select class="text tfull" name="semester[]" size="2" multiple>
                     <option value="semester1">Semester 1</option>
                     <option value="semester2">Semester 2</option>
                 </select>
@@ -46,7 +46,7 @@
 
             <p>
                 <label for="text">Requisite Course(s):</label>
-                <select name="semester[]" size="5" multiple>
+                <select class="text tfull" name="semester[]" size="5" multiple>
                     {% for course in courses %}
                         <option value="{{ course.code }}">{{ course.code }}</option>
                     {% endfor %}
@@ -55,7 +55,7 @@
 
             <p>
                 <label for="text">Incompatible Course(s):</label>
-                <select name="semester[]" size="5" multiple>
+                <select class="text tfull" name="semester[]" size="5" multiple>
                     {% for course in courses %}
                         <option value="{{ course.code }}">{{ course.code }}</option>
                     {% endfor %}
