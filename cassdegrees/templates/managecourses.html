@@ -57,7 +57,7 @@
                 <label for="text">Incompatible Course(s):</label>
                 <select name="semester[]" size="5" multiple>
                     {% for course in courses %}
-                        <option value="{{ course.code }}_{{ course.year }}">{{ course.code }}_{{ course.year }}</option>
+                        <option value="{{ course.code }}">{{ course.code }}</option>
                     {% endfor %}
                 </select>
             </p>
