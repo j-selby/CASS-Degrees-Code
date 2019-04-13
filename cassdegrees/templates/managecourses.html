@@ -15,17 +15,17 @@
             <input type="hidden" name="_method" value="post">
 
             <p>
-                <label for="id">Course Name:</label>
+                <label class="req" for="id">Course Name:</label>
                 <input class="text tfull" id="text" type="text" name="name" aria-required="true" required>
             </p>
 
             <p>
-                <label for="id">Course Code:</label>
+                <label class="req" for="id">Course Code:</label>
                 <input class="text tfull" id="text" type="text" name="code" minlength="8" maxlength="8" size="8" aria-required="true" required>
             </p>
 
             <p>
-                <label for="text">Year:</label>
+                <label class="req" for="text">Year:</label>
                 <input class="text tfull" id="number" type="number" name="year" min="1990" aria-required="true" required>
             </p>
 
@@ -38,7 +38,7 @@
             </p>
 
              <p>
-                <label for="text">Units:</label>
+                <label class="req" for="text">Units:</label>
                  <!-- max value is chosen arbitrarily -->
                 <input class="text tfull" id="number" type="number" name="units" min="0" step="6" aria-required="true" required>
             </p>
@@ -66,49 +66,4 @@
         </p>
     </form>
     <br />
-    <!-- not yet implemented -->
-    <form class="anuform" action="/manage_courses/" method="post">
-        {% csrf_token %}
-        <fieldset>
-            <legend>Modify Course</legend>
-
-            <!-- As HTML forms only support get or post methods,
-            add this hidden input to hint that it is actually a put request. -->
-            <input type="hidden" name="_method" value="patch">
-
-            <p>
-                <label for="id">ID:</label>
-                <input class="text" id="id" type="text" name="id" aria-required="true" required>
-            </p>
-
-            <p>
-                <label for="text">Text:</label>
-                <input class="text" id="text" type="text" name="text" aria-required="true" required>
-            </p>
-        </fieldset>
-        <p class="text-right">
-            <input class="btn-uni-grad btn-large" type ="submit" value="Update">
-        </p>
-
-    </form>
-    <br />
-    <!-- not yet implemented -->
-    <form class="anuform" action="/manage_courses/" method="post">
-        {% csrf_token %}
-        <fieldset>
-            <legend>Delete Course</legend>
-
-            <!-- As HTML forms only support get or post methods,
-            add this hidden input to hint that it is actually a delete request. -->
-            <input type="hidden" name="_method" value="delete">
-
-            <p>
-                <label for="id">ID:</label>
-                <input class="text" id="id" type="text" name="id" aria-required="true" required>
-            </p>
-        </fieldset>
-        <p class="text-right">
-            <input class="btn-uni-grad btn-large" type ="submit" value="Delete">
-        </p>
-    </form>
 {% endblock %}
