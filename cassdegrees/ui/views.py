@@ -100,6 +100,7 @@ def create_subplan(request):
 # inspired by the samepleform function creatd by Daniel Jang
 def manage_courses(request):
     courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
+    courses = [{'code': course} for course in  set([x['code'] for x in courses])]
     # If POST request, redirect the received information to the backend:
     if request.method == 'POST':
         # hard coded url; only temporary
