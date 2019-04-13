@@ -97,8 +97,18 @@ def create_subplan(request):
     return render(request, 'createsubplan.html')
 
 
-# inspired by the samepleform function creatd by Daniel Jang
+# inspired by the samepleform function created by Daniel Jang
 def manage_courses(request):
+    # Reads the 'action' attribute from the url (i.e. manage/?action=Add) and determines the submission method
+    action = request.GET.get('action', 'Add')
+    if   action == 'Add'   : method = 'post'
+    elif action == 'Edit'  : method = 'patch'
+    elif action == 'Delete': method = 'delete'
+    else:
+         action =  'Add'   ; method = 'post'
+
+    action = 'Add'; method = 'post' # TODO Remove once other methods are implemented
+
     courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
     courses = [{'code': course} for course in  set([x['code'] for x in courses])]
     # If POST request, redirect the received information to the backend:
@@ -158,4 +168,4 @@ def manage_courses(request):
             else:
                 return HttpResponse('Failed to delete record!')
     else:
-        return render(request, 'managecourses.html', context={'courses': courses})
+        return render(request, 'managecourses.html', context={'action': action, 'method': method, 'courses': courses})
