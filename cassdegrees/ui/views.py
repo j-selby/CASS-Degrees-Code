@@ -14,7 +14,7 @@ def index(request):
     # add button parameters to be rendered on the main menu
     # TODO: Update URLs once initial page views are created
     buttons = [
-        {'url': "/api/model/degree/", 'img': "../static/img/create_plan_img.png", 'label': "Create Plan"},
+        {'url': "/create_degree/", 'img': "../static/img/create_plan_img.png", 'label': "Create Program Template"},
         {'url': "/create_subplan/", 'img': "../static/img/create_subplan_img.png", 'label': "Create Subplan"},
         {'url': "", 'img': "../static/img/create_list_img.png", 'label': "Create List"},
         {'url': "/list/", 'img': "../static/img/open_existing_img.png", 'label': "Open Existing"},
@@ -156,6 +156,46 @@ def sampleform(request):
 
     else:
         return render(request, 'sampleform.html')
+
+
+def create_degree(request):
+    # If POST request, redirect the received information to the backend:
+    render_properties = {
+        'msg': None,
+        'is_error': False
+    }
+
+    if request.method == 'POST':
+        model_api_url = 'http://127.0.0.1:8000/api/model/degree/'
+
+        print("Making request to ", model_api_url)
+        post_data = request.POST
+
+        degree_dict = \
+            {
+                'code': post_data.get('code'),
+                'name': post_data.get('name'),
+                # Do some early validation of these fields
+                'year': int(post_data.get('year')),
+                'units': int(post_data.get('units')),
+                'degreeType': post_data.get('degreeType')
+            }
+
+        rest_api = requests.post(model_api_url, data=degree_dict)
+
+        if rest_api.status_code == 201:
+            render_properties['msg'] = 'Program template successfully added!'
+        else:
+            render_properties['is_error'] = True
+
+            # Attempt to parse the incoming error message
+            rest_response = rest_api.json()
+            if "The fields code, year must make a unique set." in rest_response['non_field_errors']:
+                render_properties['msg'] = "The program template you are trying to create already exists!"
+            else:
+                render_properties['msg'] = "Unknown error while submitting document."
+
+    return render(request, 'createdegree.html', context=render_properties)
 
 
 def create_subplan(request):
