@@ -168,7 +168,6 @@ def create_degree(request):
     if request.method == 'POST':
         model_api_url = 'http://127.0.0.1:8000/api/model/degree/'
 
-        print("Making request to ", model_api_url)
         post_data = request.POST
 
         degree_dict = \
