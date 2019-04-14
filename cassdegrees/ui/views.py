@@ -102,6 +102,7 @@ def create_subplan(request):
 # inspired by the samepleform function created by Daniel Jang
 def manage_courses(request):
     # Reads the 'action' attribute from the url (i.e. manage/?action=Add) and determines the submission method
+    actions = ['Add', 'Edit', 'Delete']
     action = request.GET.get('action', 'Add')
 
     courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
@@ -172,4 +173,4 @@ def manage_courses(request):
                 render_properties['msg'] = "Failed to delete course. An unknown error has occurred. Please try again."
 
     return render(request, 'managecourses.html',
-                  context={'action': action, 'courses': courses, 'render': render_properties})
+                  context={'action': action, 'courses': courses, 'render': render_properties, 'actions': actions})
