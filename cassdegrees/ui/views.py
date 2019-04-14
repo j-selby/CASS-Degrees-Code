@@ -112,6 +112,10 @@ def manage_courses(request):
     courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
     courses = [{'code': course} for course in  set([x['code'] for x in courses])]
     # If POST request, redirect the received information to the backend:
+    render_properties = {
+        'msg': None,
+        'is_error': False
+    }
     if request.method == 'POST':
         # hard coded url; only temporary
         model_api_url = request.build_absolute_uri('/api/model/course/')
@@ -135,13 +139,14 @@ def manage_courses(request):
             # Submit a POST request to the course API with course_instance as data
             rest_api = requests.post(model_api_url, data=course_instance)
             if rest_api.status_code == 201:
-                return HttpResponse('Course successfully created!')
-            # detects if the course already exists
-            elif rest_api.status_code == 400 and \
-                    rest_api.json()['non_field_errors'] == ['The fields code, year must make a unique set.']:
-                return HttpResponse('Course already exists!')
+                render_properties['msg'] = 'Course successfully added!'
             else:
-                return HttpResponse('Failed to submit!')
+                render_properties['is_error'] = True
+                # detects if the course already exists
+                if 'The fields code, year must make a unique set.' in rest_api.json()['non_field_errors']:
+                    render_properties['msg'] = "The course you are trying to create already exists!"
+                else:
+                    render_properties['msg'] = "Unknown error while submitting document. Please try again."
         # to be implemented, currently has the sample model code
         elif actual_request == "patch":
             id_to_edit = post_data.get('id')
@@ -167,5 +172,5 @@ def manage_courses(request):
                 return HttpResponse('Record successfully deleted!')
             else:
                 return HttpResponse('Failed to delete record!')
-    else:
-        return render(request, 'managecourses.html', context={'action': action, 'method': method, 'courses': courses})
+    return render(request, 'managecourses.html',
+                      context={'action': action, 'method': method, 'courses': courses, 'render': render_properties})
