@@ -169,8 +169,7 @@ def manage_courses(request):
                 render_properties['msg'] = 'Course successfully deleted!'
             else:
                 render_properties['is_error'] = True
-                render_properties['msg'] = \
-                    "Failed to delete course. An unknown error has occurred. Please try again."
+                render_properties['msg'] = "Failed to delete course. An unknown error has occurred. Please try again."
 
     return render(request, 'managecourses.html',
                   context={'action': action, 'courses': courses, 'render': render_properties})
