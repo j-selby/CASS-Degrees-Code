@@ -8,15 +8,11 @@
     {% if render.msg != None %}
         <p class="{% if render.is_error %}msg-error{% else %}msg-success{% endif %}">{{ render.msg }}</p>
     {% endif %}
-    <form class="anuform" action="/manage_courses/" method="post">
+    <form class="anuform" action="/manage_courses/?action=Add" method="post">
         {% csrf_token %}
         {% with required='<img src="//style.anu.edu.au/_anu/4/images/styles/asterisk.png" alt=" required">' %}
             <fieldset>
                 <legend>{{ action }} Course</legend>
-
-                <!-- As HTML forms only support get or post methods,
-                add this hidden input for consistency with the rest of the forms -->
-                <input type="hidden" name="_method" value="{{ method }}">
 
                 <p>
                     <label for="id">Course Name {{ required }}</label>

@@ -20,6 +20,7 @@ def index(request):
 
     return render(request, 'index.html', context={'buttons': buttons})
 
+
 def planList(request):
     """ Generates a table based on the JSON objects stored in 'data'
 
@@ -35,6 +36,7 @@ def planList(request):
     course = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
 
     return render(request, 'list.html', context={'data': {'Degree': degree, 'Subplan': subplan, 'Course': course}})
+
 
 # I went through this tutorial to create the form html file and this view:
 # https://docs.djangoproject.com/en/2.2/topics/forms/
@@ -101,16 +103,9 @@ def create_subplan(request):
 def manage_courses(request):
     # Reads the 'action' attribute from the url (i.e. manage/?action=Add) and determines the submission method
     action = request.GET.get('action', 'Add')
-    if   action == 'Add'   : method = 'post'
-    elif action == 'Edit'  : method = 'patch'
-    elif action == 'Delete': method = 'delete'
-    else:
-         action =  'Add'   ; method = 'post'
-
-    action = 'Add'; method = 'post' # TODO Remove once other methods are implemented
 
     courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
-    courses = [{'code': course} for course in  set([x['code'] for x in courses])]
+    courses = [{'code': course} for course in set([x['code'] for x in courses])]
     # If POST request, redirect the received information to the backend:
     render_properties = {
         'msg': None,
@@ -120,11 +115,9 @@ def manage_courses(request):
         # hard coded url; only temporary
         model_api_url = request.build_absolute_uri('/api/model/course/')
         post_data = request.POST
-        actual_request = post_data.get('_method')
+        # actual_request = post_data.get('_method')
 
-        # This method of transferring data to the API was inspired by:
-        # https://stackoverflow.com/questions/11663945/calling-a-rest-api-from-django-view
-        if actual_request == "post":
+        if action == 'Add':
             # Create a python dictionary with exactly the same fields as the model (in this case, CourseModel)
             offered_sems = post_data.getlist('semesters[]')
             course_instance = \
@@ -147,8 +140,9 @@ def manage_courses(request):
                     render_properties['msg'] = "The course you are trying to create already exists!"
                 else:
                     render_properties['msg'] = "Unknown error while submitting document. Please try again."
+
         # to be implemented, currently has the sample model code
-        elif actual_request == "patch":
+        elif action == 'Edit':
             id_to_edit = post_data.get('id')
             # Patch requests (editing an already existing resource only requires fields that are changed
             course_instance = \
@@ -164,8 +158,9 @@ def manage_courses(request):
                 render_properties['is_error'] = True
                 render_properties['msg'] = \
                     "Failed to edit course information (unknown error). Please try again."
+
         # to be implemented, currently has the sample model code
-        else:
+        elif action == 'Delete':
             id_to_delete = post_data.get('id')
 
             rest_api = requests.delete(model_api_url + id_to_delete + '/')
@@ -176,5 +171,6 @@ def manage_courses(request):
                 render_properties['is_error'] = True
                 render_properties['msg'] = \
                     "Failed to delete course. An unknown error has occurred. Please try again."
+
     return render(request, 'managecourses.html',
-                      context={'action': action, 'method': method, 'courses': courses, 'render': render_properties})
+                  context={'action': action, 'courses': courses, 'render': render_properties})
