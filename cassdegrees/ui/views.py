@@ -156,8 +156,7 @@ def manage_courses(request):
                 render_properties['msg'] = 'Course information successfully modified!'
             else:
                 render_properties['is_error'] = True
-                render_properties['msg'] = \
-                    "Failed to edit course information (unknown error). Please try again."
+                render_properties['msg'] = "Failed to edit course information (unknown error). Please try again."
 
         # to be implemented, currently has the sample model code
         elif action == 'Delete':
@@ -171,5 +170,5 @@ def manage_courses(request):
                 render_properties['is_error'] = True
                 render_properties['msg'] = "Failed to delete course. An unknown error has occurred. Please try again."
 
-    return render(request, 'managecourses.html',
-                  context={'action': action, 'courses': courses, 'render': render_properties, 'actions': actions})
+    return render(request, 'managecourses.html', context={'action': action, 'courses': courses,
+                                                          'render': render_properties, 'actions': actions})
