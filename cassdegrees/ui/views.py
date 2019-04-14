@@ -113,7 +113,6 @@ def manage_courses(request):
         'is_error': False
     }
     if request.method == 'POST':
-        # hard coded url; only temporary
         model_api_url = request.build_absolute_uri('/api/model/course/')
         post_data = request.POST
         # actual_request = post_data.get('_method')
