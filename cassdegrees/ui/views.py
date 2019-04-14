@@ -159,9 +159,11 @@ def manage_courses(request):
             rest_api = requests.patch(model_api_url + id_to_edit + '/', data=course_instance)
 
             if rest_api.status_code == 200:
-                return HttpResponse('Record successfully edited!')
+                render_properties['msg'] = 'Course information successfully modified!'
             else:
-                return HttpResponse('Failed to edit record!')
+                render_properties['is_error'] = True
+                render_properties['msg'] = \
+                    "Failed to edit course information (unknown error). Please try again."
         # to be implemented, currently has the sample model code
         else:
             id_to_delete = post_data.get('id')
@@ -169,8 +171,10 @@ def manage_courses(request):
             rest_api = requests.delete(model_api_url + id_to_delete + '/')
 
             if rest_api.status_code == 204:
-                return HttpResponse('Record successfully deleted!')
+                render_properties['msg'] = 'Course successfully deleted!'
             else:
-                return HttpResponse('Failed to delete record!')
+                render_properties['is_error'] = True
+                render_properties['msg'] = \
+                    "Failed to delete course. An unknown error has occurred. Please try again."
     return render(request, 'managecourses.html',
                       context={'action': action, 'method': method, 'courses': courses, 'render': render_properties})
