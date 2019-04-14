@@ -126,7 +126,7 @@ def manage_courses(request):
         # https://stackoverflow.com/questions/11663945/calling-a-rest-api-from-django-view
         if actual_request == "post":
             # Create a python dictionary with exactly the same fields as the model (in this case, CourseModel)
-            offered_sems = post_data.getlist('semester[]')
+            offered_sems = post_data.getlist('semesters[]')
             course_instance = \
                 {
                     'code': post_data.get('code'),
