@@ -2,6 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 import os
 import requests
+import csv
+from io import TextIOWrapper
 
 
 # Create your views here.
@@ -95,3 +97,21 @@ def sampleform(request):
 
 def create_subplan(request):
     return render(request, 'createsubplan.html')
+
+
+def bulk_data_upload(request):
+    upload_type = ['Courses', 'Majors', 'Minors', 'Specialisations']
+
+    if request.method == 'POST':
+        # Open file in text mode:
+        # https://stackoverflow.com/questions/16243023/how-to-resolve-iterator-should-return-strings-not-bytes
+        tsv_file = TextIOWrapper(request.FILES['course_tsv'], encoding=request.encoding)
+
+        # Reading the TSV using the csv import module came from:
+        # https://stackoverflow.com/questions/13992971/reading-and-parsing-a-tsv-file-then-manipulating-it-for-saving-as-csv-efficie
+
+        tsv_file = csv.reader(tsv_file, delimiter='\t')
+        for row in tsv_file:
+            print(row[0] + "   " + row[1])
+
+    return render(request, 'bulkupload.html', context={'upload_type': upload_type})

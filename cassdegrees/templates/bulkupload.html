@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block page-title %}Bulk Data Upload{% endblock %}
+
+{% block subtitle %}Bulk Data Upload{% endblock %}
+
+{% block content %}
+    {# Generates the tabs based on the keys #}
+    <div class="pagetabs-nav">
+        <ul>
+            {% for type in upload_type %}
+                <li><a onClick='setActive("{{ type }}")' id="{{ type }}Link">{{ type }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% for type in upload_type %}
+        <div id="{{ type }}Page" hidden>
+            {% if type == 'Courses' %}
+                <form class="anuform" action="/bulk_upload/" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                     <fieldset>
+                         <legend>Upload Course TSV file</legend>
+                         <p>
+                            <input type="file" name="course_tsv" id="course_tsv" aria-required="true" required>
+                         </p>
+                     </fieldset>
+                    <p class="text-right">
+                        <input class="btn-uni-grad btn-large" type="submit" name="submit">
+                    </p>
+                </form>
+
+            {% elif type == 'Majors' %}
+                <p>Majors</p>
+            {% elif type == 'Minors' %}
+                <p>Minors</p>
+            {% else %}
+                <p>Specialisations</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+    {# Function to hide the previous tab while opening a new one #}
+    <script>
+        var oldLabel = "Courses";
+
+        function setActive(label){
+            if(document.getElementById(label+"Link") == null)
+                label = oldLabel;
+
+            document.getElementById(oldLabel+"Link").setAttribute("class", "");
+            document.getElementById(oldLabel+"Page").style.display = "none";
+
+            document.getElementById(label+"Link").setAttribute("class", "pagetabs-select");
+            document.getElementById(label+"Page").style.display = "block";
+
+            oldLabel = label;
+        }
+
+        var openElement = (new URLSearchParams(window.location.search)).get("view");
+        setActive(openElement)
+    </script>
+{% endblock %}
