@@ -1,4 +1,5 @@
 from django.db import models
+import django.contrib.postgres.fields as psql
 
 
 class SampleModel(models.Model):
@@ -69,6 +70,8 @@ class DegreeModel(models.Model):
                      (vertical_double, "Vertical Flexible Double Degree"))
 
     degreeType = models.CharField(max_length=10, choices=degreeChoices)
+
+    rules = psql.JSONField(default=list)
 
     class Meta:
         unique_together = (("code", "year"),)
