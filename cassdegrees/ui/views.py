@@ -177,18 +177,103 @@ def manage_courses(request):
 
 
 def bulk_data_upload(request):
-    upload_type = ['Courses', 'Majors', 'Minors', 'Specialisations']
+    context = {}
+    context['upload_type'] = ['Courses', 'Subplans']
+    content_type = request.GET.get('type')
+    print(content_type)
+
+    if content_type in context['upload_type']:
+        context['current_tab'] = content_type
 
     if request.method == 'POST':
+        base_model_url = request.build_absolute_uri('/api/model/')
+
         # Open file in text mode:
         # https://stackoverflow.com/questions/16243023/how-to-resolve-iterator-should-return-strings-not-bytes
-        tsv_file = TextIOWrapper(request.FILES['course_tsv'], encoding=request.encoding)
+        uploaded_file = TextIOWrapper(request.FILES['uploaded_file'], encoding=request.encoding)
 
         # Reading the TSV using the csv import module came from:
         # https://stackoverflow.com/questions/13992971/reading-and-parsing-a-tsv-file-then-manipulating-it-for-saving-as-csv-efficie
 
-        tsv_file = csv.reader(tsv_file, delimiter='\t')
-        for row in tsv_file:
-            print(row[0] + "   " + row[1])
+        uploaded_file = csv.reader(uploaded_file, delimiter='%')
 
-    return render(request, 'bulkupload.html', context={'upload_type': upload_type})
+        # First row contains the column type headings (code, name etc). We can't add them to the db.
+        first_row_checked = False
+
+        # Check if any errors or successes appear when uploading the files.
+        # Used for determining type of message to show to the user on the progress of their file upload.
+        any_error = False
+        any_success = False
+        for row in uploaded_file:
+            if first_row_checked:
+
+                if content_type == 'Courses':
+                    if len(row) != 6:
+                        any_error = True
+                        break
+
+                    course_instance = \
+                        {
+                            'code': row[0],
+                            'year': int(row[1]),
+                            'name': row[2],
+                            'units': int(row[3]),
+                            'offeredSem1': bool(row[4]),
+                            'offeredSem2': bool(row[5])
+                        }
+
+                    # Submit a POST request to the course API with course_instance as data
+                    rest_api = requests.post(base_model_url + 'course/', data=course_instance)
+                    if rest_api.status_code == 201:
+                        any_success = True
+                        print('Successfully added!')
+                    else:
+                        any_error = True
+                        print(rest_api.text)
+
+                elif content_type == 'Subplans':
+                    if len(row) != 5:
+                        any_error = True
+                        break
+
+                    subplan_instance = \
+                        {
+                            'code': row[0],
+                            'year': int(row[1]),
+                            'name': row[2],
+                            'units': int(row[3]),
+                            'planType': str(row[4])
+                        }
+                    rest_api = requests.post(base_model_url + 'subplan/', data=subplan_instance)
+                    if rest_api.status_code == 201:
+                        any_success = True
+                        print('Successfully added!')
+                    else:
+                        any_error = True
+                        print(rest_api.text)
+
+            else:
+                first_row_checked = True
+
+        # Display error messages depending on the level of success of bulk upload.
+        # There are 3 categories: All successful, some successful or none successful.
+        if any_success and not any_error:
+            context['user_msg'] = "All items has been added successfully!"
+            context['err_type'] = "success"
+
+        elif any_success and any_error:
+            context['user_msg'] = "Some items could not be added. Have you added them already? Please check the " \
+                       + content_type + \
+                       " list and try manually adding ones that failed through the dedicated forms."
+            context['err_type'] = "warn"
+
+        elif not any_success and any_error:
+            context['user_msg'] = "All items failed to be added. " \
+                       "Either you have already uploaded the same contents, or the format of the file is incorrect. " \
+                       "Please try again."
+            context['err_type'] = "error"
+        else:
+            print(any_success)
+            print(any_error)
+
+    return render(request, 'bulkupload.html', context=context)
