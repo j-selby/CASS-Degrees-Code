@@ -54,20 +54,14 @@ class DegreeModel(models.Model):
     name = models.CharField(max_length=256)
     units = models.PositiveIntegerField()
 
-    undergrad_single = "ugrad-sing"
-    undergrad_double = "ugrad-doub"
-    honours = "hon"
-    masters_single = "mast-sing"
-    masters_adv = "mast-adv"
-    masters_double = "mast-doub"
-    vertical_double = "vert_doub"
-    degreeChoices = ((undergrad_single, "Undergraduate Single Pass Degree"),
-                     (undergrad_double, "Undergraduate Flexible Double Degree"),
-                     (honours, "Honours Degree"),
-                     (masters_single, "Masters Single Degree"),
-                     (masters_adv, "Masters (Advanced) Degree"),
-                     (masters_double, "Masters Flexible Double Degree"),
-                     (vertical_double, "Vertical Flexible Double Degree"))
+    degreeChoices = (("ugrad-sing", "Undergraduate Single Pass Degree"),
+                     ("ugrad-doub", "Undergraduate Flexible Double Degree"),
+                     ("hon", "Honours Degree"),
+                     ("mast-sing", "Masters Single Degree"),
+                     ("mast-adv", "Masters (Advanced) Degree"),
+                     ("mast-doub", "Masters Flexible Double Degree"),
+                     ("vert_doub", "Vertical Flexible Double Degree"),
+                     ("other", "Other Degree"))
 
     degreeType = models.CharField(max_length=10, choices=degreeChoices)
 
