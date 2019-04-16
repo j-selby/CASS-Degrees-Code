@@ -158,7 +158,7 @@ def sampleform(request):
         return render(request, 'sampleform.html')
 
 
-def create_degree(request):
+def create_program(request):
     # If POST request, redirect the received information to the backend:
     render_properties = {
         'msg': None,
@@ -194,7 +194,7 @@ def create_degree(request):
             else:
                 render_properties['msg'] = "Unknown error while submitting document."
 
-    return render(request, 'createdegree.html', context=render_properties)
+    return render(request, 'createprogram.html', context=render_properties)
 
 
 def create_subplan(request):
