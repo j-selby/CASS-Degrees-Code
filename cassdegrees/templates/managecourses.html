@@ -79,10 +79,46 @@
                         <input class="btn-uni-grad btn-large" type ="submit" value="{{ action }}">
                     </p>
                 </form>
-            {% elif action == 'Edit' %}
-                <p>Edit</p>
-            {% else %}
-                <p>Delete</p>
+            {% else %} {# action == modify #}
+                <table class="fullwidth tbl-cell-bdr">
+                    {# Add title row based on what was in the dictionary #}
+                    <tr>
+                        {% for key in courses.0 %}
+                            {% if key != "id" %}
+                                <th>{{ key }}</th>
+                            {% endif %}
+                        {% endfor %}
+                        <th>Options</th>
+                    </tr>
+                    {# Add rows containing the contens of each json data instance #}
+                    {% for row in courses %}
+                        <tr>
+                            {% for key, item in row.items %}
+                                {% if key != "id" %}
+                                    <td>{{ item }}</td>
+                                {% endif %}
+                            {% endfor %}
+                            <td>
+                                <ul class="iconlist iconlist_h">
+                                    <li>
+                                        {# temporary href link #}
+                                         <a title="Edit" href="http://www.google.com">
+                                             {# temporary image; contact ANU styling if you want to use #}
+                                             <img src="//style.anu.edu.au/_anu/images/icons/web/tools.png" onmouseover="this.src='//style.anu.edu.au/_anu/images/icons/web/tools-over.png'" onmouseout="this.src='//style.anu.edu.au/_anu/images/icons/web/tools.png'" alt="tools icon">
+                                         </a>
+                                    </li>
+                                    <li>
+                                        {# temporary href link #}
+                                        <a title="Delete" href="http://www.google.com">
+                                             {# temporary as ANU styling has no delete icon; contact ANU styling #}
+                                            <img src="//style.anu.edu.au/_anu/images/icons/web/thumb-down.png" onmouseover="this.src='//style.anu.edu.au/_anu/images/icons/web/thumb-down-over.png'" onmouseout="this.src='//style.anu.edu.au/_anu/images/icons/web/thumb-down.png'" alt="thumb-down icon">
+                                        </a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
             {% endif %}
         </div>
     {% endfor %}
@@ -103,7 +139,10 @@
             oldLabel = label;
         }
 
-        var openElement = (new URLSearchParams(window.location.search)).get("action");
-        setActive(openElement)
+        let tab = (new URLSearchParams(window.location.search)).get("action");
+        // when ?action=Modify, it gets sent as ?action=modify for some reason hence the fix below
+        console.log(tab);
+        let openElement = tab != null ? tab.charAt(0).toUpperCase() + tab.slice(1) : "";
+        setActive(openElement);
     </script>
 {% endblock %}

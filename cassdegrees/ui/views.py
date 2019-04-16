@@ -102,11 +102,10 @@ def create_subplan(request):
 # inspired by the samepleform function created by Daniel Jang
 def manage_courses(request):
     # Reads the 'action' attribute from the url (i.e. manage/?action=Add) and determines the submission method
-    actions = ['Add', 'Edit', 'Delete']
+    actions = ['Add', 'Modify'] # used to make tabs in managecourses.html
     action = request.GET.get('action', 'Add')
 
     courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
-    courses = [{'code': course} for course in set([x['code'] for x in courses])]
     # If POST request, redirect the received information to the backend:
     render_properties = {
         'msg': None,
@@ -118,6 +117,7 @@ def manage_courses(request):
         # actual_request = post_data.get('_method')
 
         if action == 'Add':
+            courses = [{'code': course} for course in set([x['code'] for x in courses])]
             # Create a python dictionary with exactly the same fields as the model (in this case, CourseModel)
             offered_sems = post_data.getlist('semesters[]')
             course_instance = \
