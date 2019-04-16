@@ -176,11 +176,21 @@ def manage_courses(request):
                                                           'render': render_properties, 'actions': actions})
 
 
+# Submit file with courses or subplans with the following formats:
+
+# Courses:
+# code%year%name%units%offeredSem1%offeredSem2
+# ARTS1001%2019%Introduction to Arts%6%True%False
+# ...
+
+# Subplans:
+# code%year%name%units%planType
+# ARTI-SPEC%2016%Artificial Intelligence%24%SPEC
+# ...
 def bulk_data_upload(request):
     context = {}
     context['upload_type'] = ['Courses', 'Subplans']
     content_type = request.GET.get('type')
-    print(content_type)
 
     if content_type in context['upload_type']:
         context['current_tab'] = content_type
@@ -206,8 +216,8 @@ def bulk_data_upload(request):
         any_success = False
         for row in uploaded_file:
             if first_row_checked:
-
                 if content_type == 'Courses':
+                    # If number of columns from file doesn't match the model, return error to user.
                     if len(row) != 6:
                         any_error = True
                         break
@@ -226,10 +236,8 @@ def bulk_data_upload(request):
                     rest_api = requests.post(base_model_url + 'course/', data=course_instance)
                     if rest_api.status_code == 201:
                         any_success = True
-                        print('Successfully added!')
                     else:
                         any_error = True
-                        print(rest_api.text)
 
                 elif content_type == 'Subplans':
                     if len(row) != 5:
@@ -247,10 +255,8 @@ def bulk_data_upload(request):
                     rest_api = requests.post(base_model_url + 'subplan/', data=subplan_instance)
                     if rest_api.status_code == 201:
                         any_success = True
-                        print('Successfully added!')
                     else:
                         any_error = True
-                        print(rest_api.text)
 
             else:
                 first_row_checked = True
@@ -263,17 +269,14 @@ def bulk_data_upload(request):
 
         elif any_success and any_error:
             context['user_msg'] = "Some items could not be added. Have you added them already? Please check the " \
-                       + content_type + \
-                       " list and try manually adding ones that failed through the dedicated forms."
+                                  + content_type + \
+                                  " list and try manually adding ones that failed through the dedicated forms."
             context['err_type'] = "warn"
 
         elif not any_success and any_error:
             context['user_msg'] = "All items failed to be added. " \
-                       "Either you have already uploaded the same contents, or the format of the file is incorrect. " \
-                       "Please try again."
+                                  "Either you have already uploaded the same contents, " \
+                                  "or the format of the file is incorrect. Please try again."
             context['err_type'] = "error"
-        else:
-            print(any_success)
-            print(any_error)
 
     return render(request, 'bulkupload.html', context=context)
