@@ -202,9 +202,10 @@ def bulk_data_upload(request):
         # https://stackoverflow.com/questions/16243023/how-to-resolve-iterator-should-return-strings-not-bytes
         uploaded_file = TextIOWrapper(request.FILES['uploaded_file'], encoding=request.encoding)
 
-        # Reading the TSV using the csv import module came from:
+        # Reading the '%' using the csv import module came from:
         # https://stackoverflow.com/questions/13992971/reading-and-parsing-a-tsv-file-then-manipulating-it-for-saving-as-csv-efficie
 
+        # % is used instead of comma since the course name may include commas (which would break this function)
         uploaded_file = csv.reader(uploaded_file, delimiter='%')
 
         # First row contains the column type headings (code, name etc). We can't add them to the db.
