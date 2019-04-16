@@ -43,7 +43,7 @@ class SubplanModel(models.Model):
     courses = models.ManyToManyField(CourseModel, through=CoursesInSubplanModel)
 
     class Meta:
-        unique_together = (("code", "year"),)
+        unique_together = (("code", "year"), ("year", "name"),)
 
 
 class DegreeModel(models.Model):

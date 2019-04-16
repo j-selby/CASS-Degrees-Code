@@ -14,11 +14,23 @@ def index(request):
         {'url': "/api/model/degree/", 'img': "../static/img/create_plan_img.png", 'label': "Create Plan"},
         {'url': "/create_subplan/", 'img': "../static/img/create_subplan_img.png", 'label': "Create Subplan"},
         {'url': "", 'img': "../static/img/create_list_img.png", 'label': "Create List"},
-        {'url': "", 'img': "../static/img/open_existing_img.png", 'label': "Open Existing"},
+        {'url': "/list/", 'img': "../static/img/open_existing_img.png", 'label': "Open Existing"},
         {'url': "/api/model/course/", 'img': "../static/img/manage_courses_img.png", 'label': "Manage Courses"}
     ]
 
     return render(request, 'index.html', context={'buttons': buttons})
+
+
+def planList(request):
+    """ Generates a table based on whatever JSON object is stored in 'data'
+
+    :param request:
+    :return <class django.http.response.HttpResponse>:
+    """
+    subplans = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
+    degree = requests.get(request.build_absolute_uri('/api/model/degree/?format=json')).json()
+
+    return render(request, 'list.html', context={'subplans': subplans, 'degrees': degree})
 
 
 # I went through this tutorial to create the form html file and this view:
@@ -78,5 +90,58 @@ def sampleform(request):
         return render(request, 'sampleform.html')
 
 
+# Using sampleform template and #59 - basic degree creation workflow as it's inspirations
 def create_subplan(request):
-    return render(request, 'createsubplan.html')
+
+    render_properties = {
+        'msg': None,
+        'is_error': False,
+        'code': None,
+        'year': None,
+        'name': None,
+        'planType': None
+    }
+
+    if request.method == 'POST':
+        model_api_url = 'http://127.0.0.1:8000/api/model/subplan/'
+        post_data = request.POST
+
+        # Generate units from subtype plan selected
+        subplanUnits = \
+            {
+                'MAJ': 48,
+                'MIN': 24,
+                'SPEC': 24
+            }
+
+        subplanfields = \
+            {
+                'code': post_data.get('code'),
+                'year': post_data.get('year'),
+                'name': post_data.get('name'),
+                'units': subplanUnits[post_data.get('planType')],
+                'planType': post_data.get('planType')
+            }
+
+        # Submit a POST request to the model with subplan data
+        rest_api = requests.post(model_api_url, data=subplanfields)
+
+        # Store fields in render properties so they can be repopulated on error or success
+        for field in subplanfields:
+            render_properties[field] = subplanfields[field]
+
+        # Handle request return type and generate success or fail message
+        if rest_api.status_code == 201:
+            render_properties['msg'] = 'Subplan successfully added.'
+        else:
+            render_properties['is_error'] = True
+
+            rest_response = rest_api.json()
+            if "The fields code, year must make a unique set." in rest_response['non_field_errors']:
+                render_properties['msg'] = "A subplan already exists with this code and year."
+            elif "The fields year, name must make a unique set." in rest_response['non_field_errors']:
+                render_properties['msg'] = "A subplan already exists with this name and year."
+            else:
+                render_properties['msg'] = "An unknown error occurred while submitting the document."
+
+    return render(request, 'createsubplan.html', context=render_properties)

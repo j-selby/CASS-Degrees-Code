@@ -6,6 +6,54 @@
 
 {% block content %}
 
-<p>This is a test</p>
+    {% if msg != None %}
+        <p class="{% if is_error %}msg-error{% else %}msg-success{% endif %}">{{ msg }}</p>
+    {% endif %}
+
+    <form class="anuform" action="/create_subplan/" method="post">
+
+        {% csrf_token %}
+
+        <fieldset>
+
+            <legend>Subplan details</legend>
+
+            <!-- As HTML forms only support get or post methods,
+            add this hidden input for consistency with the rest of the forms -->
+            <input type="hidden" name="_method" value="post">
+
+            <p>
+                <label for="code">Subplan Code:</label>
+                <input class="text" id="code" type="text" name="code"
+                       aria-required="true" required value="{% if code != None %}{{code}}{% endif %}">
+            </p>
+
+            <p>
+                <label for="year">Subplan Year:</label>
+                <input class="text" id="year" type="number" name="year"
+                       aria-required="true" required value="{% if year != None %}{{ year }}{% endif %}">
+            </p>
+
+            <p>
+                <label for="name">Subplan Name:</label>
+                <input class="text" id="name" type="text" name="name"
+                       aria-required="true" required value="{% if name != None %}{{ name }}{% endif %}">
+            </p>
+
+            <p>
+                <label for="plantype">Subplan Type:</label>
+                <select class="text" id="planType" type="text" name="planType"
+                        aria-required="true" required value="{% if planType != None %}{{ planType }}{% endif %}">
+                    <option value="MAJ">Major</option>
+                    <option value="MIN">Minor</option>
+                    <option value="SPEC">Specialisation</option>
+                </select>
+            </p>
+
+        </fieldset>
+        <p class="text-right">
+            <input class="btn-uni-grad btn-large" type ="submit" value="Create">
+        </p>
+    </form>
 
 {% endblock %}
