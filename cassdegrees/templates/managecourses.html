@@ -140,7 +140,6 @@
         }
 
         let tab = (new URLSearchParams(window.location.search)).get("action");
-        // when ?action=Modify, it gets sent as ?action=modify for some reason hence the fix below
         console.log(tab);
         let openElement = tab != null ? tab.charAt(0).toUpperCase() + tab.slice(1) : "";
         setActive(openElement);
