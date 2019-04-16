@@ -1,5 +1,6 @@
 import json
 
+
 class DegreeRules:
     """
     A class which represents degree rules as a k-ary tree and stores them in a list.
@@ -25,10 +26,15 @@ class DegreeRules:
         and converts them into a k-ary tree of lists and dictionaries that can be
         stored in JSON format.
 
+        Expressions should be well formed. A well formed expression:
+            Has only one operator per "level". (i.e one unique operator per bracketed term)
+                BAD: A AND B AND C OR D AND E
+                GOOD: (A AND B AND C) OR (D AND E)
+
         :param expression_list: (list) a list of tokens in the format of a boolean expression.
                                 A token must be one of:
                                     "(", ")", "AND", "OR", rule
-                                where rule is some dictionary representing a rule, returned from a function below
+                                where rule is some dictionary representing a rule, returned from a function below.
         :return: (list) a k-ary tree with rules as leaf nodes, and boolean operators as the other nodes
         """
 
@@ -49,14 +55,23 @@ class DegreeRules:
                     node = parent
                     tree = parent
             elif token in ["AND", "OR"]:
+                if node[0] is not None and node[0] != token:
+                    raise ValueError("Expression is poorly formed. Operators on the same level should be consistent.")
+
                 node[0] = token
                 node.append([None])
                 stack.append(node)
                 node = node[-1]
             else:
                 node[0] = token
-                parent = stack.pop()
-                node = parent
+                if len(stack) > 0:
+                    parent = stack.pop()
+                    node = parent
+                else:
+                    parent = [None]
+                    parent.append(node)
+                    node = parent
+                    tree = parent
 
         self.expressionTree = tree
 
@@ -70,7 +85,9 @@ class DegreeRules:
         :param rule: (Dict) the rule to be appended
         """
 
-        if self.expressionTree[0] == "AND":
+        if len(self.expressionTree) == 0:
+            raise ValueError("Cannot append rules to an undefined expression. Run build_expression first.")
+        elif self.expressionTree[0] == "AND":
             self.expressionTree.append(rule)
         else:
             self.expressionTree = ["AND", self.expressionTree, rule]
