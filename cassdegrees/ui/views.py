@@ -80,7 +80,7 @@ def planList(request):
 
         # If the degree, subplan, or course searches are non-empty, query the database
         data = {}
-        for target, model in [('Course', CourseModel), ('Subplan', SubplanModel), ('Degree', DegreeModel)]:
+        for target, model in [('Degree', DegreeModel), ('Subplan', SubplanModel), ('Course', CourseModel)]:
             # If the query is not blank, search for it in the database (Prevents unnecessary searches)
             if new_query[target]['AND'].children or new_query[target]['date'].children:
                 # SELECT from the the appropriate relation with the AND and OR queries
