@@ -75,6 +75,9 @@ class DegreeRules:
 
         self.expressionTree = tree
 
+        if self.expressionTree[0] is None:
+            self.expressionTree[0] = "AND"
+
         return tree
 
     def append_rule(self, rule):
