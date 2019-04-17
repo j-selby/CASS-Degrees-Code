@@ -31,7 +31,7 @@
             <p>
                 <label for="year">Subplan Year:</label>
                 <input class="text" id="year" type="number" name="year"
-                       aria-required="true" required value="{% if year != None %}{{ year }}{% endif %}">
+                       aria-required="true" required min="2000" value="{{ year|default:"2019" }}">
             </p>
 
             <p>
