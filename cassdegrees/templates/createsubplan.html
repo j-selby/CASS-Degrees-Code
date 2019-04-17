@@ -37,7 +37,7 @@
             <p>
                 <label for="name">Subplan Name:</label>
                 <input class="text" id="name" type="text" name="name"
-                       aria-required="true" required value="{% if name != None %}{{ name }}{% endif %}">
+                       aria-required="true" placeholder="e.g. Anthropology" required value="{{ name|default:"" }}">
             </p>
 
             <p>
