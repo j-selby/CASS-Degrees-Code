@@ -80,15 +80,23 @@
                     </p>
                 </form>
             {% else %} {# action == modify #}
-                <table class="fullwidth tbl-cell-bdr">
+                <div class=" nopadbottom tools-college fullwidth">
+                    <ul class="left">
+                        <li><a title="Tick one or more checkboxes" href="#">Mass Edit</a></li>
+                        <li><a title="Tick one or more checkboxes" href="#">Mass Delete</a></li>
+                    </ul>
+                </div>
+                <table class="fullwidth tbl-row-bdr noborder anu-long-area">
                     {# Add title row based on what was in the dictionary #}
-                    <tr>
+                    <tr class="anu-sticky-header">
                         {% for key in courses.0 %}
                             {% if key != "id" %}
                                 <th>{{ key }}</th>
+                            {% else %}
+                                <th><input title="Select all" type="checkbox" name="" value="" /></th>
                             {% endif %}
                         {% endfor %}
-                        <th>Options</th>
+                        <th>Actions</th>
                     </tr>
                     {# Add rows containing the contens of each json data instance #}
                     {% for row in courses %}
@@ -96,23 +104,17 @@
                             {% for key, item in row.items %}
                                 {% if key != "id" %}
                                     <td>{{ item }}</td>
+                                {% else %}
+                                    <td><input title="Select" type="checkbox" name="" value=""  /></td>
                                 {% endif %}
                             {% endfor %}
                             <td>
-                                <ul class="iconlist iconlist_h">
+                                <ul class="iconlist iconlist_h right">
                                     <li>
-                                        {# temporary href link #}
-                                         <a title="Edit" href="http://www.google.com">
-                                             {# temporary image; contact ANU styling if you want to use #}
-                                             <img src="//style.anu.edu.au/_anu/images/icons/web/tools.png" onmouseover="this.src='//style.anu.edu.au/_anu/images/icons/web/tools-over.png'" onmouseout="this.src='//style.anu.edu.au/_anu/images/icons/web/tools.png'" alt="tools icon">
-                                         </a>
+                                        <a class="nopad" href="">Edit</a>
                                     </li>
                                     <li>
-                                        {# temporary href link #}
-                                        <a title="Delete" href="http://www.google.com">
-                                             {# temporary as ANU styling has no delete icon; contact ANU styling #}
-                                            <img src="//style.anu.edu.au/_anu/images/icons/web/thumb-down.png" onmouseover="this.src='//style.anu.edu.au/_anu/images/icons/web/thumb-down-over.png'" onmouseout="this.src='//style.anu.edu.au/_anu/images/icons/web/thumb-down.png'" alt="thumb-down icon">
-                                        </a>
+                                        <a class="nopad" href="">Delete</a>
                                     </li>
                                 </ul>
                             </td>
