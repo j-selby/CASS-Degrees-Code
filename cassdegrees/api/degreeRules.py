@@ -22,6 +22,18 @@ class DegreeRules:
 
     def build_expression(self, expression_list):
         """
+        Calls the parse_tree function and assigns the value as the
+        stored tree for this DegreeRules instance.
+
+        :param expression_list: See parse_tree()
+        :return: see parse_tree()
+        """
+
+        self.expressionTree = self.parse_tree(expression_list)
+        return self.expressionTree
+
+    def parse_tree(self, expression_list):
+        """
         Accepts a list of tokens that represent a boolean expression of degree rules
         and converts them into a k-ary tree of lists and dictionaries that can be
         stored in JSON format.
@@ -73,10 +85,27 @@ class DegreeRules:
                     node = parent
                     tree = parent
 
-        self.expressionTree = tree
+        tree = self.flatten_tree(tree)
 
-        if self.expressionTree[0] is None:
-            self.expressionTree[0] = "AND"
+        return tree
+
+    def flatten_tree(self, tree):
+        """
+        Takes a tree and recursively flattens it so that children without siblings are
+        moved up. Children without siblings, by definition, will have no operator, so
+        they appear as [null, {rule}]. They are effectively moved down to the next
+        applicable rule group by changing them to just {rule}.
+
+        :param tree: the tree to be flattened
+        :return: the flattened tree
+        """
+
+        while len(tree) == 2:
+            tree = tree[1]
+
+        for child in range(len(tree)):
+            if isinstance(tree[child], list):
+                tree[child] = self.flatten_tree(tree[child])
 
         return tree
 
@@ -85,8 +114,10 @@ class DegreeRules:
         Takes a rule that should be independent of the existing rules for a degree
         and appends it to the degree rules with an AND operator.
 
-        :param rule: (Dict) the rule to be appended
+        :param rule: an expression list that follows the criteria for parse_tree
         """
+
+        rule = self.parse_tree(rule)
 
         if len(self.expressionTree) == 0:
             raise ValueError("Cannot append rules to an undefined expression. Run build_expression first.")
