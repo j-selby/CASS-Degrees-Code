@@ -238,6 +238,7 @@ def manage_courses(request):
 
 
 # Submit file with courses or subplans with the following formats:
+# Note that column order does not matter, as long as data corresponds to the order of the first row.
 
 # Courses:
 # code%year%name%units%offeredSem1%offeredSem2
@@ -276,6 +277,11 @@ def bulk_data_upload(request):
         # Used for determining type of message to show to the user on the progress of their file upload.
         any_error = False
         any_success = False
+
+        # Stores the index of the column containing the data type of each row,
+        # so that the right data is stored in the right column
+        # This would also allow columns to be in any order, and courses/subplans would still be added.
+        map = {}
         for row in uploaded_file:
             if first_row_checked:
                 if content_type == 'Courses':
@@ -286,13 +292,14 @@ def bulk_data_upload(request):
 
                     course_instance = \
                         {
-                            'code': row[0],
-                            'year': int(row[1]),
-                            'name': row[2],
-                            'units': int(row[3]),
-                            'offeredSem1': bool(row[4]),
-                            'offeredSem2': bool(row[5])
+                            'code': row[map['code']],
+                            'year': int(row[map['year']]),
+                            'name': row[map['name']],
+                            'units': int(row[map['units']]),
+                            'offeredSem1': bool(row[map['offeredSem1']]),
+                            'offeredSem2': bool(row[map['offeredSem2']])
                         }
+                    print(course_instance)
 
                     # Submit a POST request to the course API with course_instance as data
                     rest_api = requests.post(base_model_url + 'course/', data=course_instance)
@@ -308,11 +315,11 @@ def bulk_data_upload(request):
 
                     subplan_instance = \
                         {
-                            'code': row[0],
-                            'year': int(row[1]),
-                            'name': row[2],
-                            'units': int(row[3]),
-                            'planType': str(row[4])
+                            'code': row[map['code']],
+                            'year': int(row[map['year']]),
+                            'name': row[map['name']],
+                            'units': int(row[map['units']]),
+                            'planType': str(row[map['planType']])
                         }
                     rest_api = requests.post(base_model_url + 'subplan/', data=subplan_instance)
                     if rest_api.status_code == 201:
@@ -321,6 +328,10 @@ def bulk_data_upload(request):
                         any_error = True
 
             else:
+                i = 0
+                for col in row:
+                    map[col] = i
+                    i += 1
                 first_row_checked = True
 
         # Display error messages depending on the level of success of bulk upload.
