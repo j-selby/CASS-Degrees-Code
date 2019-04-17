@@ -169,8 +169,6 @@ def create_program(request):
     }
 
     if request.method == 'POST':
-        model_api_url = 'http://127.0.0.1:8000/api/model/degree/'
-
         post_data = request.POST
 
         degree_dict = \
@@ -183,19 +181,25 @@ def create_program(request):
                 'degreeType': post_data.get('degreeType')
             }
 
-        rest_api = requests.post(model_api_url, data=degree_dict)
-
-        if rest_api.status_code == 201:
-            render_properties['msg'] = 'Program template successfully added!'
-        else:
+        # Verify that there are no duplicate name/year pairs
+        if DegreeModel.objects.filter(name__iexact=degree_dict['name'], year=degree_dict['year']).count() > 0:
             render_properties['is_error'] = True
+            render_properties['msg'] = "A program with the same year and name already exists!"
+        else:
+            model_api_url = 'http://127.0.0.1:8000/api/model/degree/'
+            rest_api = requests.post(model_api_url, data=degree_dict)
 
-            # Attempt to parse the incoming error message
-            rest_response = rest_api.json()
-            if "The fields code, year must make a unique set." in rest_response['non_field_errors']:
-                render_properties['msg'] = "The program template you are trying to create already exists!"
+            if rest_api.ok:
+                render_properties['msg'] = 'Program template successfully added!'
             else:
-                render_properties['msg'] = "Unknown error while submitting document."
+                render_properties['is_error'] = True
+
+                # Attempt to parse the incoming error message
+                rest_response = rest_api.json()
+                if "The fields code, year must make a unique set." in rest_response['non_field_errors']:
+                    render_properties['msg'] = "A program with the same year and code already exists!"
+                else:
+                    render_properties['msg'] = "Unknown error while submitting document."
 
     return render(request, 'createprogram.html', context=render_properties)
 
