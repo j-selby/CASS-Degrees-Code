@@ -25,7 +25,7 @@
             <p>
                 <label for="code">Subplan Code:</label>
                 <input class="text" id="code" type="text" name="code" placeholder="e.g. ANTH-MIN"
-                       aria-required="true" required value="{% if code != None %}{{code}}{% endif %}">
+                       aria-required="true" required value="{{ code|default:"" }}">
             </p>
 
             <p>
