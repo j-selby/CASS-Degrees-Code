@@ -181,6 +181,9 @@ def create_program(request):
                 'degreeType': post_data.get('degreeType')
             }
 
+        for k, v in degree_dict.items():
+            render_properties[k] = v
+            
         # Verify that there are no duplicate name/year pairs
         if DegreeModel.objects.filter(name__iexact=degree_dict['name'], year=degree_dict['year']).count() > 0:
             render_properties['is_error'] = True
