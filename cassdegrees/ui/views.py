@@ -183,7 +183,7 @@ def create_program(request):
 
         for k, v in degree_dict.items():
             render_properties[k] = v
-            
+
         # Verify that there are no duplicate name/year pairs
         if DegreeModel.objects.filter(name__iexact=degree_dict['name'], year=degree_dict['year']).count() > 0:
             render_properties['is_error'] = True
@@ -193,6 +193,7 @@ def create_program(request):
             rest_api = requests.post(model_api_url, data=degree_dict)
 
             if rest_api.ok:
+                # TODO: Redirect to edit_program
                 render_properties['msg'] = 'Program template successfully added!'
             else:
                 render_properties['is_error'] = True
