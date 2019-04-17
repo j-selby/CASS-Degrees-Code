@@ -93,7 +93,7 @@ class DegreeRules:
         """
         Takes a tree and recursively flattens it so that children without siblings are
         moved up. Children without siblings, by definition, will have no operator, so
-        they appear as [null, {rule}]. They are effectively moved down to the next
+        they appear as [null, {rule}]. They are effectively moved up to the next
         applicable rule group by changing them to just {rule}.
 
         :param tree: the tree to be flattened
