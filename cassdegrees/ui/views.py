@@ -233,7 +233,6 @@ def manage_courses(request):
         # course information has been requested by user to be either added or edited.
         if request_origin == 'managecourses.html':
             if action == 'Add':
-                # courses = [{'code': course} for course in set([x['code'] for x in courses])]
                 # Create a python dictionary with exactly the same fields as the model (in this case, CourseModel)
                 offered_sems = post_data.getlist('semesters[]')
                 course_instance = \
@@ -307,7 +306,7 @@ def manage_courses(request):
 
                 if rest_api is None:
                     render_properties['is_error'] = True
-                    render_properties['msg'] = 'Choose a course to delete.'
+                    render_properties['msg'] = 'Please select a course to delete!'
                 else:
                     if rest_api.status_code == 204:
                         render_properties['msg'] = 'Course successfully deleted!'
