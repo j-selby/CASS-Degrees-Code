@@ -46,7 +46,7 @@
                         aria-required="true" required">
                     <option value="MAJ" {% if planType == "MAJ" %}selected{% endif %}>Major</option>
                     <option value="MIN" {% if planType == "MIN" %}selected{% endif %}>Minor</option>
-                    <option value="SPEC">Specialisation</option>
+                    <option value="SPEC" {% if planType == "SPEC" %}selected{% endif %}>Specialisation</option>
                 </select>
             </p>
 
