@@ -18,7 +18,7 @@
     padding-top: 20px;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
+    align-items: baseline;
 }
 
 .img_btn_container {
@@ -26,6 +26,27 @@
     flex-direction: column;
     justify-content: center;
     margin: 12px;
+}
+
+.custom_search_bar input[type=text]{
+    height: 30px;
+    width: 78%;
+    padding-left: 5px;
+    margin-right: 2%;
+    box-sizing: border-box;
+    display:inline-block;
+    font-size:1.0em;
+    border-radius: 5px;
+}
+.custom_search_bar input[type=submit]{
+    height: 30px;
+    margin: 0;
+    width: 20%;
+    min-width: 80px;
+    box-sizing: border-box;
+    display:inline-block;
+    border-radius: 5px;
+    float:right;
 }
 
 select.tfull {
