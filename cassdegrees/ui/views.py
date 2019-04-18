@@ -161,17 +161,20 @@ def manage_courses(request):
         # to be implemented, currently has the sample model code
         elif action == 'Delete':
             ids_to_delete= post_data.getlist('id')
-
+            rest_api = None
             for id_to_delete in ids_to_delete:
                 rest_api = requests.delete(model_api_url + id_to_delete + '/')
 
-            if rest_api.status_code == 204:
-                render_properties['msg'] = 'Course successfully deleted!'
-            else:
-                print(rest_api.status_code)
-                print(rest_api.json())
+            if rest_api is None:
                 render_properties['is_error'] = True
-                render_properties['msg'] = "Failed to delete course. An unknown error has occurred. Please try again."
+                render_properties['msg'] = 'Choose a course to delete.'
+            else:
+                if rest_api.status_code == 204:
+                    render_properties['msg'] = 'Course successfully deleted!'
+                else:
+                    render_properties['is_error'] = True
+                    render_properties[
+                        'msg'] = "Failed to delete course. An unknown error has occurred. Please try again."
 
     return render(request, 'managecourses.html', context={'action': action, 'courses': courses,
                                                           'render': render_properties, 'actions': actions})
