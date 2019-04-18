@@ -81,8 +81,8 @@
                            <input class="btn-uni-grad btn-large" type ="submit" formaction="/{% if title == 'Degree' %}{% elif title == 'Subplan' %}{% elif title == 'Course' %}manage_courses{% endif %}/?action=Delete" value="Delete Selected">
                         </p>
                    </div>
-                </form>
-            {% endif %}
+                {% endif %}
+            </form>
         </div>
     {% endfor %}
 
