@@ -39,14 +39,14 @@
 
             <p class="form-group">
                 <label for="degreeType">Program Type:</label>
-                <select id="degreeType" name="degreeType" aria-required="true" required value="{{ degreeType|default:"" }}">
-                    <option value="ugrad-sing" selected>Undergraduate Single Pass Degree</option>
-                    <option value="ugrad-doub">Undergraduate Flexible Double Degree</option>
-                    <option value="hon">Honours Degree</option>
-                    <option value="mast-sing">Masters Single Degree</option>
-                    <option value="mast-adv">Masters (Advanced) Degree</option>
-                    <option value="mast-doub">Masters Flexible Double Degree</option>
-                    <option value="vert_doub">Vertical Flexible Double Degree</option>
+                <select id="degreeType" name="degreeType" aria-required="true" required>
+                    <option value="ugrad-sing" {% if degreeType == "ugrad-sing" or degreeType == None %}selected{% endif %}>Undergraduate Single Pass Degree</option>
+                    <option value="ugrad-doub" {% if degreeType == "ugrad-doub" %}selected{% endif %}>Undergraduate Flexible Double Degree</option>
+                    <option value="hon" {% if degreeType == "hon" %}selected{% endif %}>Honours Degree</option>
+                    <option value="mast-sing" {% if degreeType == "mast-sing" %}selected{% endif %}>Masters Single Degree</option>
+                    <option value="mast-adv" {% if degreeType == "mast-adv" %}selected{% endif %}>Masters (Advanced) Degree</option>
+                    <option value="mast-doub" {% if degreeType == "mast-doub" %}selected{% endif %}>Masters Flexible Double Degree</option>
+                    <option value="vert-doub" {% if degreeType == "vert-doub" %}selected{% endif %}>Vertical Flexible Double Degree</option>
                 </select>
             </p>
         </fieldset>
