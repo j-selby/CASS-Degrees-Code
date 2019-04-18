@@ -144,8 +144,11 @@ def create_subplan(request):
             rest_response = rest_api.json()
             if "The fields code, year must make a unique set." in rest_response['non_field_errors']:
                 render_properties['msg'] = "A subplan already exists with this code and year."
-            elif "The fields year, name must make a unique set." in rest_response['non_field_errors']:
-                render_properties['msg'] = "A subplan already exists with this name and year."
+
+                ""
+
+            elif "The fields year, name, planType must make a unique set." in rest_response['non_field_errors']:
+                render_properties['msg'] = "A subplan already exists with this name, year and type."
             else:
                 render_properties['msg'] = "An unknown error occurred while submitting the document."
 
