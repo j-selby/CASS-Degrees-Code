@@ -117,7 +117,7 @@ def manage_courses(request):
         # actual_request = post_data.get('_method')
 
         if action == 'Add':
-            courses = [{'code': course} for course in set([x['code'] for x in courses])]
+            # courses = [{'code': course} for course in set([x['code'] for x in courses])]
             # Create a python dictionary with exactly the same fields as the model (in this case, CourseModel)
             offered_sems = post_data.getlist('semesters[]')
             course_instance = \
@@ -160,13 +160,16 @@ def manage_courses(request):
 
         # to be implemented, currently has the sample model code
         elif action == 'Delete':
-            id_to_delete = post_data.get('id')
+            ids_to_delete= post_data.getlist('id')
 
-            rest_api = requests.delete(model_api_url + id_to_delete + '/')
+            for id_to_delete in ids_to_delete:
+                rest_api = requests.delete(model_api_url + id_to_delete + '/')
 
             if rest_api.status_code == 204:
                 render_properties['msg'] = 'Course successfully deleted!'
             else:
+                print(rest_api.status_code)
+                print(rest_api.json())
                 render_properties['is_error'] = True
                 render_properties['msg'] = "Failed to delete course. An unknown error has occurred. Please try again."
 

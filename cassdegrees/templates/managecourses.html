@@ -5,6 +5,9 @@
 {% block subtitle %}Manage Courses{% endblock %}
 
 {% block content %}
+    {% if render.msg != None %}
+        <p class="{% if render.is_error %}msg-error{% else %}msg-success{% endif %}">{{ render.msg }}</p>
+    {% endif %}
     {# Generates the tabs based on the keys #}
     <div class="pagetabs-nav">
         <ul>
@@ -13,9 +16,6 @@
             {% endfor %}
         </ul>
     </div>
-    {% if render.msg != None %}
-        <p class="{% if render.is_error %}msg-error{% else %}msg-success{% endif %}">{{ render.msg }}</p>
-    {% endif %}
 
     {% for action in actions %}
         <div id="{{ action }}Page" hidden>
@@ -80,52 +80,51 @@
                     </p>
                 </form>
             {% else %} {# action == modify #}
-                <div class=" nopadbottom tools-college fullwidth">
-                    <ul class="left">
-                        <li><a title="Tick one or more checkboxes" href="#">Mass Edit</a></li>
-                        <li><a title="Tick one or more checkboxes" href="#">Mass Delete</a></li>
-                    </ul>
-                </div>
-                <table class="fullwidth tbl-row-bdr noborder anu-long-area">
-                    {# Add title row based on what was in the dictionary #}
-                    <tr class="anu-sticky-header">
-                        {% for key in courses.0 %}
-                            {% if key != "id" %}
-                                <th>{{ key }}</th>
-                            {% else %}
-                                <th><input title="Select all" type="checkbox" name="" value="" /></th>
-                            {% endif %}
-                        {% endfor %}
-                        <th>Actions</th>
-                    </tr>
-                    {# Add rows containing the contens of each json data instance #}
-                    {% for row in courses %}
-                        <tr>
-                            {% for key, item in row.items %}
-                                {% if key != "id" %}
-                                    <td>{{ item }}</td>
-                                {% else %}
-                                    <td><input title="Select" type="checkbox" name="" value=""  /></td>
-                                {% endif %}
+               <form method="post">
+                   {% csrf_token %}
+                   <table class="fullwidth tbl-row-bdr noborder anu-long-area">
+                       <tbody>
+                            {# Add title row based on what was in the dictionary #}
+                            <tr class="anu-sticky-header">
+                                {% for key in courses.0 %}
+                                    {% if key != "id" %}
+                                        <th>{{ key }}</th>
+                                    {% else %}
+                                        <th>Select</th>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                            {# Add rows containing the contens of each json data instance #}
+                            {% for row in courses %}
+                                <tr>
+                                    {% for key, item in row.items %}
+                                        {% if key != "id" %}
+                                            <td>{{ item }}</td>
+                                        {% else %}
+                                            <td><input title="Select" type="radio" name="id" value="{{ item }}"  /></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
                             {% endfor %}
-                            <td>
-                                <ul class="iconlist iconlist_h right">
-                                    <li>
-                                        <a class="nopad" href="">Edit</a>
-                                    </li>
-                                    <li>
-                                        <a class="nopad" href="">Delete</a>
-                                    </li>
-                                </ul>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
+                       </tbody>
+                   </table>
+                   <div class="right">
+                       <p class="left marginright">
+                           <input class="btn-uni-grad btn-large" type ="submit" formaction="/manage_courses/?action=Edit" value="Edit Selected">
+                       </p>
+                       <p class="right">
+                           <input class="btn-uni-grad btn-large" type ="submit" formaction="/manage_courses/?action=Delete" value="Delete Selected">
+                       </p>
+                   </div>
+               </form>
             {% endif %}
         </div>
     {% endfor %}
     {# Function to hide the previous tab while opening a new one #}
     <script>
+
+
+
         var oldLabel = "Add";
 
         function setActive(label){
