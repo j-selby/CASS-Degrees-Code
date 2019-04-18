@@ -65,6 +65,7 @@ class DegreeModel(models.Model):
 
     degreeType = models.CharField(max_length=10, choices=degreeChoices)
 
+    globalRequirements = psql.JSONField(default=list)
     rules = psql.JSONField(default=list)
 
     class Meta:
