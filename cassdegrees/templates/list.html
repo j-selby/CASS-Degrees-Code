@@ -35,7 +35,7 @@
             <form method="post">
                 {% csrf_token %}
                 {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
-                <input type="hidden" id="request_origin" name="request_origin" value="list.html">
+                <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
 
                 <table class="fullwidth tbl-cell-bdr">
                     {# Add title row based on what was in the dictionary #}

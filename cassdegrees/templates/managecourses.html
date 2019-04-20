@@ -13,7 +13,7 @@
         <form class="anuform" action="/manage_courses/?action={{ action }}" method="post">
             {% csrf_token %}
             {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
-            <input type="hidden" id="request_origin" name="request_origin" value="managecourses.html">
+            <input type="hidden" id="perform_function" name="perform_function" value="Add/Edit data to db">
             <input type="hidden" id="id" name="id" value="{{ render.edit_course_info.id }}">
             {% with required='<img src="//style.anu.edu.au/_anu/4/images/styles/asterisk.png" alt=" required">' %}
                 <fieldset>

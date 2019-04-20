@@ -281,11 +281,11 @@ def manage_courses(request):
     if request.method == 'POST':
         model_api_url = request.build_absolute_uri('/api/model/course/')
         post_data = request.POST
-        request_origin = post_data.get('request_origin')
+        perform_function = post_data.get('perform_function')
 
         # If the post request came from itself (managecourses.html -> managecourses.html), then it must mean that
         # course information has been requested by user to be either added or edited.
-        if request_origin == 'managecourses.html':
+        if perform_function == 'Add/Edit data to db':
             if action == 'Add':
                 # Create a python dictionary with exactly the same fields as the model (in this case, CourseModel)
                 offered_sems = post_data.getlist('semesters[]')
@@ -338,7 +338,7 @@ def manage_courses(request):
         # If the request came from list.html (from the add, edit and delete button from the courses list page),
         # fetch and pre-fill the course info on the edit form if edit button was clicked on,
         # or delete the selected course immediately.
-        elif request_origin == 'list.html':
+        elif perform_function == 'retrieve view from selected':
             if action == 'Edit':
                 id_to_edit = post_data.get('id')
                 if id_to_edit:
