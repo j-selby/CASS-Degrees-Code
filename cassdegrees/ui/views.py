@@ -2,9 +2,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.db.models import Q
 from api.models import DegreeModel, SubplanModel, CourseModel
+from .forms import EditProgramFormSnippet
 import requests
 import csv
 from io import TextIOWrapper
+from django.forms.models import model_to_dict
 
 
 # Create your views here.
@@ -205,6 +207,52 @@ def create_program(request):
                     render_properties['msg'] = "Unknown error while submitting document."
 
     return render(request, 'createprogram.html', context=render_properties)
+
+
+def edit(request, element, program_id):
+    render_properties = {
+        'msg': None,
+        'is_error': False
+    }
+
+    # Get the correct instance from the request and render a form with its details
+    program = DegreeModel.objects.get(id=program_id)
+    program_dict = model_to_dict(program)
+    print(program_dict)
+    form = EditProgramFormSnippet(initial=program_dict)
+    render_properties['form'] = form
+
+    if request.method == 'POST':
+        # When a post request is made, compare details of post with the initial values
+        form = EditProgramFormSnippet(request.POST, initial=program_dict)
+        render_properties['form'] = form
+        # Used to generate patch request from POST form
+        actual_request = request.POST.get('_method')
+
+        if actual_request == "patch":
+            # print(form.is_valid())
+            print(form.has_changed())
+            print(form.changed_data)
+
+            # create a dictionary of updated fields
+            updated_fields = {}
+            for field in form.changed_data:
+                updated_fields[field] = form[field].data
+
+            # api request requires ID as string
+            id_to_edit = str(program_id)
+            model_api_url = 'http://127.0.0.1:8000/api/model/degree/'
+            print(updated_fields)
+            rest_api = requests.patch(model_api_url + id_to_edit + '/', data=updated_fields)
+
+            if rest_api.ok:
+                render_properties['msg'] = 'Program updated.'
+            else:
+                render_properties['is_error'] = True
+                render_properties['msg'] = "Error"
+
+    return render(request, 'editprogram.html', context=render_properties)
+
 
 # Using sampleform template and #59 - basic degree creation workflow as it's inspirations
 def create_subplan(request):

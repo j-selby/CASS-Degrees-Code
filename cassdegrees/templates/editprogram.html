@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block page-title %}Edit Program Template{% endblock %}
+
+{% block subtitle %}Edit Program Template{% endblock %}
+
+{% block content %}
+    {% if msg != None %}
+        <p class="{% if is_error %}msg-error{% else %}msg-success{% endif %}">{{ msg }}</p>
+    {% endif %}
+
+
+    <form class="anuform" action="" method="post">
+        {% csrf_token %}
+
+            <!-- As HTML forms only support get or post methods,
+            add this hidden input to hint that it is actually a put request. -->
+            <input type="hidden" name="_method" value="patch">
+
+        <fieldset>
+            <legend>Configure Program Details</legend>
+
+            {{ form.as_p }}
+
+        </fieldset>
+
+        <p class="text-right">
+            <input class="btn-uni-grad btn-large" type="submit" value="Create">
+        </p>
+    </form>
+
+{% endblock %}
