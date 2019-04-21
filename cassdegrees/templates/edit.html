@@ -24,8 +24,17 @@
 
         </fieldset>
 
+        {% if elementDesc == "Program Template" %}
+            <fieldset>
+                <legend>Staff comments</legend>
+                <br>
+                {{ comment_snippet.as_p }}
+
+            </fieldset>
+        {% endif %}
+
         <p class="text-right">
-            <input class="btn-uni-grad btn-large" type="submit" value="Create">
+            <input class="btn-uni-grad btn-large" type="submit" value="Save">
         </p>
     </form>
 

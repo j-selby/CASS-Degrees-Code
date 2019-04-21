@@ -215,15 +215,20 @@ def edit(request, element, program_id):
         'is_error': False,
     }
 
+    # api request requires ID as string
+    id_to_edit = str(program_id)
+
     # Get the correct instance from the request and render a form snippet with its details
     if element == "degree":
         elementDesc = "Program Template"
         modelObject = DegreeModel.objects.get(id=program_id)
         object_dict = model_to_dict(modelObject)
         form = EditProgramFormSnippet(initial=object_dict)
+        commentSnippet = StaffNotesFormSnippet(initial=object_dict)
         model_api_url = 'http://127.0.0.1:8000/api/model/degree/'
         print(model_to_dict(modelObject))
         render_properties['form'] = form
+        render_properties['comment_snippet'] = commentSnippet
 
     elif element == "subplan":
         elementDesc = "Subplan"
@@ -236,7 +241,7 @@ def edit(request, element, program_id):
 
     # TODO:Error handle course link
     elif element == "course":
-        return HttpResponseRedirect('http://127.0.0.1:8000/api/model/course/' + str(program_id))
+        return HttpResponseRedirect('http://127.0.0.1:8000/api/model/course/' + id_to_edit)
 
     # add correct description for template
     render_properties['elementDesc'] = elementDesc
@@ -246,22 +251,29 @@ def edit(request, element, program_id):
         # When a post request is made, compare details of post with the initial values
         if element == "degree":
             form = EditProgramFormSnippet(request.POST, initial=object_dict)
+            commentSnippet = StaffNotesFormSnippet(request.POST, initial=object_dict)
         elif element == "subplan":
             form = EditSubplanFormSnippet(request.POST, initial=object_dict)
 
         render_properties['form'] = form
+        render_properties['comment_snippet'] = commentSnippet
 
         actual_request = request.POST.get('_method')
 
+        if not form.has_changed() and not commentSnippet.has_changed():
+            render_properties['msg'] = "No changes to update"
+            return render(request, 'edit.html', context=render_properties)
+
         if actual_request == "patch":
 
-            # create a dictionary of updated fields
+            # create a dictionary of updated fields across relevant snippets
             updated_fields = {}
             for field in form.changed_data:
                 updated_fields[field] = form[field].data
 
-            # api request requires ID as string
-            id_to_edit = str(program_id)
+            for field in commentSnippet.changed_data:
+                updated_fields[field] = commentSnippet[field].data
+
             print(updated_fields)
             rest_api = requests.patch(model_api_url + id_to_edit + '/', data=updated_fields)
 

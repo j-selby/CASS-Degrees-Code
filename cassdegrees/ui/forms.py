@@ -7,16 +7,26 @@ class EditProgramFormSnippet(ModelForm):
 
     class Meta:
         model = DegreeModel
-        fields = ('code', 'year', 'name', 'units', 'degreeType', 'staffNotes', 'studentNotes')
+        fields = ('code', 'year', 'name', 'units', 'degreeType', 'studentNotes')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text"}),
             'year': forms.TextInput(attrs={'class': "text"}),
             'name': forms.TextInput(attrs={'class': "text"}),
             'units': forms.TextInput(attrs={'class': "text"}),
-            # 'staffNotes': forms.TextInput(attrs={'class': "text"}),
-            # 'studentNotes': forms.TextInput(attrs={'class': "text"}),
         }
-#         'disabled': True
+        labels = {
+            'studentNotes': "Student Notes",
+            'degreeType': "Program Type"
+        }
+
+
+class StaffNotesFormSnippet(ModelForm):
+    class Meta:
+        model = DegreeModel
+        fields = ('staffNotes',)
+        labels = {
+            'staffNotes': "Staff Notes"
+        }
 
 
 class EditSubplanFormSnippet(ModelForm):
