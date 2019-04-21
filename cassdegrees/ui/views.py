@@ -221,23 +221,29 @@ def edit(request, element, program_id):
     # Get the correct instance from the request and render a form snippet with its details
     if element == "degree":
         elementDesc = "Program Template"
-        modelObject = DegreeModel.objects.get(id=program_id)
-        object_dict = model_to_dict(modelObject)
+        model_object = DegreeModel.objects.get(id=program_id)
+        object_dict = model_to_dict(model_object)
         form = EditProgramFormSnippet(initial=object_dict)
-        commentSnippet = StaffNotesFormSnippet(initial=object_dict)
+        comment_snippet = StaffNotesFormSnippet(initial=object_dict)
+        content_snippet = ProgramContentSnippet(initial=object_dict)
+
         model_api_url = 'http://127.0.0.1:8000/api/model/degree/'
-        print(model_to_dict(modelObject))
+        print(model_to_dict(model_object))
+
         render_properties['form'] = form
-        render_properties['comment_snippet'] = commentSnippet
+        render_properties['comment_snippet'] = comment_snippet
+        render_properties['content_snippet'] = content_snippet
 
     elif element == "subplan":
         elementDesc = "Subplan"
-        modelObject = SubplanModel.objects.get(id=program_id)
-        object_dict = model_to_dict(modelObject)
+        model_object = SubplanModel.objects.get(id=program_id)
+        object_dict = model_to_dict(model_object)
         form = EditSubplanFormSnippet(initial=object_dict)
+        content_snippet = SubplanContentSnippet(initial=object_dict)
         model_api_url = 'http://127.0.0.1:8000/api/model/subplan/'
-        print(model_to_dict(modelObject))
+        print(model_to_dict(model_object))
         render_properties['form'] = form
+        render_properties['content_snippet'] = content_snippet
 
     # TODO:Error handle course link
     elif element == "course":
@@ -248,19 +254,25 @@ def edit(request, element, program_id):
 
     # Handle post request and render as patch request
     if request.method == 'POST':
+
         # When a post request is made, compare details of post with the initial values
         if element == "degree":
             form = EditProgramFormSnippet(request.POST, initial=object_dict)
-            commentSnippet = StaffNotesFormSnippet(request.POST, initial=object_dict)
+            comment_snippet = StaffNotesFormSnippet(request.POST, initial=object_dict)
+            content_snippet = ProgramContentSnippet(request.POST, initial=object_dict)
         elif element == "subplan":
             form = EditSubplanFormSnippet(request.POST, initial=object_dict)
+            # instantiate blank notes snippet
+            comment_snippet = StaffNotesFormSnippet()
+            content_snippet = SubplanContentSnippet()
 
         render_properties['form'] = form
-        render_properties['comment_snippet'] = commentSnippet
+        render_properties['comment_snippet'] = comment_snippet
+        render_properties['content_snippet'] = content_snippet
 
         actual_request = request.POST.get('_method')
 
-        if not form.has_changed() and not commentSnippet.has_changed():
+        if not form.has_changed() and not comment_snippet.has_changed() and not content_snippet.has_changed():
             render_properties['msg'] = "No changes to update"
             return render(request, 'edit.html', context=render_properties)
 
@@ -271,10 +283,13 @@ def edit(request, element, program_id):
             for field in form.changed_data:
                 updated_fields[field] = form[field].data
 
-            for field in commentSnippet.changed_data:
-                updated_fields[field] = commentSnippet[field].data
+            for field in comment_snippet.changed_data:
+                updated_fields[field] = comment_snippet[field].data
 
-            print(updated_fields)
+            for field in content_snippet.changed_data:
+                updated_fields[field] = content_snippet[field].data
+
+            print("Updated fields: " + updated_fields.__str__())
             rest_api = requests.patch(model_api_url + id_to_edit + '/', data=updated_fields)
 
             if rest_api.ok:
