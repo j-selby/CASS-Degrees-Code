@@ -1,8 +1,8 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.db.models import Q
 from api.models import DegreeModel, SubplanModel, CourseModel
-from .forms import EditProgramFormSnippet
+from .forms import *
 import requests
 import csv
 from io import TextIOWrapper
@@ -212,27 +212,48 @@ def create_program(request):
 def edit(request, element, program_id):
     render_properties = {
         'msg': None,
-        'is_error': False
+        'is_error': False,
     }
 
-    # Get the correct instance from the request and render a form with its details
-    program = DegreeModel.objects.get(id=program_id)
-    program_dict = model_to_dict(program)
-    print(program_dict)
-    form = EditProgramFormSnippet(initial=program_dict)
-    render_properties['form'] = form
+    # Get the correct instance from the request and render a form snippet with its details
+    if element == "degree":
+        elementDesc = "Program Template"
+        modelObject = DegreeModel.objects.get(id=program_id)
+        object_dict = model_to_dict(modelObject)
+        form = EditProgramFormSnippet(initial=object_dict)
+        model_api_url = 'http://127.0.0.1:8000/api/model/degree/'
+        print(model_to_dict(modelObject))
+        render_properties['form'] = form
 
+    elif element == "subplan":
+        elementDesc = "Subplan"
+        modelObject = SubplanModel.objects.get(id=program_id)
+        object_dict = model_to_dict(modelObject)
+        form = EditSubplanFormSnippet(initial=object_dict)
+        model_api_url = 'http://127.0.0.1:8000/api/model/subplan/'
+        print(model_to_dict(modelObject))
+        render_properties['form'] = form
+
+    # TODO:Error handle course link
+    elif element == "course":
+        return HttpResponseRedirect('http://127.0.0.1:8000/api/model/course/' + str(program_id))
+
+    # add correct description for template
+    render_properties['elementDesc'] = elementDesc
+
+    # Handle post request and render as patch request
     if request.method == 'POST':
         # When a post request is made, compare details of post with the initial values
-        form = EditProgramFormSnippet(request.POST, initial=program_dict)
+        if element == "degree":
+            form = EditProgramFormSnippet(request.POST, initial=object_dict)
+        elif element == "subplan":
+            form = EditSubplanFormSnippet(request.POST, initial=object_dict)
+
         render_properties['form'] = form
-        # Used to generate patch request from POST form
+
         actual_request = request.POST.get('_method')
 
         if actual_request == "patch":
-            # print(form.is_valid())
-            print(form.has_changed())
-            print(form.changed_data)
 
             # create a dictionary of updated fields
             updated_fields = {}
@@ -241,17 +262,16 @@ def edit(request, element, program_id):
 
             # api request requires ID as string
             id_to_edit = str(program_id)
-            model_api_url = 'http://127.0.0.1:8000/api/model/degree/'
             print(updated_fields)
             rest_api = requests.patch(model_api_url + id_to_edit + '/', data=updated_fields)
 
             if rest_api.ok:
-                render_properties['msg'] = 'Program updated.'
+                render_properties['msg'] = elementDesc + ' updated.'
             else:
                 render_properties['is_error'] = True
                 render_properties['msg'] = "Error"
 
-    return render(request, 'editprogram.html', context=render_properties)
+    return render(request, 'edit.html', context=render_properties)
 
 
 # Using sampleform template and #59 - basic degree creation workflow as it's inspirations

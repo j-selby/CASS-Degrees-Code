@@ -16,14 +16,13 @@ class EditProgramFormSnippet(ModelForm):
             # 'staffNotes': forms.TextInput(attrs={'class': "text"}),
             # 'studentNotes': forms.TextInput(attrs={'class': "text"}),
         }
-        # fields['code'].disabled = True
 #         'disabled': True
 
 
 class EditSubplanFormSnippet(ModelForm):
     class Meta:
         model = SubplanModel
-        fields = ('code', 'year', 'name', 'planType')
+        fields = ('code', 'year', 'name', 'units', 'planType')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text"}),
             'year': forms.TextInput(attrs={'class': "text"}),
