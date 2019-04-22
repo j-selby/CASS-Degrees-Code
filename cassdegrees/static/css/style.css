@@ -56,3 +56,11 @@ select.tfull {
 select.text{
     border-radius: 3px;
 }
+
+/* Hide default error list for django forms */
+
+ul.errorlist.nonfield {
+    display: none;
+}
+
+

@@ -4,15 +4,14 @@ from api.models import DegreeModel, SubplanModel
 
 
 class EditProgramFormSnippet(ModelForm):
-
     class Meta:
         model = DegreeModel
         fields = ('code', 'year', 'name', 'units', 'degreeType')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull"}),
-            'year': forms.TextInput(attrs={'class': "text tfull"}),
+            'year': forms.TextInput(attrs={'class': "text tfull", 'type': "number"}),
             'name': forms.TextInput(attrs={'class': "text tfull"}),
-            'units': forms.TextInput(attrs={'class': "text tfull"}),
+            'units': forms.TextInput(attrs={'class': "text tfull", 'type': "number"}),
         }
         labels = {
             'degreeType': "Program Type",
@@ -27,8 +26,13 @@ class StaffNotesFormSnippet(ModelForm):
             'staffNotes': "Staff Notes"
         }
         widgets = {
-            'staffNotes': forms.Textarea(attrs={'class': "tfull"}),
+            'staffNotes': forms.Textarea(attrs={
+                'class': "tfull",
+                'placeholder': "Notes for other CASS staff - these will not be displayed on the final template"}),
         }
+        # help_texts = {
+        #     'staffNotes': "Notes for other CASS staff - these will not be displayed on the final template"
+        # }
 
 
 class ProgramContentSnippet(ModelForm):
@@ -39,8 +43,15 @@ class ProgramContentSnippet(ModelForm):
             'studentNotes': "Student Notes",
         }
         widgets = {
-            'studentNotes': forms.Textarea(attrs={'class': "tfull"}),
+            'studentNotes': forms.Textarea(attrs={
+                'class': "tfull",
+                'placeholder': "Explanatory program notes for students - these will be displayed on the final template"
+            }
+            ),
         }
+        # help_texts = {
+        #     'studentNotes': "Explanatory program notes for students - these will be displayed on the final template"
+        # }
 
 
 class EditSubplanFormSnippet(ModelForm):

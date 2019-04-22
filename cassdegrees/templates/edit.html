@@ -19,7 +19,12 @@
 
         <fieldset>
             <legend>Configure {{ elementDesc }} Details</legend>
-            {{ form.as_p }}
+{#            {{ form.as_p }}#}
+
+            {% for field in form %}
+                {{ field.errors }}
+                <p>{{ field.label_tag }} {{ field }}</p>
+            {% endfor %}
 
         </fieldset>
 
@@ -27,6 +32,8 @@
             <legend>Edit Content</legend>
             {% if elementDesc == "Subplan" %}<p>Placeholder content pending subplan content input</p>{% endif %}
             {{ content_snippet.as_p }}
+
+
 
         </fieldset>
 
@@ -38,10 +45,14 @@
 
             </fieldset>
         {% endif %}
+        <p class="text-right">
 
         <p class="text-right">
+            <a href="/list/">Cancel</a>
             <input class="btn-uni-grad btn-large" type="submit" value="Save">
         </p>
+
+
     </form>
 
 {% endblock %}

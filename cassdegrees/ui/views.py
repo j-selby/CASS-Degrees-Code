@@ -296,7 +296,17 @@ def edit(request, element, program_id):
                 render_properties['msg'] = elementDesc + ' updated.'
             else:
                 render_properties['is_error'] = True
-                render_properties['msg'] = "Error"
+
+                rest_response = rest_api.json()
+                if "The fields code, year must make a unique set." in rest_response['non_field_errors']:
+                    render_properties['msg'] = "A template already exists with this code and year."
+
+                    ""
+
+                elif "The fields year, name, planType must make a unique set." in rest_response['non_field_errors']:
+                    render_properties['msg'] = "A template already exists with this name, year and type."
+                else:
+                    render_properties['msg'] = "An unknown error occurred while submitting the document."
 
     return render(request, 'edit.html', context=render_properties)
 
