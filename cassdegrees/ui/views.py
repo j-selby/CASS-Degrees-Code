@@ -1,9 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.db.models import Q
-from api.models import DegreeModel, SubplanModel, CourseModel
+from api.models import DegreeModel, SubplanModel, CourseModel, CoursesInSubplanModel
 import requests
 import csv
+import operator
 from io import TextIOWrapper
 
 
@@ -273,6 +274,7 @@ def manage_courses(request):
     action = request.GET.get('action', 'Add')
 
     courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
+    subplans = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
     # If POST request, redirect the received information to the backend:
     render_properties = {
         'msg': None,
@@ -356,8 +358,17 @@ def manage_courses(request):
             elif action == 'Delete':
                 ids_to_delete = post_data.getlist('id')
                 rest_api = None
+                courses_in_subplans = list(CoursesInSubplanModel.objects.all().values())
+                print(type(courses_in_subplans))
                 for id_to_delete in ids_to_delete:
-                    rest_api = requests.delete(model_api_url + id_to_delete + '/')
+                    for course in courses_in_subplans:
+                        print(course)
+                        if int(id_to_delete) == int(course['courseId_id']):
+                            used_subplans = [subplan['name'] for subplan in subplans if course['subplanId_id'] == subplan['id']]
+                            print(used_subplans)
+                            print('yep')
+                        # else:
+                        #     rest_api = requests.delete(model_api_url + id_to_delete + '/')
 
                 if rest_api is None:
                     render_properties['is_error'] = True
