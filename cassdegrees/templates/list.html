@@ -59,7 +59,11 @@
                                         <td>{{ item }}</td>
                                     {% else %}
                                         <td><input title="Select" type="radio" name="id" value="{{ item }}"  /></td>
-                                        <td>(<a href="/api/model/{{ title.lower }}/{{ item }}/">View</a>)</td>
+                                        {% if title.lower == "degree" or title.lower == "subplan" %}
+                                            <td>(<a href="/edit/{{ title.lower }}/{{ item }}/">View</a>)</td>
+                                        {% else %}
+                                            <td>(<a href="/api/model/{{ title.lower }}/{{ item }}/">View</a>)</td>
+                                        {% endif %}
                                     {% endif %}
 
                             {% endfor %}

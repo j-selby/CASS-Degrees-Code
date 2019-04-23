@@ -220,7 +220,7 @@ def edit(request, element, program_id):
     # api request requires ID as string
     id_to_edit = str(program_id)
 
-    # Get the correct instance from the request and render a form snippet with its details
+    # Get the correct instance from the request and render form snippets with details
     if element == "degree":
         elementDesc = "Program Template"
         model_object = DegreeModel.objects.get(id=program_id)
@@ -230,16 +230,16 @@ def edit(request, element, program_id):
         content_snippet = ProgramContentSnippet(initial=object_dict)
 
         model_api_url = 'http://127.0.0.1:8000/api/model/degree/'
-        print(model_to_dict(model_object))
+        # print(model_to_dict(model_object))
 
+        # pass populated model forms to edit.html
         render_properties['form'] = form
         render_properties['comment_snippet'] = comment_snippet
         render_properties['content_snippet'] = content_snippet
-        g = getattr(model_object, 'globalRequirements')
+
         # convert python list representation to json https://www.w3schools.com/python/python_json.asp
-        glRecs = json.dumps(g)
-        render_properties['globalRequirements'] = glRecs
-        print(glRecs)
+        render_properties['globalRequirements'] = json.dumps(getattr(model_object, 'globalRequirements'))
+        # print(glRecs)
 
     elif element == "subplan":
         elementDesc = "Subplan"
@@ -248,7 +248,7 @@ def edit(request, element, program_id):
         form = EditSubplanFormSnippet(initial=object_dict)
         content_snippet = SubplanContentSnippet(initial=object_dict)
         model_api_url = 'http://127.0.0.1:8000/api/model/subplan/'
-        print(model_to_dict(model_object))
+        # print(model_to_dict(model_object))
         render_properties['form'] = form
         render_properties['content_snippet'] = content_snippet
 
@@ -278,9 +278,9 @@ def edit(request, element, program_id):
         render_properties['comment_snippet'] = comment_snippet
         render_properties['content_snippet'] = content_snippet
 
+        # print(request.POST.get('globalRequirements'))
 
-        print(request.POST.get('globalRequirements'))
-
+        # get actual request for patch
         actual_request = request.POST.get('_method')
 
         # TODO need has_changed() property for global requirements to render this message
@@ -301,9 +301,10 @@ def edit(request, element, program_id):
             for field in content_snippet.changed_data:
                 updated_fields[field] = content_snippet[field].data
 
+            # currently defaults to always include, can update when globalRequirements implements has_changed
             updated_fields['globalRequirements'] = request.POST.get('globalRequirements')
 
-            print("Updated fields: " + updated_fields.__str__())
+            # print("Updated fields: " + updated_fields.__str__())
             rest_api = requests.patch(model_api_url + id_to_edit + '/', data=updated_fields)
 
             if rest_api.ok:
@@ -314,8 +315,6 @@ def edit(request, element, program_id):
                 rest_response = rest_api.json()
                 if "The fields code, year must make a unique set." in rest_response['non_field_errors']:
                     render_properties['msg'] = "A template already exists with this code and year."
-
-                    ""
 
                 elif "The fields year, name, planType must make a unique set." in rest_response['non_field_errors']:
                     render_properties['msg'] = "A template already exists with this name, year and type."

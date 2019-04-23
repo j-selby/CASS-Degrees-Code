@@ -25,5 +25,5 @@ urlpatterns = [
     path('list/', planList),
     path('manage_courses/', manage_courses),
     path('bulk_upload/', bulk_data_upload),
-    path('edit_program/<str:element>/<int:program_id>/', edit),
+    path('edit/<str:element>/<int:program_id>/', edit),
 ]
