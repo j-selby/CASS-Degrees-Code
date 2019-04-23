@@ -30,9 +30,6 @@ class StaffNotesFormSnippet(ModelForm):
                 'class': "tfull",
                 'placeholder': "Notes for other CASS staff - these will not be displayed on the final template"}),
         }
-        # help_texts = {
-        #     'staffNotes': "Notes for other CASS staff - these will not be displayed on the final template"
-        # }
 
 
 class ProgramContentSnippet(ModelForm):
@@ -41,6 +38,7 @@ class ProgramContentSnippet(ModelForm):
         fields = ('studentNotes',)
         labels = {
             'studentNotes': "Student Notes",
+            'globalRequirements': "Global Requirements"
         }
         widgets = {
             'studentNotes': forms.Textarea(attrs={
@@ -49,9 +47,6 @@ class ProgramContentSnippet(ModelForm):
             }
             ),
         }
-        # help_texts = {
-        #     'studentNotes': "Explanatory program notes for students - these will be displayed on the final template"
-        # }
 
 
 class EditSubplanFormSnippet(ModelForm):
@@ -59,10 +54,10 @@ class EditSubplanFormSnippet(ModelForm):
         model = SubplanModel
         fields = ('code', 'year', 'name', 'units', 'planType')
         widgets = {
-            'code': forms.TextInput(attrs={'class': "text"}),
-            'year': forms.TextInput(attrs={'class': "text"}),
-            'name': forms.TextInput(attrs={'class': "text"}),
-            'units': forms.TextInput(attrs={'class': "text"}),
+            'code': forms.TextInput(attrs={'class': "text tfull"}),
+            'year': forms.TextInput(attrs={'class': "text tfull", 'type': "number"}),
+            'name': forms.TextInput(attrs={'class': "text tfull"}),
+            'units': forms.TextInput(attrs={'class': "text tfull", 'type': "number"}),
         }
 
 

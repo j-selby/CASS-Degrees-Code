@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block page-title %}Edit {{ elementDesc }}{% endblock %}
 
@@ -10,7 +11,7 @@
     {% endif %}
 
 
-    <form class="anuform" action="" method="post">
+    <form class="anuform" id="mainForm" action="" method="post">
         {% csrf_token %}
 
             <!-- As HTML forms only support get or post methods,
@@ -28,16 +29,7 @@
 
         </fieldset>
 
-        <fieldset>
-            <legend>Edit Content</legend>
-            {% if elementDesc == "Subplan" %}<p>Placeholder content pending subplan content input</p>{% endif %}
-            {{ content_snippet.as_p }}
-
-
-
-        </fieldset>
-
-        {% if elementDesc == "Program Template" %}
+            {% if elementDesc == "Program Template" %}
             <fieldset>
                 <legend>Staff comments</legend>
                 <br>
@@ -45,14 +37,31 @@
 
             </fieldset>
         {% endif %}
-        <p class="text-right">
+
+        <fieldset>
+            <legend>Edit Content</legend>
+            {% if elementDesc == "Subplan" %}<p>Placeholder content pending subplan content input</p>{% endif %}
+            {{ content_snippet.as_p }}
+
+        </fieldset>
 
         <p class="text-right">
-            <a href="/list/">Cancel</a>
-            <input class="btn-uni-grad btn-large" type="submit" value="Save">
-        </p>
 
+        {% if elementDesc == "Subplan" %}
+            <p class="text-right">
+                <a href="/list/">Cancel</a>
+                <input class="btn-uni-grad btn-large" type="submit" value="Save">
+            </p>
+        {% endif %}
 
+        {% if elementDesc == "Program Template" %}
+            <!-- Everything after here is generated on the fly -->
+            <input class="text" hidden id="globalRequirements" name="globalRequirements">
+        {% endif %}
     </form>
 
+    {% if elementDesc == "Program Template" %}
+        {# include deserialised global requirements   #}
+        {% include "globalrequirementswidget.html" %}
+    {% endif %}
 {% endblock %}
