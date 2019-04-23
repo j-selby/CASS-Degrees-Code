@@ -240,7 +240,6 @@ def edit(request, element, program_id):
         content_snippet = ProgramContentSnippet(initial=object_dict)
 
         model_api_url = 'http://127.0.0.1:8000/api/model/degree/'
-        # print(model_to_dict(model_object))
 
         # pass populated model forms to edit.html
         render_properties['form'] = form
@@ -249,7 +248,6 @@ def edit(request, element, program_id):
 
         # convert python list representation to json https://www.w3schools.com/python/python_json.asp
         render_properties['globalRequirements'] = json.dumps(getattr(model_object, 'globalRequirements'))
-        # print(glRecs)
 
     elif element == "subplan":
         elementDesc = "Subplan"
@@ -258,7 +256,7 @@ def edit(request, element, program_id):
         form = EditSubplanFormSnippet(initial=object_dict)
         content_snippet = SubplanContentSnippet(initial=object_dict)
         model_api_url = 'http://127.0.0.1:8000/api/model/subplan/'
-        # print(model_to_dict(model_object))
+
         render_properties['form'] = form
         render_properties['content_snippet'] = content_snippet
 
@@ -288,8 +286,6 @@ def edit(request, element, program_id):
         render_properties['comment_snippet'] = comment_snippet
         render_properties['content_snippet'] = content_snippet
 
-        # print(request.POST.get('globalRequirements'))
-
         # get actual request for patch
         actual_request = request.POST.get('_method')
 
@@ -314,7 +310,6 @@ def edit(request, element, program_id):
             # currently defaults to always include, can update when globalRequirements implements has_changed
             updated_fields['globalRequirements'] = request.POST.get('globalRequirements')
 
-            # print("Updated fields: " + updated_fields.__str__())
             rest_api = requests.patch(model_api_url + id_to_edit + '/', data=updated_fields)
 
             if rest_api.ok:
