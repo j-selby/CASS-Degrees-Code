@@ -44,7 +44,17 @@ def planList(request):
 
     # No search, render default page
     if not query:
+        def apply_degree_exclusions(json_data):
+            for degree_instance in json_data:
+                for key in ['globalRequirements', 'rules', 'staffNotes', 'studentNotes']:
+                    try:
+                        del degree_instance[key]
+                    except KeyError:
+                        pass
+
+
         degree = requests.get(request.build_absolute_uri('/api/model/degree/?format=json')).json()
+        apply_degree_exclusions(degree)
         subplan = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
         course = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
 
