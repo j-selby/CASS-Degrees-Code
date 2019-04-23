@@ -178,7 +178,8 @@ def create_program(request):
                 'year': int(post_data.get('year')),
                 'units': int(post_data.get('units')),
                 'degreeType': post_data.get('degreeType'),
-                'globalRequirements': post_data.get('globalRequirements')
+                'globalRequirements': post_data.get('globalRequirements'),
+                'rules': post_data.get('rules')
             }
 
         for k, v in degree_dict.items():

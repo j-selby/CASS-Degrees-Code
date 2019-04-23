@@ -209,5 +209,6 @@ function submitProgram() {
 
     // Serialize list structures - this doesn't translate well over POST requests normally.
     document.getElementById("globalRequirements").value = JSON.stringify(serializeGlobalReqs());
+    document.getElementById("rules").value = JSON.stringify(app.rules);
     document.getElementById("mainForm").submit();
 }
