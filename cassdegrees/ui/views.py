@@ -362,12 +362,11 @@ def manage_courses(request):
                 rest_api = None
                 ids_to_delete = post_data.getlist('id')
                 used_subplans = []
-                if perform_function == 'confirm deletion':  # if user has clicked 'yes' on the confirmation page
-                    for id_to_delete in ids_to_delete:
+                courses_in_subplans = list(CoursesInSubplanModel.objects.all().values())
+                for id_to_delete in ids_to_delete:
+                    if perform_function == 'confirm deletion':  # if user has clicked 'yes' on the confirmation page
                         rest_api = requests.delete(model_api_url + id_to_delete + '/')
-                else:
-                    courses_in_subplans = list(CoursesInSubplanModel.objects.all().values())
-                    for id_to_delete in ids_to_delete:
+                    else:
                         if not courses_in_subplans:
                             rest_api = requests.delete(model_api_url + id_to_delete + '/')
                         else:
