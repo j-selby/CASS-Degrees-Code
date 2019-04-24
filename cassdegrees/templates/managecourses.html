@@ -72,7 +72,7 @@
             </p>
         </form>
     </div>
-    {# code onwards is for confirming a deletion of a course when it is in a subplan #}
+    {# code onwards is to confirm the user that the course is in one or more subplans #}
     {% if render.is_confirm %}
         <form class="anuform" action="/manage_courses/?action=Delete" method="post">
             {% csrf_token %}
