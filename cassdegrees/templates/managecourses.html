@@ -74,17 +74,17 @@
     </div>
     {# code onwards is to confirm the user that the course is in one or more subplans #}
     {% if render.is_confirm %}
-        <form class="anuform" action="/manage_courses/?action=Delete" method="post">
+        <p class="right padtop">
+            <input class="btn-uni-grad btn-medium" onclick="history.back()" type="submit" value="No">
+        </p>
+        <form class="anuform right" action="/manage_courses/?action=Delete" method="post">
             {% csrf_token %}
             <input id="selected" title="Select" name="id" hidden/>
-            <p class="right">
+            <p class="marginright">
                 <input class="btn-uni-grad btn-medium" name="confirm_delete" type="submit" value="Yes">
             </p>
             <input type="hidden" id="perform_function" name="perform_function" value="confirm deletion">
         </form>
-        <p class="right marginright padtop">
-            <input class="btn-uni-grad btn-medium" onclick="history.back()" type="submit" value="No">
-        </p>
     {% endif %}
     {# grabs form data from list.html - reference: https://stackoverflow.com/questions/14845710/javascript-variable-access-in-html #}
     <script>
