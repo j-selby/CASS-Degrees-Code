@@ -338,7 +338,9 @@ def create_subplan(request):
         'code': None,
         'year': None,
         'name': None,
-        'planType': None
+        'planType': None,
+        'rules':[],
+        'published': False
     }
 
     if request.method == 'POST':
@@ -359,7 +361,9 @@ def create_subplan(request):
                 'year': post_data.get('year'),
                 'name': post_data.get('name'),
                 'units': subplanUnits[post_data.get('planType')],
-                'planType': post_data.get('planType')
+                'planType': post_data.get('planType'),
+                'rules': json.dumps([]),
+                'published': post_data.get('published')
             }
 
         # Submit a POST request to the model with subplan data

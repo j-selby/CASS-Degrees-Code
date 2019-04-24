@@ -42,6 +42,8 @@ class SubplanModel(models.Model):
 
     planType = models.CharField(max_length=4, choices=subplanChoices)
     courses = models.ManyToManyField(CourseModel, through=CoursesInSubplanModel)
+    rules = psql.JSONField(default=list)
+    published = models.BooleanField(default=False)
 
     class Meta:
         unique_together = (("code", "year"), ("year", "name", "planType"),)

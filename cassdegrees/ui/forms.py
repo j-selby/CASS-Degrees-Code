@@ -52,7 +52,7 @@ class ProgramContentSnippet(ModelForm):
 class EditSubplanFormSnippet(ModelForm):
     class Meta:
         model = SubplanModel
-        fields = ('code', 'year', 'name', 'units', 'planType')
+        fields = ('code', 'year', 'name', 'units', 'planType', 'published')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull"}),
             'year': forms.TextInput(attrs={'class': "text tfull", 'type': "number"}),

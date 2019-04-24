@@ -43,11 +43,16 @@
             <p>
                 <label for="plantype">Subplan Type:</label>
                 <select class="text" id="planType" type="text" name="planType"
-                        aria-required="true" required">
+                        aria-required="true" required>
                     <option value="MAJ" {% if planType == "MAJ" %}selected{% endif %}>Major</option>
                     <option value="MIN" {% if planType == "MIN" %}selected{% endif %}>Minor</option>
                     <option value="SPEC" {% if planType == "SPEC" %}selected{% endif %}>Specialisation</option>
                 </select>
+            </p>
+
+            <p>
+                <label for="published">Finalised Plan:</label>
+                <input {% if published %}checked="checked"{% endif %} type="checkbox" id="published" name="published" />
             </p>
 
         </fieldset>
