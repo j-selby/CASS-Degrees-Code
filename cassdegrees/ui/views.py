@@ -27,7 +27,7 @@ def index(request):
     return render(request, 'index.html', context={'buttons': buttons, 'element_width': element_width})
 
 
-def planList(request):
+def data_list(request):
     """ Generates a table based on the JSON objects stored in 'data'
 
     NOTE: For the page to generate the tabs correctly, the api table data must be put in the context
