@@ -367,10 +367,11 @@ def manage_courses(request):
                     if perform_function == 'confirm deletion':  # if user has clicked 'yes' on the confirmation page
                         rest_api = requests.delete(model_api_url + id_to_delete + '/')
                     else:
-                        if not courses_in_subplans:
+                        if not courses_in_subplans:  # delete immediately if no subplans use the course
                             rest_api = requests.delete(model_api_url + id_to_delete + '/')
                         else:
                             for course in courses_in_subplans:
+                                # if course being deleted is in current subplan
                                 if int(id_to_delete) == int(course['courseId_id']):
                                     # TODO: improve this using django queries
                                     used_subplans.extend(
