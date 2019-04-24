@@ -373,6 +373,7 @@ def manage_courses(request):
                         else:
                             for course in courses_in_subplans:
                                 if int(id_to_delete) == int(course['courseId_id']):
+                                    # TODO: improve this using django queries
                                     used_subplans.extend(
                                         [subplan['name'] + '(' + subplan['code'] + ')' for subplan in subplans if
                                          course['subplanId_id'] == subplan['id']])
