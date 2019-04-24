@@ -363,6 +363,7 @@ def manage_subplans(request):
 def manage_courses(request):
     # Reads the 'action' attribute from the url (i.e. manage/?action=Add) and determines the submission method
     action = request.GET.get('action', 'Add')
+    id_to_edit = request.GET.get('id', None)
 
     courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
     # If POST request, redirect the received information to the backend:
@@ -404,7 +405,6 @@ def manage_courses(request):
                         render_properties['msg'] = "Unknown error while submitting document. Please try again."
 
             elif action == 'Edit':
-                id_to_edit = post_data.get('id')
                 if id_to_edit:
                     render_properties['hide_form'] = False
                     # Patch requests (editing an already existing resource only requires fields that are changed
@@ -433,7 +433,6 @@ def manage_courses(request):
         # or delete the selected course immediately.
         elif perform_function == 'retrieve view from selected':
             if action == 'Edit':
-                id_to_edit = post_data.get('id')
                 id_to_edit = ''.join(filter(lambda x: x.isdigit(), id_to_edit))
                 if id_to_edit:
                     render_properties['hide_form'] = False
