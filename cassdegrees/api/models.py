@@ -22,10 +22,10 @@ class CourseModel(models.Model):
 
 class CoursesInSubplanModel(models.Model):
     subplanId = models.ForeignKey('SubplanModel', on_delete=models.CASCADE)
-    courseId = models.ForeignKey('CourseModel', on_delete=models.CASCADE)
+    courseCode = models.CharField(max_length=32)
 
     class Meta:
-        unique_together = (("subplanId", "courseId"),)
+        unique_together = (("subplanId", "courseCode"),)
 
 
 class SubplanModel(models.Model):
@@ -41,7 +41,6 @@ class SubplanModel(models.Model):
     subplanChoices = ((major, "Major"), (minor, "Minor"), (specialisation, "Specialisation"))
 
     planType = models.CharField(max_length=4, choices=subplanChoices)
-    courses = models.ManyToManyField(CourseModel, through=CoursesInSubplanModel)
 
     class Meta:
         unique_together = (("code", "year"), ("year", "name", "planType"),)
