@@ -20,25 +20,15 @@ class CourseModel(models.Model):
         unique_together = (("code", "year"),)
 
 
-class CoursesInSubplanModel(models.Model):
-    subplanId = models.ForeignKey('SubplanModel', on_delete=models.CASCADE)
-    courseCode = models.CharField(max_length=32)
-
-    class Meta:
-        unique_together = (("subplanId", "courseCode"),)
-
-
 class SubplanModel(models.Model):
     id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=32)
     year = models.PositiveIntegerField()
     name = models.CharField(max_length=256)
     units = models.PositiveIntegerField()
+    courses = psql.ArrayField(models.CharField(max_length=32), default=[])
 
-    major = "MAJ"
-    minor = "MIN"
-    specialisation = "SPEC"
-    subplanChoices = ((major, "Major"), (minor, "Minor"), (specialisation, "Specialisation"))
+    subplanChoices = (("MAJ", "Major"), ("MIN", "Minor"), ("SPEC", "Specialisation"))
 
     planType = models.CharField(max_length=4, choices=subplanChoices)
 
