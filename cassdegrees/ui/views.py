@@ -32,29 +32,17 @@ def index(request):
 
 def data_list(request):
     """ Generates a table based on the JSON objects stored in 'data'
-
-    NOTE: For the page to generate the tabs correctly, the api table data must be put in the context
-    under the dictionary {'data': {'RELATION': RELATION_DATA, ...}}. To link to the actual data correctly,
-    ensure the RELATION text is the same as what is called in the API (e.g. /api/model/RELATION/?format=json)
-
-    :param request:
-    :return <class django.http.response.HttpResponse>:
-    """
+       NOTE: For the page to generate the tabs correctly, the api table data must be put in the context
+       under the dictionary {'data': {'RELATION': RELATION_DATA, ...}}. To link to the actual data correctly,
+       ensure the RELATION text is the same as what is called in the API (e.g. /api/model/RELATION/?format=json)
+       :param request:
+       :return <class django.http.response.HttpResponse>:
+       """
     query = request.GET.get('q', '')
 
     # No search, render default page
     if not query:
-        def apply_degree_exclusions(json_data):
-            for degree_instance in json_data:
-                for key in ['globalRequirements', 'rules', 'staffNotes', 'studentNotes']:
-                    try:
-                        del degree_instance[key]
-                    except KeyError:
-                        pass
-
-
-        degree = requests.get(request.build_absolute_uri('/api/search/?model=degree')).json()
-        apply_degree_exclusions(degree)
+        degree = requests.get(request.build_absolute_uri('/api/model/degree/?format=json')).json()
         subplan = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
         course = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
 
@@ -72,7 +60,7 @@ def data_list(request):
         # Function that takes an input dict and a sub-query, and appends the sub-query based on the appropriate logic
         def build_query(target, q):
             target['AND'] &= q
-            target['OR']  |= q
+            target['OR'] |= q
 
         # Generate queries based on the processed query string
         for term in processed_query:
@@ -87,14 +75,14 @@ def data_list(request):
                 # NOTE: The name and code search is done because Program names can have numbers and course names can have dates
                 # BUG: This implementation will not return a course with a year in the name unless it matches all other keywords
                 #      e.g. CHIN2019 will not show up in a search for `COMP 2019`, but it will appear in a search for `COMP CHIN`
-                new_query['Course' ]['date'] |= Q(year=int(term)) | Q(name__icontains=term) | Q(code__icontains=term)
+                new_query['Course']['date'] |= Q(year=int(term)) | Q(name__icontains=term) | Q(code__icontains=term)
                 new_query['Subplan']['date'] |= Q(year=int(term)) | Q(name__icontains=term) | Q(code__icontains=term)
-                new_query['Degree' ]['date'] |= Q(year=int(term)) | Q(name__icontains=term) | Q(code__icontains=term)
+                new_query['Degree']['date'] |= Q(year=int(term)) | Q(name__icontains=term) | Q(code__icontains=term)
             # If the search term has no obvious structure, search for it in the code and name fields
             else:
-                build_query(new_query['Course' ], Q(code__icontains=term) | Q(name__icontains=term))
+                build_query(new_query['Course'], Q(code__icontains=term) | Q(name__icontains=term))
                 build_query(new_query['Subplan'], Q(code__icontains=term) | Q(name__icontains=term))
-                build_query(new_query['Degree' ], Q(code__icontains=term) | Q(name__icontains=term))
+                build_query(new_query['Degree'], Q(code__icontains=term) | Q(name__icontains=term))
 
         # If the degree, subplan, or course searches are non-empty, query the database
         data = {}
@@ -103,9 +91,9 @@ def data_list(request):
             if new_query[target]['AND'].children or new_query[target]['date'].children:
                 # SELECT from the the appropriate relation with the AND and OR queries
                 data[target] = list(model.objects.filter(new_query[target]['AND'], new_query[target]['date']).values())
-                or_query     = list(model.objects.filter(new_query[target]['OR'], new_query[target]['date']).values())
+                or_query = list(model.objects.filter(new_query[target]['OR'], new_query[target]['date']).values())
                 # Create an exclusions list of all the results found by the AND query
-                exclusions   = [elm['id'] for elm in data[target]]
+                exclusions = [elm['id'] for elm in data[target]]
                 # Add to the OR results to the end of the AND list, assuming they aren't already in there
                 # The result of this will be the list [High_Priority_Queries]+[Low_Priority_Queries]
                 data[target] += [x for x in or_query if x['id'] not in exclusions]
