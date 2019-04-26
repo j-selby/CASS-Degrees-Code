@@ -30,7 +30,7 @@ def index(request):
     return render(request, 'index.html', context={'buttons': buttons, 'element_width': element_width})
 
 
-def planList(request):
+def data_list(request):
     """ Generates a table based on the JSON objects stored in 'data'
 
     NOTE: For the page to generate the tabs correctly, the api table data must be put in the context
@@ -53,7 +53,7 @@ def planList(request):
                         pass
 
 
-        degree = requests.get(request.build_absolute_uri('/api/model/degree/?format=json')).json()
+        degree = requests.get(request.build_absolute_uri('/api/search/?model=degree')).json()
         apply_degree_exclusions(degree)
         subplan = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
         course = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
@@ -484,6 +484,7 @@ def manage_subplans(request):
 def manage_courses(request):
     # Reads the 'action' attribute from the url (i.e. manage/?action=Add) and determines the submission method
     action = request.GET.get('action', 'Add')
+    id_to_edit = request.GET.get('id', None)
 
     courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
     # If POST request, redirect the received information to the backend:
@@ -525,7 +526,6 @@ def manage_courses(request):
                         render_properties['msg'] = "Unknown error while submitting document. Please try again."
 
             elif action == 'Edit':
-                id_to_edit = post_data.get('id')
                 if id_to_edit:
                     render_properties['hide_form'] = False
                     # Patch requests (editing an already existing resource only requires fields that are changed
@@ -554,7 +554,6 @@ def manage_courses(request):
         # or delete the selected course immediately.
         elif perform_function == 'retrieve view from selected':
             if action == 'Edit':
-                id_to_edit = post_data.get('id')
                 id_to_edit = ''.join(filter(lambda x: x.isdigit(), id_to_edit))
                 if id_to_edit:
                     render_properties['hide_form'] = False
