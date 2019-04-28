@@ -1,12 +1,7 @@
-from django.db import IntegrityError
-from django.http import HttpResponse
 from django.shortcuts import render
 import requests
-import operator
-from io import TextIOWrapper
 
 from ui.forms import EditProgramFormSnippet
-
 
 def create_program(request):
     submitted = False

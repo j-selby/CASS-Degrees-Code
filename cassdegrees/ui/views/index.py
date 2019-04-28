@@ -1,9 +1,4 @@
-from django.http import HttpResponse
 from django.shortcuts import render
-from django.db.models import Q
-import requests
-import csv
-from io import TextIOWrapper
 
 
 # Create your views here.
