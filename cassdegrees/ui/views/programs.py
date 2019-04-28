@@ -8,65 +8,26 @@ import csv
 import operator
 from io import TextIOWrapper
 
+from ui.forms import EditProgramFormSnippet
+
 
 def create_program(request):
-    render_properties = {
-        'msg': None,
-        'is_error': False
-    }
+    submitted = False
 
     if request.method == 'POST':
-        post_data = request.POST
+        form = EditProgramFormSnippet(request.POST)
 
-        # Grab the specific attributes that we are looking for
-        degree_dict = \
-            {
-                'code': post_data.get('code'),
-                'name': post_data.get('name'),
-                # Do some early validation of these fields
-                'year': int(post_data.get('year')),
-                'units': int(post_data.get('units')),
-                'degreeType': post_data.get('degreeType'),
-                'globalRequirements': post_data.get('globalRequirements')
-            }
+        if form.is_valid():
+            form.save()
+            submitted = True
 
-        # Re-inject them into the page for later
-        for k, v in degree_dict.items():
-            render_properties[k] = v
+    else:
+        form = EditProgramFormSnippet()
 
-        # Verify that the data is sane
-        if DegreeModel.objects.filter(name__iexact=degree_dict['name'], year=degree_dict['year']).count() > 0:
-            # Duplicate name, year pair
-            render_properties['is_error'] = True
-            render_properties['msg'] = "A program with the same year and name already exists!"
-        else:
-            # Convert to native types now (i.e parse JSON)
-            model = DegreeModel(
-                code = degree_dict['code'],
-                name = degree_dict['name'],
-                year = degree_dict['year'],
-                units = degree_dict['units'],
-                degreeType = degree_dict['degreeType'],
-                globalRequirements = json.loads(degree_dict['globalRequirements'])
-            )
-
-            try:
-                model.save()
-            except (IntegrityError, ValueError) as e:
-                message = str(e)
-
-                render_properties['is_error'] = True
-
-                if "duplicate key value" in message and "(code, year)" in message:
-                    render_properties['msg'] = "A program with the same year and code already exists!"
-                elif "duplicate key value" in message and "(name, year)" in message:
-                    render_properties['msg'] = "A program with the same year and name already exists!"
-                else:
-                    render_properties['msg'] = "An error occurred while saving: " + message
-            else:
-                render_properties['msg'] = 'Program template successfully added!'
-
-    return render(request, 'createprogram.html', context=render_properties)
+    return render(request, 'createprogram.html', context={
+        "form": form,
+        "submitted": submitted
+    })
 
 
 def manage_programs(request):
