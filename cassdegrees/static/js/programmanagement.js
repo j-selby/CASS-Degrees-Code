@@ -182,23 +182,15 @@ function deserializeReqs(json) {
  * Submits the program form.
  */
 function handleProgram() {
-    // Remove built-in error message - further validation might confuse the user.
-    /*var serverError = document.getElementById("serverError");
-
-    if (serverError !== undefined && serverError != null) {
-        serverError.remove();
-    }*/
-
     // Verify forms
-    // TODO: Fix this up
-    /*var manuallySerializedPristine = new Pristine(document.getElementById("manualSerializedForm"), {
+    var manuallySerializedPristine = new Pristine(document.getElementById("globalRequirementsContainer"), {
         errorTextClass: 'msg-error'
     }, false);
 
     if (!manuallySerializedPristine.validate(null, false)) {
         console.log("Manually serialized form validation failed.");
         return false;
-    }*/
+    }
 
     // Serialize list structures - this doesn't translate well over POST requests normally.
     document.getElementById("globalRequirements").value = JSON.stringify(serializeGlobalReqs());
