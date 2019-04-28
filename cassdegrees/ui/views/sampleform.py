@@ -1,12 +1,6 @@
-from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.db.models import Q
-from api.models import DegreeModel, SubplanModel, CourseModel, CoursesInSubplanModel
 import requests
-import csv
-import operator
-from io import TextIOWrapper
 
 
 # I went through this tutorial to create the form html file and this view:
