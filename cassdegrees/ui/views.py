@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.db.models import Q
@@ -161,8 +162,8 @@ def sampleform(request):
     else:
         return render(request, 'sampleform.html')
 
+
 def create_program(request):
-    # If POST request, redirect the received information to the backend:
     render_properties = {
         'msg': None,
         'is_error': False
@@ -185,26 +186,30 @@ def create_program(request):
         for k, v in degree_dict.items():
             render_properties[k] = v
 
-        # Verify that there are no duplicate name/year pairs
-        if DegreeModel.objects.filter(name__iexact=degree_dict['name'], year=degree_dict['year']).count() > 0:
+        model = DegreeModel(
+            code = degree_dict['code'],
+            name = degree_dict['name'],
+            year = degree_dict['year'],
+            units = degree_dict['units'],
+            degreeType = degree_dict['degreeType'],
+            globalRequirements = degree_dict['globalRequirements']
+        )
+
+        try:
+            model.save()
+        except (IntegrityError, ValueError) as e:
+            message = str(e)
+
             render_properties['is_error'] = True
-            render_properties['msg'] = "A program with the same year and name already exists!"
-        else:
-            model_api_url = 'http://127.0.0.1:8000/api/model/degree/'
-            rest_api = requests.post(model_api_url, data=degree_dict)
 
-            if rest_api.ok:
-                # TODO: Redirect to edit_program
-                render_properties['msg'] = 'Program template successfully added!'
+            if "duplicate key value" in message and "(code,year)" in message:
+                render_properties['msg'] = "A program with the same year and code already exists!"
+            elif "duplicate key value" in message and "(name,year)" in message:
+                render_properties['msg'] = "A program with the same year and name already exists!"
             else:
-                render_properties['is_error'] = True
-
-                # Attempt to parse the incoming error message
-                rest_response = rest_api.json()
-                if "The fields code, year must make a unique set." in rest_response['non_field_errors']:
-                    render_properties['msg'] = "A program with the same year and code already exists!"
-                else:
-                    render_properties['msg'] = "Unknown error while submitting document."
+                render_properties['msg'] = "An error occurred while saving: " + message
+        else:
+            render_properties['msg'] = 'Program template successfully added!'
 
     return render(request, 'createprogram.html', context=render_properties)
 
