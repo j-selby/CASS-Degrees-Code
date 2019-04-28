@@ -1,3 +1,5 @@
+import json
+
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -172,6 +174,7 @@ def create_program(request):
     if request.method == 'POST':
         post_data = request.POST
 
+        # Grab the specific attributes that we are looking for
         degree_dict = \
             {
                 'code': post_data.get('code'),
@@ -183,33 +186,41 @@ def create_program(request):
                 'globalRequirements': post_data.get('globalRequirements')
             }
 
+        # Re-inject them into the page for later
         for k, v in degree_dict.items():
             render_properties[k] = v
 
-        model = DegreeModel(
-            code = degree_dict['code'],
-            name = degree_dict['name'],
-            year = degree_dict['year'],
-            units = degree_dict['units'],
-            degreeType = degree_dict['degreeType'],
-            globalRequirements = degree_dict['globalRequirements']
-        )
-
-        try:
-            model.save()
-        except (IntegrityError, ValueError) as e:
-            message = str(e)
-
+        # Verify that the data is sane
+        if DegreeModel.objects.filter(name__iexact=degree_dict['name'], year=degree_dict['year']).count() > 0:
+            # Duplicate name, year pair
             render_properties['is_error'] = True
-
-            if "duplicate key value" in message and "(code,year)" in message:
-                render_properties['msg'] = "A program with the same year and code already exists!"
-            elif "duplicate key value" in message and "(name,year)" in message:
-                render_properties['msg'] = "A program with the same year and name already exists!"
-            else:
-                render_properties['msg'] = "An error occurred while saving: " + message
+            render_properties['msg'] = "A program with the same year and name already exists!"
         else:
-            render_properties['msg'] = 'Program template successfully added!'
+            # Convert to native types now (i.e parse JSON)
+            model = DegreeModel(
+                code = degree_dict['code'],
+                name = degree_dict['name'],
+                year = degree_dict['year'],
+                units = degree_dict['units'],
+                degreeType = degree_dict['degreeType'],
+                globalRequirements = json.loads(degree_dict['globalRequirements'])
+            )
+            
+            try:
+                model.save()
+            except (IntegrityError, ValueError) as e:
+                message = str(e)
+
+                render_properties['is_error'] = True
+
+                if "duplicate key value" in message and "(code, year)" in message:
+                    render_properties['msg'] = "A program with the same year and code already exists!"
+                elif "duplicate key value" in message and "(name, year)" in message:
+                    render_properties['msg'] = "A program with the same year and name already exists!"
+                else:
+                    render_properties['msg'] = "An error occurred while saving: " + message
+            else:
+                render_properties['msg'] = 'Program template successfully added!'
 
     return render(request, 'createprogram.html', context=render_properties)
 
