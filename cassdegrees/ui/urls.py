@@ -15,16 +15,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import index, sampleform, create_program, create_subplan, data_list, manage_courses, manage_subplans, manage_programs, bulk_data_upload
+
+from .views.index import *
+from .views.sampleform import *
+from .views.listings import *
+from .views.bulk_data_upload import *
+from .views.programs import *
+from .views.subplans import *
+from .views.courses import *
 
 urlpatterns = [
     path('', index),
     path('sampleform/', sampleform),
-    path('create_program/', create_program),
-    path('create_subplan/', create_subplan),
+    path('create/program/', create_program),
+    path('create/subplan/', create_subplan),
     path('list/', data_list),
-    path('manage_courses/', manage_courses),
-    path('manage_subplans/', manage_subplans),
-    path('manage_programs/', manage_programs),
+    path('manage/programs/', manage_programs),
+    path('manage/subplans/', manage_subplans),
+    path('manage/courses/', manage_courses),
     path('bulk_upload/', bulk_data_upload),
 ]
