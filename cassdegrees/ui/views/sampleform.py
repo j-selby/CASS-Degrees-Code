@@ -58,4 +58,3 @@ def sampleform(request):
 
     else:
         return render(request, 'sampleform.html')
-
