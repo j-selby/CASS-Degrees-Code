@@ -115,7 +115,8 @@ def manage_courses(request):
                 if used_subplans:  # if there any subplans that use the course
                     render_properties['is_confirm'] = True
                     render_properties['msg_type'] = 'msg-warn'
-                    render_properties['msg'] = 'The Sub-Plan(s) ' + ', '.join(used_subplans) + ' use this course. Do you want to continue?'
+                    render_properties['msg'] = 'The Sub-Plan(s) ' + ', '.join(used_subplans) + \
+                                               ' use this course. Do you want to continue?'
                 elif rest_api is None:
                     render_properties['msg_type'] = 'msg-error'
                     render_properties['msg'] = 'Please select a course to delete!'
@@ -130,4 +131,3 @@ def manage_courses(request):
 
     return render(request, 'managecourses.html', context={'action': action, 'courses': courses,
                                                           'render': render_properties})
-

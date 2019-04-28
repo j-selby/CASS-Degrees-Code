@@ -7,6 +7,7 @@ from django.forms import ModelForm
 
 
 class JSONField(forms.CharField):
+
     def __init__(self, *args, field_id, **kwargs):
         super().__init__(widget=forms.HiddenInput(attrs={'id': field_id}), *args, **kwargs)
 
@@ -17,11 +18,10 @@ class JSONField(forms.CharField):
 class EditProgramFormSnippet(ModelForm):
     # Use custom handlers for JSON fields
     globalRequirements = JSONField(field_id='globalRequirements', required=False)
-    # rules = JSONField(field_id='rules')
 
     class Meta:
         model = DegreeModel
-        fields = ('code', 'year', 'name', 'units', 'degreeType', 'globalRequirements') #, 'rules')
+        fields = ('code', 'year', 'name', 'units', 'degreeType', 'globalRequirements')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull"}),
             'year': forms.NumberInput(attrs={'class': "text tfull", 'type': "number"}),

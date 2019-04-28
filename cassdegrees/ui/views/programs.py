@@ -68,5 +68,4 @@ def manage_programs(request):
                                                    "An unknown error has occurred. Please try again."
 
     return render(request, 'manageprograms.html', context={'action': action, 'program': program,
-                                                          'render': render_properties})
-
+                                                           'render': render_properties})

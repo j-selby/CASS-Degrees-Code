@@ -12,6 +12,14 @@
 # code%year%name%units%planType
 # ARTI-SPEC%2016%Artificial Intelligence%24%SPEC
 # ...
+
+import csv
+from io import TextIOWrapper
+
+import requests
+from django.shortcuts import render
+
+
 def bulk_data_upload(request):
     context = {}
     context['upload_type'] = ['Courses', 'Subplans']
