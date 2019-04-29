@@ -8,7 +8,11 @@
 
 {% block breadcrumb-trail %}
     {% breadcrumb  '/list/?view=Degree' 'Template/Subplan/Course' %}
-    {% endcrumb 'Create Program' %}
+    {% if edit %}
+        {% endcrumb 'Edit Program' %}
+    {% else %}
+        {% endcrumb 'Create Program' %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
