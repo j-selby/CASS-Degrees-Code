@@ -6,6 +6,22 @@ from ui.forms import EditProgramFormSnippet
 
 
 def create_program(request):
+    create_from = request.GET.get('createFrom', False)
+    if create_from == "True":
+        create_from = True
+
+    # Initialise instance with an empty string so that we don't get a "may be referenced before assignment" error below
+    instance = ""
+
+    # If we are creating a program from a duplicate, we retrieve the instance with the given id
+    # (should always come along with createFrom variable) and return that data to the user.
+    if create_from:
+        id = request.GET.get('id')
+        if not id:
+            return HttpResponseNotFound("Specified ID not found")
+        # Find the program to specifically create from:
+        instance = DegreeModel.objects.get(id=int(id))
+
     if request.method == 'POST':
         form = EditProgramFormSnippet(request.POST)
 
@@ -14,7 +30,10 @@ def create_program(request):
             return redirect('/list/?view=Degree&msg=Successfully Added Program!')
 
     else:
-        form = EditProgramFormSnippet()
+        if create_from:
+            form = EditProgramFormSnippet(instance=instance)
+        else:
+            form = EditProgramFormSnippet()
 
     return render(request, 'createprogram.html', context={
         "edit": False,
