@@ -68,7 +68,7 @@
                                         <td>
                                             {# Only Degree and Subplans will need this feature #}
                                             {% if title == 'Degree' or title == 'Subplan'  %}
-                                                <a class="btn-uni-grad" href="/create/{% if title == 'Degree' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}&createFrom=True">Create From</a>
+                                                <a class="btn-uni-grad" href="/create/{% if title == 'Degree' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}&duplicate=True">Duplicate</a>
                                             {% endif %}
                                             <a class="btn-uni-grad" href="/edit/{% if title == 'Degree' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}">Edit</a>
                                             <a class="btn-uni-grad" href="/api/model/{{ title.lower }}/{{ item }}/">View</a>
