@@ -13,6 +13,21 @@
     <div class = 'anuform'>
         <fieldset>
             <legend>{{data.name}}</legend>
+
+            {{ form.management_form }}
+
+            {% for field in form %}
+                <p class="form-group">
+                    {% if not field.is_hidden %}
+                        {{ field.label_tag }}
+                    {% endif %}
+                    {{ field }}
+                </p>
+                {% for error in field.errors %}
+                     <div class="msg-error inline-error">{{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+
             <p>
                 <label>Program Code:</label>
                 <input class="text" type="text" value="{{ data.code }}" disabled>
