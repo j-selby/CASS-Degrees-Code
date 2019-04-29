@@ -1,4 +1,3 @@
-import requests
 from api.models import DegreeModel, SubplanModel, CourseModel
 from django.db.models import Q
 from django.shortcuts import render
