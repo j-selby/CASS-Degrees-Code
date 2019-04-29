@@ -1,8 +1,14 @@
 {% extends "base.html" %}
+{% load breadcrumbs %}
 
 {% block page-title %}{{ action }} Course{% endblock %}
 
 {% block subtitle %}{{ action }} Course{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Courses' 'Template/Subplan/Course' %}
+    {% endcrumb '{{ action }} Course' %}
+{% endblock %}
 
 {% block content %}
     {% if render.msg != None and render.msg_type != None %}

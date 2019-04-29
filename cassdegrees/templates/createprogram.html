@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
+{% load breadcrumbs %}
 
 {% block page-title %}Create Program Template{% endblock %}
 
 {% block subtitle %}Create Program Template{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Degree' 'Template/Subplan/Course' %}
+    {% endcrumb 'Create Program' %}
+{% endblock %}
 
 {% block content %}
     {% if submitted %}

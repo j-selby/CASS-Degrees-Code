@@ -1,8 +1,14 @@
 {% extends "base.html" %}
+{% load breadcrumbs %}
 
 {% block page-title %}Create Subplan{% endblock %}
 
 {% block subtitle %}Create Subplan{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Subplan' 'Template/Subplan/Course' %}
+    {% endcrumb 'Create Subplan' %}
+{% endblock %}
 
 {% block content %}
 
