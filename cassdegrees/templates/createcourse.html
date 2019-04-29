@@ -8,9 +8,9 @@
 {% block breadcrumb-trail %}
     {% breadcrumb  '/list/?view=Course' 'Template/Subplan/Course' %}
     {% if edit %}
-        {% endcrumb 'Edit Course' %}
+        {% finalcrumb 'Edit Course' %}
     {% else %}
-        {% endcrumb 'Create Course' %}
+        {% finalcrumb 'Create Course' %}
     {% endif %}
 
 {% endblock %}

@@ -8,5 +8,5 @@ def breadcrumb(context, linked_url, name):
     return Template('&raquo; <a href="'+linked_url+'">'+name+'</a>').render(context)
 
 @register.simple_tag(takes_context=True)
-def endcrumb(context, name):
+def finalcrumb(context, name):
     return Template("&raquo; "+name).render(context)
