@@ -8,13 +8,13 @@ from ui.forms import EditProgramFormSnippet
 def create_program(request):
     duplicate = request.GET.get('duplicate', False)
     if duplicate == "True":
-        create_from = True
+        duplicate = True
 
     # Initialise instance with an empty string so that we don't get a "may be referenced before assignment" error below
     instance = ""
 
     # If we are creating a program from a duplicate, we retrieve the instance with the given id
-    # (should always come along with createFrom variable) and return that data to the user.
+    # (should always come along with 'duplicate' variable) and return that data to the user.
     if duplicate:
         id = request.GET.get('id')
         if not id:
