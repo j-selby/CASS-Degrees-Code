@@ -13,11 +13,24 @@
     <div class = 'anuform'>
         <fieldset>
             <legend>{{data.name}}</legend>
-            <p><b>Name:</b> {{ data.name }}</p>
-            <p><b>Code:</b> {{ data.code }}</p>
-            <p><b>Year:</b> {{ data.year }}</p>
-            <p><b>Units:</b> {{ data.units }}</p>
-            <p><b>Offerings:</b>
+            <p>
+                <label>Course Name:</label>
+                <input class="text" type="text" disabled value="{{ data.name }}">
+            </p>
+            <p>
+                <label>Course Code:</label>
+                <input class="text" type="text" disabled value="{{ data.code }}">
+            </p>
+            <p>
+                <label>Course Year:</label>
+                <input class="text" type="text" disabled value="{{ data.year }}">
+            </p>
+            <p>
+                <label>Course Units:</label>
+                <input class="text" type="text" disabled value="{{ data.units }}">
+            </p>
+            <p>
+                <label>Offerings:</label>
                 {% if data.offeredSem1 and data.offeredSem2 %}
                     Semester 1, Semester 2
                 {% else %}

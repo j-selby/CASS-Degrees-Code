@@ -13,12 +13,24 @@
     <div class = 'anuform'>
         <fieldset>
             <legend>{{data.name}}</legend>
-            <p><b>Name:</b> {{ data.name }}</p>
-            <p><b>Code:</b> {{ data.code }}</p>
-            <p><b>Year:</b> {{ data.year }}</p>
-            <p><b>Units:</b> {{ data.units }}</p>
             <p>
-                <b>Subplan Type:</b>
+                <label>Subplan Code:</label>
+                <input class="text" type="text" disabled value="{{ data.code }}">
+            </p>
+            <p>
+                <label>Subplan Name:</label>
+                <input class="text" type="text" disabled value="{{ data.name }}">
+            </p>
+            <p>
+                <label>Subplan Year:</label>
+                <input class="text" type="text" disabled value="{{ data.year }}">
+            </p>
+            <p>
+                <label>Subplan Units:</label>
+                <input class="text" type="text" disabled value="{{ data.units }}">
+            </p>
+            <p>
+                <label>Subplan Type:</label>
                 {% if data.planType == 'MAJ' %}
                     Major
                 {% endif %}
@@ -29,12 +41,6 @@
                     Specialisation
                 {% endif %}
             </p>
-        </fieldset>
-    </div>
-    <div class = 'anuform'>
-        <fieldset>
-            <legend>Global Requirements</legend>
-            <p><b>Global:</b> {{ data.globalRequirements}}</p>
         </fieldset>
     </div>
 {% endblock %}
