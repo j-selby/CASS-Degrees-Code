@@ -26,7 +26,7 @@ class SubplanModel(models.Model):
     year = models.PositiveIntegerField()
     name = models.CharField(max_length=256)
     units = models.PositiveIntegerField()
-    courses = psql.ArrayField(models.CharField(max_length=32), default=[])
+    courses = psql.JSONField(default=list)
 
     subplanChoices = (("MAJ", "Major"), ("MIN", "Minor"), ("SPEC", "Specialisation"))
 

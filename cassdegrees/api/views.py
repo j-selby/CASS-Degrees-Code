@@ -36,6 +36,7 @@ class SubplanRecord(generics.RetrieveUpdateDestroyAPIView):
     queryset = SubplanModel.objects.all()
     serializer_class = SubplanSerializer
 
+
 class DegreeList(generics.ListCreateAPIView):
     queryset = DegreeModel.objects.all()
     serializer_class = DegreeSerializer
