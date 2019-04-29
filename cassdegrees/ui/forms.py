@@ -23,10 +23,10 @@ class EditProgramFormSnippet(ModelForm):
         model = DegreeModel
         fields = ('code', 'year', 'name', 'units', 'degreeType', 'globalRequirements')
         widgets = {
-            'code': forms.TextInput(attrs={'class': "text tfull"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull", 'type': "number"}),
-            'name': forms.TextInput(attrs={'class': "text tfull"}),
-            'units': forms.NumberInput(attrs={'class': "text tfull", 'type': "number"}),
+            'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. BARTS"}),
+            'year': forms.NumberInput(attrs={'class': "text tfull", 'min': 2000, 'max': 3000}),
+            'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Bachelor of Arts"}),
+            'units': forms.NumberInput(attrs={'class': "text tfull", 'step': 6, 'max': 512}),
             # DegreeType auto generated
         }
         labels = {
@@ -40,8 +40,8 @@ class EditProgramFormSnippet(ModelForm):
 
     def clean_code(self):
         data = self.cleaned_data['code']
-        if len(data) < 4:
-            raise forms.ValidationError("This should be at least 4 characters!")
+        if len(data) < 3:
+            raise forms.ValidationError("This should be at least 3 characters!")
         return data
 
     def clean_year(self):
@@ -65,9 +65,9 @@ class EditSubplanFormSnippet(ModelForm):
         model = SubplanModel
         fields = ('code', 'year', 'name', 'units', 'planType')
         widgets = {
-            'code': forms.TextInput(attrs={'class': "text tfull"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull", 'type': "number"}),
-            'name': forms.TextInput(attrs={'class': "text tfull"}),
+            'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH-MIN"}),
+            'year': forms.NumberInput(attrs={'class': "text tfull", 'min': 2000, 'max': 3000}),
+            'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Art History Minor"}),
             # See units above
             # planType auto generated
         }
@@ -82,8 +82,8 @@ class EditSubplanFormSnippet(ModelForm):
 
     def clean_code(self):
         data = self.cleaned_data['code']
-        if len(data) < 4:
-            raise forms.ValidationError("This should be at least 4 characters!")
+        if len(data) < 3:
+            raise forms.ValidationError("This should be at least 3 characters!")
         return data
 
     def clean_year(self):
