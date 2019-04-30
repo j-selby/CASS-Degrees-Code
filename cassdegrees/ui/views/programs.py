@@ -6,9 +6,11 @@ from ui.forms import EditProgramFormSnippet
 
 
 def create_program(request):
-    duplicate = request.GET.get('duplicate', False)
-    if duplicate == "True":
+    duplicate = request.GET.get('duplicate', 'false')
+    if duplicate == 'true':
         duplicate = True
+    elif duplicate == 'false':
+        duplicate = False
 
     # Initialise instance with an empty string so that we don't get a "may be referenced before assignment" error below
     instance = ""
