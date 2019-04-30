@@ -22,7 +22,7 @@ def create_program(request):
         if not id:
             return HttpResponseNotFound("Specified ID not found")
         # Find the program to specifically create from:
-        instance = DegreeModel.objects.get(id=int(id))
+        instance = ProgramModel.objects.get(id=int(id))
 
     if request.method == 'POST':
         form = EditProgramFormSnippet(request.POST)
