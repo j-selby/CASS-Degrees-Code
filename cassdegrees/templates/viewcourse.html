@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
+{% load breadcrumbs %}
 
 {% block page-title %}{{ data.name }} - {{ data.code }} ({{ data.year }}){% endblock %}
 
 {% block subtitle %}{{ data.name }}{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% finalcrumb 'View Course' %}
+{% endblock %}
 
 {% block content %}
     <div class="right box-header" style="padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; min-width: 250px;">

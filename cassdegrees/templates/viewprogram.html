@@ -1,37 +1,43 @@
 {% extends "base.html" %}
 {% load static %}
+{% load breadcrumbs %}
 
 {% block page-title %}{{ data.name }} - {{ data.code }} ({{ data.year }}){% endblock %}
 
 {% block subtitle %}{{ data.name }}{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% finalcrumb 'View Program' %}
+{% endblock %}
 
 {% block content %}
     <div class="right box-header" style="padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; min-width: 250px">
         <div>
             <h4>Program Type</h4>
             <li>
-                {% if data.degreeType == 'ugrad-sing' %}
+                {% if data.programType == 'ugrad-sing' %}
                     Undergraduate Single Pass Degree
                 {% endif %}
-                {% if data.degreeType == 'ugrad-doub' %}
+                {% if data.programType == 'ugrad-doub' %}
                     Undergraduate Flexible Double Degree
                 {% endif %}
-                {% if data.degreeType == 'hon' %}
+                {% if data.programType == 'hon' %}
                     Honours Degree
                 {% endif %}
-                {% if data.degreeType == 'mast-sing' %}
+                {% if data.programType == 'mast-sing' %}
                     Masters Single Degree
                 {% endif %}
-                {% if data.degreeType == 'mast-adv' %}
+                {% if data.programType == 'mast-adv' %}
                     Masters (Advanced) Degree
                 {% endif %}
-                {% if data.degreeType == 'mast-doub' %}
+                {% if data.programType == 'mast-doub' %}
                     Masters Flexible Double Degree
                 {% endif %}
-                {% if data.degreeType == 'vert-doub' %}
+                {% if data.programType == 'vert-doub' %}
                     Vertical Flexible Double Degree
                 {% endif %}
-                {% if data.degreeType == 'other' %}
+                {% if data.programType == 'other' %}
                     Other Degree
                 {% endif %}
             </li>
@@ -64,6 +70,16 @@
                 <p style="margin-left: 40px">
                     A maximum of {{ rule.unit_count }} units may come from completion of {{ rule.prettyList }} courses.
                 </p>
+            {% endif %}
+        {% endfor %}
+
+        <p>The {{ data.units }} units must include:</p>
+        {% for rule in data.rules %}
+            {% if rule.type == "subplan" %}
+                <p style="margin-left: 40px">Completion of one subplan from the following list:</p>
+                {% for id, name in rule.ids.items %}
+                    <a class="btn-uni-grad" href="/view/subplan/?id={{ id }}" style="margin-left: 80px">{{ name }}</a>
+                {% endfor %}
             {% endif %}
         {% endfor %}
     </div>

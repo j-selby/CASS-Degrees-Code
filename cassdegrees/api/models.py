@@ -26,17 +26,20 @@ class SubplanModel(models.Model):
     year = models.PositiveIntegerField()
     name = models.CharField(max_length=256)
     units = models.PositiveIntegerField()
-    courses = psql.JSONField(default=list)
+    rules = psql.JSONField(default=list)
+    publish = models.BooleanField(default=False)
 
     subplanChoices = (("MAJ", "Major"), ("MIN", "Minor"), ("SPEC", "Specialisation"))
 
     planType = models.CharField(max_length=4, choices=subplanChoices)
 
+    rules = psql.JSONField(default=list)
+
     class Meta:
         unique_together = (("code", "year"), ("year", "name", "planType"),)
 
 
-class DegreeModel(models.Model):
+class ProgramModel(models.Model):
     id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=32)
     year = models.PositiveIntegerField()
@@ -52,7 +55,7 @@ class DegreeModel(models.Model):
                      ("vert-doub", "Vertical Flexible Double Degree"),
                      ("other", "Other Degree"))
 
-    degreeType = models.CharField(max_length=10, choices=degreeChoices)
+    programType = models.CharField(max_length=10, choices=degreeChoices)
 
     globalRequirements = psql.JSONField(default=list)
     rules = psql.JSONField(default=list)
