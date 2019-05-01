@@ -1,6 +1,6 @@
 import json
 
-from api.models import DegreeModel, SubplanModel, CourseModel
+from api.models import ProgramModel, SubplanModel, CourseModel
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.forms import ModelForm
@@ -27,17 +27,17 @@ class EditProgramFormSnippet(ModelForm):
     rules = JSONField(field_id='rules', required=False)
 
     class Meta:
-        model = DegreeModel
-        fields = ('code', 'year', 'name', 'units', 'degreeType', 'globalRequirements', 'rules')
+        model = ProgramModel
+        fields = ('code', 'year', 'name', 'units', 'programType', 'globalRequirements', 'rules')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. BARTS"}),
             'year': forms.NumberInput(attrs={'class': "text tfull", 'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Bachelor of Arts"}),
             'units': forms.NumberInput(attrs={'class': "text tfull", 'step': 6, 'max': 512}),
-            # DegreeType auto generated
+            # ProgramType auto generated
         }
         labels = {
-            'degreeType': "Program Type",
+            'programType': "Program Type",
         }
         error_messages = {
             NON_FIELD_ERRORS: {
@@ -71,11 +71,12 @@ class EditSubplanFormSnippet(ModelForm):
 
     class Meta:
         model = SubplanModel
-        fields = ('code', 'year', 'name', 'units', 'planType', 'rules')
+        fields = ('code', 'year', 'name', 'units', 'planType', 'rules', 'publish')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH-MIN"}),
             'year': forms.NumberInput(attrs={'class': "text tfull", 'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Art History Minor"}),
+            'publish': forms.CheckboxInput()
             # See units above
             # planType auto generated
         }
@@ -123,9 +124,10 @@ class EditCourseFormSnippet(ModelForm):
         model = CourseModel
         fields = ('code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2')
         widgets = {
-            'code': forms.TextInput(attrs={'class': "text tfull"}),
+            'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006"}),
             'year': forms.NumberInput(attrs={'class': "text tfull", 'type': "number"}),
-            'name': forms.TextInput(attrs={'class': "text tfull"}),
+            'name': forms.TextInput(attrs={'class': "text tfull",
+                                           'placeholder': "e.g. Art and Design Histories: Form and Space"}),
             'units': forms.NumberInput(attrs={'class': "text tfull", 'type': "number"}),
         }
         labels = {

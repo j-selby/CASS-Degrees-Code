@@ -40,30 +40,20 @@ class SubplanRecord(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SubplanSerializer
 
 
-class CoursesInSubplanList(generics.ListCreateAPIView):
-    queryset = CoursesInSubplanModel.objects.all()
-    serializer_class = CoursesInSubplanSerializer
+class ProgramList(generics.ListCreateAPIView):
+    queryset = ProgramModel.objects.all()
+    serializer_class = ProgramSerializer
 
 
-class CoursesInSubplanRecord(generics.RetrieveUpdateDestroyAPIView):
-    queryset = CoursesInSubplanModel.objects.all()
-    serializer_class = CoursesInSubplanSerializer
-
-
-class DegreeList(generics.ListCreateAPIView):
-    queryset = DegreeModel.objects.all()
-    serializer_class = DegreeSerializer
-
-
-class DegreeRecord(generics.RetrieveUpdateDestroyAPIView):
-    queryset = DegreeModel.objects.all()
-    serializer_class = DegreeSerializer
+class ProgramRecord(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ProgramModel.objects.all()
+    serializer_class = ProgramSerializer
 
 def search(request):
     """ Queries the database based on the URL parameters
 
     Url Parameters:
-        select -> The name of the table to extract from (e.g. degree, subplan, course)
+        select -> The name of the table to extract from (e.g. program, subplan, course)
         from   -> A comma-separated list of names to get queries for
         [name] -> The name of a list and the text to search for inside that name (code=COMP finds comp courses)
 
@@ -76,13 +66,13 @@ def search(request):
 
     Example queries:
         /api/search/from=course
-        /api/search/?select=id,code&from=degree
+        /api/search/?select=id,code&from=program
         /api/search/?select=code,name,rules&from=subplan&code=COMP&name=systems%20and&20architecture
 
     :param request:
     :return <class django.http.response.JsonResponse>:
     """
-    model_map = {'degree': DegreeModel, 'subplan': SubplanModel, 'course': CourseModel}
+    model_map = {'program': ProgramModel, 'subplan': SubplanModel, 'course': CourseModel}
 
     # Extracts a model from the model_map, choosing None if an invalid model was requested
     model = model_map.get(request.GET.get('from'), None)
