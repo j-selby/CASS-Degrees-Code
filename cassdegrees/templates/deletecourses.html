@@ -9,16 +9,26 @@
     {% finalcrumb 'Delete Course' %}
 {% endblock %}
 
-{% block subtitle %}Are you sure?{% endblock %}
+{% block subtitle %}Are You Sure?{% endblock %}
 
 {% block content %}
-    <form class="anuform" action="" method="post">
+    {% if used_programs_and_subplans %}
+        <p class="msg-warn">
+            The Programs/Subplans:
+            {% for instance in used_programs_and_subplans %}
+                {{ instance.name }} ({{ instance.code }}) in {{ instance.year }}
+            {% endfor %}
+            use one or more of the selected courses. Their rules will be affected if you choose to continue.
+        </p>
+    {% endif %}
+    <form % class="anuform" action="" method="post">
         {% csrf_token %}
 
         <fieldset>
             <p>Are you sure you want to delete:</p>
+
             {% for instance in instances %}
-                <p>
+                <p class="marginleft">
                     {{ instance.name }} ({{ instance.code }}) in {{ instance.year }}
                 </p>
                 <input type="number" hidden value="{{ instance.id }}" name="id" />

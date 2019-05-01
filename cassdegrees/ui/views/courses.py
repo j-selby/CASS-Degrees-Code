@@ -1,4 +1,4 @@
-from api.models import CourseModel
+from api.models import CourseModel, SubplanModel, ProgramModel
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 
@@ -26,18 +26,19 @@ def create_course(request):
 def delete_course(request):
     data = request.POST
     instances = []
+    used_programs_and_subplans = []
 
-    # TODO: Check if breaking subplans
-    # for course in courses_in_subplans:
-    #     # if course being deleted is in current subplan
-    #     if int(id_to_delete) == int(course['courseId_id']):
-    #         # TODO: improve this using django queries
-    #         used_subplans.extend(
-    #             [subplan['name'] + '(' + subplan['code'] + ')' for subplan in subplans if
-    #              course['subplanId_id'] == subplan['id']])
+    subplans = list(SubplanModel.objects.values())
+    programs = list(ProgramModel.objects.values())
 
     ids_to_delete = data.getlist('id')
     for id_to_delete in ids_to_delete:
+        # checks which subplan is using the current course where course['id'] equals id_to_delete
+        for subplan in subplans:
+            if int(id_to_delete) in [rule['id'] for rule in subplan['rules']]:
+                used_programs_and_subplans.append(subplan)
+        # checks which program is using the current course where course['id'] equals id_to_delete
+        # TODO: parse degree rules (check for used subplans as well as standalone courses)
         instances.append(CourseModel.objects.get(id=int(id_to_delete)))
 
     if "confirm" in data:
@@ -47,7 +48,8 @@ def delete_course(request):
         return redirect('/list/?view=Course&msg=Successfully Deleted Course(s)!')
     else:
         return render(request, 'deletecourses.html', context={
-            "instances": instances
+            "instances": instances,
+            "used_programs_and_subplans": used_programs_and_subplans
         })
 
 
