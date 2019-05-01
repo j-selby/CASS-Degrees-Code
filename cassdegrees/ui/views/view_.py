@@ -53,7 +53,5 @@ def view_(request):
                         request.build_absolute_uri('/api/model/subplan/' + str(id) + '/?format=json')).json()
                     subplans[id] = subplan["name"]
                 rule["ids"] = subplans
-                print(rule)
-                print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
 
         return render(request, 'viewprogram.html', context={'data': program})
