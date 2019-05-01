@@ -81,6 +81,11 @@
                     <a class="btn-uni-grad" href="/view/subplan/?id={{ id }}" style="margin-left: 80px">{{ name }}</a>
                 {% endfor %}
             {% endif %}
+
+            {% if rule.type == "custom_text" %}
+                <p style="margin-left: 40px">For {{ rule.units }} units:</p>
+                <p style="margin-left: 80px">{{ rule.text }}</p>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}
