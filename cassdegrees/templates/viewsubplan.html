@@ -1,36 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block page-title %}View Subplan{% endblock %}
+{% block page-title %}{{ data.name }} - {{ data.code }} ({{ data.year }}){% endblock %}
 
-{% block subtitle %}View Subplan{% endblock %}
+{% block subtitle %}{{ data.name }}{% endblock %}
 
 {% block content %}
-    {% if render.msg != None %}
-        <p class="{% if render.is_error %}msg-error{% else %}msg-success{% endif %}">{{ render.msg }}</p>
-    {% endif %}
-
-    <div class = 'anuform'>
-        <fieldset>
-            <legend>{{data.name}}</legend>
-            <p>
-                <label>Subplan Code:</label>
-                <input class="text" type="text" disabled value="{{ data.code }}">
-            </p>
-            <p>
-                <label>Subplan Name:</label>
-                <input class="text" type="text" disabled value="{{ data.name }}">
-            </p>
-            <p>
-                <label>Subplan Year:</label>
-                <input class="text" type="text" disabled value="{{ data.year }}">
-            </p>
-            <p>
-                <label>Subplan Units:</label>
-                <input class="text" type="text" disabled value="{{ data.units }}">
-            </p>
-            <p>
-                <label>Subplan Type:</label>
+    <div class="right box-header" style="padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; min-width: 250px;">
+        <div>
+            <h4>Subplan Type</h4>
+            <li>
                 {% if data.planType == 'MAJ' %}
                     Major
                 {% endif %}
@@ -40,7 +19,27 @@
                 {% if data.planType == 'SPEC' %}
                     Specialisation
                 {% endif %}
-            </p>
-        </fieldset>
+            </li>
+        </br>
+            <div class="left">
+                <h4>Code</h4>
+                <li>{{ data.code }}</li>
+            </div>
+            <div class="right">
+                <h4>Year</h4>
+                <li>{{ data.year }}</li>
+            </div>
+
+        </div>
+    </div>
+
+    <div>
+        <h3>Requirements</h3>
+        <p>This
+            {% if data.planType == "MAJ" %}Major{% endif %}
+            {% if data.planType == "MIN" %}Minor{% endif %}
+            {% if data.planType == "SPEC" %}Specialisation{% endif %}
+            requires completion of {{ data.units }} units.
+        </p>
     </div>
 {% endblock %}

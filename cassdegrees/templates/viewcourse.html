@@ -1,48 +1,45 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block page-title %}View Course{% endblock %}
+{% block page-title %}{{ data.name }} - {{ data.code }} ({{ data.year }}){% endblock %}
 
-{% block subtitle %}View Course{% endblock %}
+{% block subtitle %}{{ data.name }}{% endblock %}
 
 {% block content %}
-    {% if render.msg != None %}
-        <p class="{% if render.is_error %}msg-error{% else %}msg-success{% endif %}">{{ render.msg }}</p>
-    {% endif %}
+    <div class="right box-header" style="padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; min-width: 250px;">
+        <div>
+            <div class="left">
+                <h4>Code</h4>
+                <li>{{ data.code }}</li>
+            </div>
+            <div class="right">
+                <h4>Year</h4>
+                <li>{{ data.year }}</li>
+            </div>
 
-    <div class = 'anuform'>
-        <fieldset>
-            <legend>{{data.name}}</legend>
-            <p>
-                <label>Course Name:</label>
-                <input class="text" type="text" disabled value="{{ data.name }}">
-            </p>
-            <p>
-                <label>Course Code:</label>
-                <input class="text" type="text" disabled value="{{ data.code }}">
-            </p>
-            <p>
-                <label>Course Year:</label>
-                <input class="text" type="text" disabled value="{{ data.year }}">
-            </p>
-            <p>
-                <label>Course Units:</label>
-                <input class="text" type="text" disabled value="{{ data.units }}">
-            </p>
-            <p>
-                <label>Offerings:</label>
-                {% if data.offeredSem1 and data.offeredSem2 %}
-                    Semester 1, Semester 2
-                {% else %}
-                    {% if data.offeredSem1 %}
-                        Semester 1
-                    {% endif %}
-                    {% if data.offeredSem2 %}
-                        Semester 2
-                    {% endif %}
-                {% endif %}
+            </br>
+            </br>
+            </br>
 
-            </p>
-        </fieldset>
+            <h4>Offered in</h4>
+            {% if data.offeredSem1 %}
+                <li>
+                    First Semester {{ data.year }}
+                </li>
+            {% endif %}
+            {% if data.offeredSem2 %}
+                <li>
+                    Second Semester {{ data.year }}
+                </li>
+            {% endif %}
+        </div>
     </div>
+
+    <div>
+        <h3>Requisite and Incompatibility</h3>
+        <p>
+            There are no requirements to enrol in this course.
+        </p>
+    </div>
+
 {% endblock %}
