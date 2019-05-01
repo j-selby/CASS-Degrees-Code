@@ -1,51 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block page-title %}View Program{% endblock %}
+{% block page-title %}{{ data.name }} - {{ data.code }} ({{ data.year }}){% endblock %}
 
-{% block subtitle %}View Program{% endblock %}
+{% block subtitle %}{{ data.name }}{% endblock %}
 
 {% block content %}
-    {% if render.msg != None %}
-        <p class="{% if render.is_error %}msg-error{% else %}msg-success{% endif %}">{{ render.msg }}</p>
-    {% endif %}
-
-    <div class = 'anuform'>
-        <fieldset>
-            <legend>{{data.name}}</legend>
-
-            {{ form.management_form }}
-
-            {% for field in form %}
-                <p class="form-group">
-                    {% if not field.is_hidden %}
-                        {{ field.label_tag }}
-                    {% endif %}
-                    {{ field }}
-                </p>
-                {% for error in field.errors %}
-                     <div class="msg-error inline-error">{{ error }}</div>
-                {% endfor %}
-            {% endfor %}
-
-            <p>
-                <label>Program Code:</label>
-                <input class="text" type="text" value="{{ data.code }}" disabled>
-            </p>
-            <p>
-                <label>Program Name:</label>
-                <input class="text" type="text" value="{{ data.name }}" disabled>
-            </p>
-            <p>
-                <label>Program Year:</label>
-                <input class="text" type="text" value="{{ data.year }}" disabled>
-            </p>
-            <p>
-                <label>Program Units:</label>
-                <input class="text" type="text" value="{{ data.units }}" disabled>
-            </p>
-            <p>
-                <label>Program Type:</label>
+    <div class="right box-header" style="padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px;">
+        <div>
+            <h4>Program Type</h4>
+            <li>
                 {% if data.degreeType == 'ugrad-sing' %}
                     Undergraduate Single Pass Degree
                 {% endif %}
@@ -70,112 +34,37 @@
                 {% if data.degreeType == 'other' %}
                     Other Degree
                 {% endif %}
-            </p>
-        </fieldset>
+            </li>
+        </br>
+            <div class="left">
+                <h4>Academic Plan</h4>
+                <li>{{ data.code }}</li>
+            </div>
+            <div class="right">
+                <h4>Year</h4>
+                <li>{{ data.year }}</li>
+            </div>
+
+        </div>
     </div>
 
-    <div class = 'anuform'>
-        <fieldset>
-            <legend>Global Requirements</legend>
-            <br>
-            {% for rule in data.globalRequirements %}
-                <div class="box bdr-top-solid bdr-bottom-solid">
-                    <fieldset>
-                        {% if rule.type == "max" or rule.type == "min"%}
-                            <p>
-                                <b>Rule Type: </b>
-                                {% if rule.type == "max" %}
-                                    Maximum
-                                {% else %}
-                                    Minimum
-                                {% endif %}
-                                Units From Year(s)
-                            </p>
-                            <hr/>
+    </br>
 
-                            <fieldset>
-                                <p>
-                                    <label>
-                                        Unit Count: {{ rule.unit_count }}
-                                    </label>
-                                </p>
+    <div>
+        <h3>Program Requirements</h3>
+        <p>The {{ data.name }} requires completion of {{ data.units }} units, of which:</p>
 
-                                <p>
-                                    <label>
-                                        Years:
-                                    </label>
-                                </p>
-                            </fieldset>
-
-                            <table class="tbl-row-bdr">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            1000-level
-                                        </th>
-                                        <th>
-                                            2000-level
-                                        </th>
-                                        <th>
-                                            3000-level
-                                        </th>
-                                        <th>
-                                            4000-level
-                                        </th>
-                                        <th>
-                                            5000-level
-                                        </th>
-                                        <th>
-                                            6000-level
-                                        </th>
-                                        <th>
-                                            7000-level
-                                        </th>
-                                        <th>
-                                            8000-level
-                                        </th>
-                                        <th>
-                                            9000-level
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="text-align:center">
-                                            {% if rule.courses1000Level %} &#10004 {% else %} - {% endif %}
-                                        </td>
-                                        <td style="text-align:center">
-                                            {% if rule.courses2000Level %} &#10004 {% else %} - {% endif %}
-                                        </td>
-                                        <td style="text-align:center">
-                                            {% if rule.courses3000Level %} &#10004 {% else %} - {% endif %}
-                                        </td>
-                                        <td style="text-align:center">
-                                            {% if rule.courses4000Level %} &#10004 {% else %} - {% endif %}
-                                        </td>
-                                        <td style="text-align:center">
-                                            {% if rule.courses5000Level %} &#10004 {% else %} - {% endif %}
-                                        </td>
-                                        <td style="text-align:center">
-                                            {% if rule.courses6000Level %} &#10004 {% else %} - {% endif %}
-                                        </td>
-                                        <td style="text-align:center">
-                                            {% if rule.courses7000Level %} &#10004 {% else %} - {% endif %}
-                                        </td>
-                                        <td style="text-align:center">
-                                            {% if rule.courses8000Level %} &#10004 {% else %} - {% endif %}
-                                        </td>
-                                        <td style="text-align:center">
-                                            {% if rule.courses9000Level %} &#10004 {% else %} - {% endif %}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        {% endif %}
-                    </fieldset>
-                </div>
-            {% endfor %}
-
-        </fieldset>
+        {% for rule in data.globalRequirements %}
+            {% if rule.type == "min" %}
+                <p style="margin-left: 40px">
+                    A minimum of {{ rule.unit_count }} units must come from completion of {{ rule.prettyList }} courses.
+                </p>
+            {% endif %}
+            {% if rule.type == "max" %}
+                <p style="margin-left: 40px">
+                    A maximum of {{ rule.unit_count }} units may come from completion of {{ rule.prettyList }} courses.
+                </p>
+            {% endif %}
+        {% endfor %}
     </div>
 {% endblock %}

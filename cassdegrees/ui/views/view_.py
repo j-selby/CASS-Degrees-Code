@@ -15,4 +15,21 @@ def view_(request):
 
     elif "program" in url:
         program = requests.get(request.build_absolute_uri('/api/model/degree/' + id_to_edit + '/?format=json')).json()
+        #print(program)
+
+        for req in program["globalRequirements"]:
+            pretty = ""
+            for field in req.keys():
+                if field[:7] == "courses":
+                    if req[field]:
+                        pretty += field[7:11] + "-level, "
+            pretty = pretty[:-2]
+
+            if len(pretty) > 18:
+                pretty = pretty[:-12] + " and" + pretty[-11:]
+            elif len(pretty) > 10:
+                pretty = pretty[:-11] + " and" + pretty[-11:]
+
+            req["prettyList"] = pretty
+
         return render(request, 'viewprogram.html', context={'data': program})
