@@ -1,0 +1,74 @@
+{% extends "pdf_base.html" %}
+{% block page-title %}{{ program.name }} ({{ program.year }}){% endblock %}
+
+{% block content %}
+    <h1 class="no-bottom-margin">{{ program.name }} ({{ program.year }})</h1>
+
+    <p>
+        {% if program.programType == 'ugrad-sing' %}
+            Undergraduate Single Pass Degree
+        {% endif %}
+        {% if program.programType == 'ugrad-doub' %}
+            Undergraduate Flexible Double Degree
+        {% endif %}
+        {% if program.programType == 'hon' %}
+            Honours Degree
+        {% endif %}
+        {% if program.programType == 'mast-sing' %}
+            Masters Single Degree
+        {% endif %}
+        {% if program.programType == 'mast-adv' %}
+            Masters (Advanced) Degree
+        {% endif %}
+        {% if program.programType == 'mast-doub' %}
+            Masters Flexible Double Degree
+        {% endif %}
+        {% if program.programType == 'vert-doub' %}
+            Vertical Flexible Double Degree
+        {% endif %}
+        {% if program.programType == 'other' %}
+            Other Degree
+        {% endif %}
+    </p>
+
+    <div class="box">
+        Student name & ID number: <br />
+    </div>
+
+    <div class="columns-3 columns-no-gap">
+
+        {% for rule in program.globalRequirements %}
+            <div class="box">
+                {% if rule.type == "min" %}
+                    <p>
+                        A <b>minimum</b> of {{ rule.unit_count }} units must come from completion of {{ rule.prettyList }} courses.
+                    </p>
+                {% elif rule.type == "max" %}
+                    <p>
+                        A <b>maximum</b> of {{ rule.unit_count }} units may come from completion of {{ rule.prettyList }} courses.
+                    </p>
+                {% else %}
+                    ERROR: Unknown global requirement type "{{ rule.type }}"!
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        {% for rule in program.rules %}
+            <div class="box">
+                {% if rule.type == "subplan" %}
+                    <p>Completion of one subplan from the following list:</p>
+                    {% for value in rule.contents.values %}
+                        <!-- TODO: Render subplan here -->
+                        <p>{{ value.name }}</p>
+                    {% endfor %}
+                {% elif rule.type == "custom_text" %}
+                    <p>For {{ rule.units }} units:</p>
+                    <p>{{ rule.text }}</p>
+                {% else %}
+                    ERROR: Unknown rule type "{{ rule.type }}"!
+                {% endif %}
+            </div>
+        {% endfor %}
+
+    </div>
+{% endblock %}
