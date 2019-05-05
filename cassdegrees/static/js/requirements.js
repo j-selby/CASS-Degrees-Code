@@ -42,7 +42,7 @@ Vue.component('requirement_course', {
 
             rule.check_options();
         });
-        request.open("GET", "/api/model/courses/?format=json");
+        request.open("GET", "/api/model/course/?format=json");
         request.send();
     },
     methods: {
