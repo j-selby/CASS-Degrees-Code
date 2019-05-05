@@ -46,58 +46,51 @@ def delete_course(request):
     courses = json.loads(search(gen_request).content.decode())
 
     ids_to_delete = data.getlist('id')  # ids of all the courses that were selected to be deleted
-    safe_to_delete = True
-    used_subplans = dict()  # {subplan_id (str): [course] (list(str))}
-    used_programs = dict()  # {program_id (str): [course] (list(str))}
-    for id_to_delete in ids_to_delete:
-        # checks subplans' rules if they are using the selected courses for deletion
-        for subplan in subplans:
-            course_ids_in_rules = [rule['id'] for rule in subplan['rules']]
-            # TODO: try to rewrite using inner join
-            # if course to delete is being used in a subplan
-            if int(id_to_delete) in course_ids_in_rules:
-                safe_to_delete = False
-                # gets course in courses with the id id_to_delete
-                course = [c for c in filter(lambda c: c['id'] == int(id_to_delete), courses)].pop()
-                # if the subplan has already been seen using another course
-                if subplan['id'] in used_subplans:
-                    used_subplans[subplan['id']] += [course]
+
+    # inner join ids_to_delete with courses
+    courses_to_delete = [c for c in filter(lambda c: c['id'] in map(int, ids_to_delete), courses)]  # [dict]
+    used_subplans = dict()  # {subplan id (int): [course] (list(dict))}
+    used_programs = dict()  # {program id (int): [subplan/course] (list(dict))}
+    # grabs all subplans that depend on courses selected to be deleted
+    for c in courses_to_delete:
+        for s in subplans:
+            # if course c is in subplan s
+            if any(c['id'] == r['id'] for r in s['rules']):
+                # keep track of it
+                if s['id'] not in used_subplans:
+                    used_subplans[s['id']] = [c]
                 else:
-                    used_subplans[subplan['id']] = [course]
+                    used_subplans[s['id']] += [c]
+        # TODO: parse program rules field
+        # attempt to find standalone courses in program rules
+        gen_request.GET = {'select': 'id,name,year,rules', 'from': 'program',
+                           'rules': c['code']}
+        for p in json.loads(search(gen_request).content.decode()):
+            if p['id'] not in used_programs:
+                used_programs[p['id']] = [c]
+            else:
+                used_programs[p['id']] += [c]
 
-        for program in programs:
-            # checks which subplans are being used by program
-            subplan_ids_in_rules = [rule['ids'] for rule in program['rules'] if rule['type'] == 'subplan']
-            for subplan_id in [subplan_id for subplan_ids in subplan_ids_in_rules for subplan_id in subplan_ids]:
-                if program['id'] in used_programs:
-                    used_programs[program['id']] += [subplan_id]
-                else:
-                    used_programs[program['id']] = [subplan_id]
-            # checks which courses are being used by program
+    print('used programs: ', used_programs)
 
-
-            # # inner join subplan_ids_in_rules with subplans
-            # common_ids = set([s['id'] for s in subplans]) & set(subplan_ids_in_rules)
-            # subplans_in_program = [s for s in filter(lambda s: s['id'] in common_ids, subplans)]
-
-        if safe_to_delete:
-            instances.append(CourseModel.objects.get(id=int(id_to_delete)))
-
-    if used_subplans:  # if there exists programs/subplans that use selected courses
-        error_msg = ''
-        # composes the error message
-        for subplan_id, courses in used_subplans.items():
-            error_msg += 'The course(s): '
-            num_of_courses = len(courses)
-            for i in range(num_of_courses):
-                error_msg += courses[i]['code'] + ' in ' + str(courses[i]['year'])\
-                             + (', ' if i < num_of_courses-1 else '')
-            # TODO: search through programs
-            subplan = [s for s in filter(lambda s: s['id'] == subplan_id, subplans)].pop()
-            error_msg += ' ' + ('are' if num_of_courses > 1 else 'is') + ' being used by ' + subplan['name']\
-                         + '(' + subplan['code'] + ')' + ' in  ' + str(subplan['year']) + '.'
-        return redirect('/list/?view=Course&error=Failed to Delete Course(s)! ' + error_msg
-                        + ' Please act on these dependencies before the deletion can occur.')
+    if used_subplans:  # if there are any subplans being used with one or more of the courses selected
+        subplan_info = dict()  # {subplan_id (int): subplan information (str)}
+        # composes error message
+        for s in subplans:
+            # if subplan s is being used
+            if s['id'] in used_subplans:
+                subplan_info[s['id']] = s['name'] + ' (' + s['code'] + ') ' + 'in ' + str(s['year'])
+        error_msg = 'The course(s):\n'
+        for subplan_id, cs in used_subplans.items():
+            is_plural = len(cs) > 1
+            error_msg += '{} {} being used by: {} {}'.format(
+                (', ' if is_plural else ' ').join([c['code'] + ' in ' + str(c['year']) for c in cs]),
+                'are' if is_plural else 'is', subplan_info[subplan_id], '\n')
+            print(error_msg)
+        return redirect('/list/?view=Course&error=Failed to Delete Course(s)!\n' + error_msg)
+    else:
+        for c in courses_to_delete:
+            instances.append(CourseModel.objects.get(id=c['id']))
 
     if "confirm" in data:
         for instance in instances:
