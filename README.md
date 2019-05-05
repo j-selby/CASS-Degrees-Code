@@ -15,10 +15,8 @@ No one is to directly commit to this branch, it is updated by merges from branch
 The idea is that once someone completes a feature or user story, they will create a new branch with their code (with an appropriate name) and request a *Pull Request* into
 the develop branch.
 
-**Pull Requests** are reviewed by the projects team members, the rule is that 2 people must approve of the feature or user story before it can
-be merged into the develop branch. Alternatively, if it has been seen by the project team members and has been open for more than 2 days, then the
-developer can merge into the develop branch, given that they have tested and ensured that their code is functional. 
-
+**Pull Requests** are reviewed by the projects team members, the rule is that 2 people must approve of the feature or user story before it can be merged into the develop branch. 
+Alternatively, if a day or more has past then only 1 approval is required for the pull request. This is to ensure the lively hood of our pull requests so that they don't go stale and reduce productivity of other people’s sections who may depend on a pull request.
 
 Please see this document for a full overview and detailed explanation of our branching structure: https://docs.google.com/document/d/1whU7j2F_0RFJ1n1rJsn3H6UcKvLCPCmKZ2J65a7D-9g/edit
 
