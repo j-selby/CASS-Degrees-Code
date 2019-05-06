@@ -1,4 +1,4 @@
-//! Vue.js based means of adding/removing rules. Excludes serialization (see programmanagement.js)
+//! Vue.js based means of adding/removing requirements.
 
 // Translation table between internal names for components and human readable ones.
 const COMPONENT_NAMES = {
@@ -26,7 +26,9 @@ Vue.component('requirement_course', {
 
             // Display related warnings if true
             "non_unique_options": false,
-            "inconsistent_units": false,
+
+            "invalid_units": false,
+            "invalid_units_step": false,
 
             "redraw": false
         }
@@ -72,26 +74,9 @@ Vue.component('requirement_course', {
                 found.push(value);
             }
 
-            // Check for inconsistent units
-            this.inconsistent_units = false;
-            var desired_unit_value = 0;
-
-            for (var index in this.details.ids) {
-                var value = this.details.ids[index];
-                // Find the raw data for this ID
-                for (var element_index in this.courses) {
-                    var element_value = this.courses[element_index];
-                    if (element_value.id === value) {
-                        if (desired_unit_value === 0) {
-                            desired_unit_value = element_value.units;
-                        } else if (desired_unit_value !== element_value.units) {
-                            this.inconsistent_units = true;
-                        }
-
-                        break;
-                    }
-                }
-            }
+            // Ensure Unit Count is valid:
+            this.invalid_units = this.details.unit_count <= 0;
+            this.invalid_units_step = this.details.unit_count % 6 !== 0;
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
@@ -117,11 +102,11 @@ Vue.component('rule', {
             component_names: COMPONENT_NAMES
         }
     },
-    template: '#ruleTemplate'
+    template: '#requirementTemplate'
 });
 
 // Contains a set of rules, with a button to add more
-Vue.component('rule_container', {
+Vue.component('requirement_container', {
     props: {
         "rules": {
             type: Array
@@ -178,7 +163,7 @@ function handleRules() {
 }
 
 var app = new Vue({
-    el: '#rulesContainer',
+    el: '#requirementsContainer',
     data: {
         rules: []
     }

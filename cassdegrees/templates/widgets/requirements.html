@@ -1,21 +1,29 @@
 {% load static %}
 
-<fieldset id="rulesContainer">
-    <legend>Add Rules</legend>
+<fieldset id="requirementsContainer">
+    <legend>Add Requirements</legend>
 
     <br />
 
-    <rule_container v-bind:rules="rules" />
+    <requirement_container v-bind:rules="rules" />
 </fieldset>
 
 {% verbatim %}
 <script type="text/x-template" id="courseRequirementTemplate">
     <fieldset v-if="!redraw">
+        <p class="form-group">
+            <label>
+                Unit Count:
+            </label>
+            <input class="text" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+        </p>
+
+        <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
+        <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
         <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
-        <div class="msg-error" v-if="inconsistent_units">Options have different unit values!</div>
 
         <p>
-            Students must pick one from the following:
+            Students must pick from the following courses:
         </p>
 
         <div v-for="(id, index) in details.ids">
@@ -29,7 +37,7 @@
     </fieldset>
 </script>
 
-<script type="text/x-template" id="ruleTemplate">
+<script type="text/x-template" id="requirementTemplate">
     <div class="card">
         <header class="box-header">
             <a href="#" class="card-header-icon">
@@ -38,7 +46,7 @@
                 </span>
             </a>
             <p class="card-header-title">
-                {{ component_names[details.type] }}
+                Courses
             </p>
             <input type="button" v-on:click="$emit('remove')" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
         </header>
@@ -55,7 +63,7 @@
             <div v-if="index < rules.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
         </div>
 
-        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="add_rule" value="Add New Rule" />
+        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="add_rule" value="Add New Requirement" />
 
 
     </div>
