@@ -10,7 +10,7 @@ def index(request):
     buttons = [
         {'url': "/create/program/", 'img': "../static/img/create_plan_img.png", 'label': "Create Program Template"},
         {'url': "/create/subplan/", 'img': "../static/img/create_subplan_img.png", 'label': "Create Subplan"},
-        {'url': "/bulk_upload/", 'img': "../static/img/create_list_img.png", 'label': "Bulk Upload"},
+        {'url': "", 'img': "../static/img/create_list_img.png", 'label': "Create List"},
         {'url': "/list/", 'img': "../static/img/open_existing_img.png", 'label': "Open Existing"},
         {'url': "/list/?view=Course", 'img': "../static/img/manage_courses_img.png", 'label': "Manage Courses"}
     ]

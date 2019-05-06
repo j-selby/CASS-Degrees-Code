@@ -18,37 +18,10 @@ class CourseSerializer(serializers.HyperlinkedModelSerializer):
 class SubplanSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SubplanModel
-        fields = ('id', 'code', 'year', 'name', 'units', 'planType')
+        fields = ('id', 'code', 'year', 'name', 'units', 'planType', 'rules', 'publish')
 
 
-class CourseIDSerializer(serializers.PrimaryKeyRelatedField):
+class ProgramSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = CourseModel
-        fields = ['id', 'code']
-        many = True
-        read_only = False
-        queryset = CourseModel.objects.all()
-
-
-class SubplanIDSerializer(serializers.PrimaryKeyRelatedField):
-    class Meta:
-        model = SubplanModel
-        fields = ['id', 'code']
-        many = True
-        read_only = False
-        queryset = SubplanModel.objects.all()
-
-
-class CoursesInSubplanSerializer(serializers.HyperlinkedModelSerializer):
-    courseId = CourseIDSerializer(queryset=CourseModel.objects.all())
-    subplanId = SubplanIDSerializer(queryset=SubplanModel.objects.all())
-
-    class Meta:
-        model = CoursesInSubplanModel
-        fields = ('id', 'courseId', 'subplanId')
-
-
-class DegreeSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = DegreeModel
-        fields = ('id', 'code', 'year', 'name', 'units', 'degreeType', 'rules')
+        model = ProgramModel
+        fields = ('id', 'code', 'year', 'name', 'units', 'programType', 'globalRequirements', 'rules')
