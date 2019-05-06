@@ -75,8 +75,10 @@ Vue.component('requirement_course', {
             }
 
             // Ensure Unit Count is valid:
-            this.invalid_units = this.details.unit_count <= 0;
-            this.invalid_units_step = this.details.unit_count % 6 !== 0;
+            if (this.details.unit_count != null) {
+                this.invalid_units = this.details.unit_count <= 0;
+                this.invalid_units_step = this.details.unit_count % 6 !== 0;
+            }
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
