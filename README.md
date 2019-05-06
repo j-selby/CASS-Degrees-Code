@@ -1,4 +1,4 @@
-# CASS-Degrees-Code
+# CASS Degrees Code
 Primary Codebase for the TechLauncher CASS Degrees project
 
 For our landing page please go to: https://github.com/cass-degrees/CASS-Degrees
@@ -21,7 +21,7 @@ Alternatively, if a day or more has past then only 1 approval is required for th
 Please see this document for a full overview and detailed explanation of our branching structure: https://docs.google.com/document/d/1whU7j2F_0RFJ1n1rJsn3H6UcKvLCPCmKZ2J65a7D-9g/edit
 
 ## Project Environment Setup 
-Please view this link: https://docs.google.com/document/d/1AP6ycdfm0Rk04vRhcsrh3G53PR-BPytMMqTyLkMv7vQ/edit?usp=sharing
+Please see the SETUP.md in this repository for current releases' installation guide.
 
 Follow the steps in the guide and you should be able to setup the environment on your own local machine.
 
