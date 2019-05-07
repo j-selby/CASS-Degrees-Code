@@ -87,9 +87,11 @@
         function submit_form(form_action) {
             if (handleProgram() && handleRules()) {
                 document.getElementById('mainForm').action.value = form_action;
-                document.getElementById('mainForm').submit()
+                document.getElementById('mainForm').submit();
+                return true;
+            } else {
+                return false;
             }
-            //return false
         }
     </script>
 {% endblock %}
