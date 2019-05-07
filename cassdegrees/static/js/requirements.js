@@ -138,18 +138,12 @@ Vue.component('requirement_container', {
     },
     data: function() {
         return {
-            show_add_a_rule_modal: false,
-            add_a_rule_modal_option: 'course',
-
-            component_names: COMPONENT_NAMES,
-
             // Forces the element to re-render, if mutable events occurred
             redraw: false
         }
     },
     methods: {
-        add_rule: function() {
-            this.show_add_a_rule_modal = false;
+        add_requirement: function() {
             this.rules.push({
                 type: 'course',
             });
@@ -168,7 +162,7 @@ Vue.component('requirement_container', {
             });
         }
     },
-    template: '#ruleContainerTemplate'
+    template: '#requirementContainerTemplate'
 });
 
 /**

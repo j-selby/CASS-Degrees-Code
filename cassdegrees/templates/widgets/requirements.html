@@ -58,14 +58,14 @@
     </div>
 </script>
 
-<script type="text/x-template" id="ruleContainerTemplate">
+<script type="text/x-template" id="requirementContainerTemplate">
     <div v-if="!redraw">
         <div v-for="(item, index) in rules" :key="index" >
             <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index)"></rule>
             <div v-if="index < rules.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
         </div>
 
-        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="add_rule" value="Add New Requirement" />
+        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="add_requirement" value="Add New Requirement" />
 
 
     </div>
