@@ -16,7 +16,7 @@ The idea is that once someone completes a feature or user story, they will creat
 the develop branch.
 
 **Pull Requests** are reviewed by the projects team members, the rule is that 2 people must approve of the feature or user story before it can be merged into the develop branch.   
-Alternatively, if a day or more has past then only 1 approval is required for the pull request. This is to ensure the lively hood of our pull requests so that they don't go stale and reduce productivity of other people’s sections who may depend on a pull request.
+Alternatively, if a day or more has passed then only 1 approval is required for the pull request. This is to ensure the livelihood of our pull requests so that they don't go stale and reduce productivity of other people’s sections who may depend on a pull request.
 
 Please see this document for a full overview and detailed explanation of our branching structure: https://docs.google.com/document/d/1whU7j2F_0RFJ1n1rJsn3H6UcKvLCPCmKZ2J65a7D-9g/edit
 
