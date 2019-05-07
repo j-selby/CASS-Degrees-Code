@@ -29,16 +29,61 @@
         {% if program.programType == 'other' %}
             Other Degree
         {% endif %}
+        ({{ program.units }} units)
     </p>
 
-    <div class="box">
+    <div class="box grey-text">
         Student name & ID number: <br />
     </div>
 
     <div class="columns-3 columns-no-gap">
 
+        {% for rule in program.rules %}
+            <div class="box{% if forloop.last %} break-column{% endif %}">
+                {% if rule.type == "subplan" %}
+                    <p>Completion of {% if rule.contents|length == 1 %} the following {% else %} one subplan from the following list {% endif %}for {{ rule.units }} units:</p>
+                    <ul>
+                        {% for value in rule.contents.values %}
+                            <!-- TODO: Render subplan here -->
+                            <li>{{ value.name }}</li>
+                        {% endfor %}
+                    </ul>
+
+                    {% with rule.units as n %}
+                        <!-- https://stackoverflow.com/questions/1107737/numeric-for-loop-in-django-templates -->
+                        {% with ''|center:n as range %}
+                            {% for _ in range %}
+                                <!-- https://stackoverflow.com/questions/8447913/is-there-a-filter-for-divide-for-django-template -->
+                                {% if forloop.counter|divisibleby:"6" %}
+                                    <div class="box grey-text">
+                                        Course:
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                    {% endwith %}
+
+                {% elif rule.type == "custom_text" %}
+                    <p>For {{ rule.units }} units:</p>
+                    <p>{{ rule.text }}</p>
+                {% else %}
+                    ERROR: Unknown rule type "{{ rule.type }}"!
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <div class="box">
+            <p>
+                Template info:<br />
+                Some useful description here
+            </p>
+        </div>
+        <div class="box" style="min-height: 3cm">
+            <p class="grey-text" style="min-height: 3cm">Student notes:</p>
+        </div>
+
         {% for rule in program.globalRequirements %}
-            <div class="box">
+            <div class="box {% if forloop.last %} break-column{% endif %}">
                 {% if rule.type == "min" %}
                     <p>
                         A <b>minimum</b> of {{ rule.unit_count }} units must come from completion of {{ rule.prettyList }} courses.
@@ -52,23 +97,5 @@
                 {% endif %}
             </div>
         {% endfor %}
-
-        {% for rule in program.rules %}
-            <div class="box">
-                {% if rule.type == "subplan" %}
-                    <p>Completion of one subplan from the following list:</p>
-                    {% for value in rule.contents.values %}
-                        <!-- TODO: Render subplan here -->
-                        <p>{{ value.name }}</p>
-                    {% endfor %}
-                {% elif rule.type == "custom_text" %}
-                    <p>For {{ rule.units }} units:</p>
-                    <p>{{ rule.text }}</p>
-                {% else %}
-                    ERROR: Unknown rule type "{{ rule.type }}"!
-                {% endif %}
-            </div>
-        {% endfor %}
-
     </div>
 {% endblock %}

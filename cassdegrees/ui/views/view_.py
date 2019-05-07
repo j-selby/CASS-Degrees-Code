@@ -29,9 +29,14 @@ def pretty_print_rules(program):
         # For a subplan rule, GET the name of the subplan for display
         if rule["type"] == "subplan":
             subplans = {}
+            units = 0
             for id in rule["ids"]:
-                subplans[id] = SubplanModel.objects.get(id=int(id))
+                object = SubplanModel.objects.get(id=int(id))
+                units = object.units
+                subplans[id] = object
             rule["contents"] = subplans
+            rule["units"] = units
+
 
 
 def view_(request):
