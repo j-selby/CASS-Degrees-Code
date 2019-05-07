@@ -39,7 +39,8 @@ def create_program(request):
 
     return render(request, 'createprogram.html', context={
         "edit": False,
-        "form": form
+        "form": form,
+        "render_separately": ["staffNotes", "studentNotes"]
     })
 
 
@@ -82,5 +83,6 @@ def edit_program(request):
 
     return render(request, 'createprogram.html', context={
         "edit": True,
-        "form": form
+        "form": form,
+        "render_separately": ["staffNotes", "studentNotes"]
     })
