@@ -43,6 +43,9 @@
             {% endfor %}
         </fieldset>
 
+
+        <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
+         structure -->
         <div class="anuform">
         {% include "widgets/globalrequirements.html" %}
         {% include "widgets/rules.html" %}
@@ -72,10 +75,6 @@
             {% endfor %}
         </fieldset>
     </form>
-
-    <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
-         structure -->
-
 
     <p class="text-right">
         <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Edit{% else %}Create{% endif %}"
