@@ -79,7 +79,9 @@ python manage.py migrate
     14. python manage.py createsuperuser
     14. You can set any value for username, email or password. Remember it though so you can log into the admin website. I did u: admin and pw: admin.
 
-**If you made it this far then *CONGRATULATIONS!* you know have a working local environment to play with!**
+**If you made it this far then *CONGRATULATIONS!***     
+**You now have a working local environment to play with!**
 
-**If you did and it doesn't work... then please create an issue or raise it to one of our project members and we will
+**If you made it this far and it doesn't work...**      
+**Please create an issue or raise it to one of our project members and we will
 try to assist you as soon as possible to the best of our abilities!**
