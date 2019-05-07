@@ -30,6 +30,8 @@ Vue.component('requirement_course', {
             "invalid_units": false,
             "invalid_units_step": false,
 
+            "not_enough_courses": false,
+
             "redraw": false
         }
     },
@@ -79,6 +81,21 @@ Vue.component('requirement_course', {
                 this.invalid_units = this.details.unit_count <= 0;
                 this.invalid_units_step = this.details.unit_count % 6 !== 0;
             }
+
+            // Check that there is at least 12 units selected if students must select from at least 12 units.
+            this.not_enough_courses = false;
+            var total_units = 0;
+            for (var index in this.details.ids) {
+                var value = this.details.ids[index];
+                // Find the raw data for this ID
+                for (var element_index in this.courses) {
+                    var element_value = this.courses[element_index];
+                    if (element_value.id === value) {
+                        total_units += element_value.units;
+                    }
+                }
+            }
+            this.not_enough_courses = total_units < this.details.unit_count;
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
