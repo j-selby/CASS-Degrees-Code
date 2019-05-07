@@ -11,11 +11,26 @@
 {% verbatim %}
 <script type="text/x-template" id="courseRequirementTemplate">
     <fieldset v-if="!redraw">
+        <p>
+            Students must select...
+        </p>
+
+        <p class="form-group">
+            <label class="radio">
+                <input type="radio">
+                a minimum
+            </label>
+            <label class="radio">
+                <input type="radio" name="answer">
+                a maximum
+            </label>
+        </p>
         <p class="form-group">
             <label>
-                Unit Count:
+                of
             </label>
             <input class="text" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+            units
         </p>
 
         <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
@@ -23,7 +38,7 @@
         <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
 
         <p>
-            Students must pick from the following courses:
+            from the following courses:
         </p>
 
         <div v-for="(id, index) in details.ids">
