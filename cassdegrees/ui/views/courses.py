@@ -45,6 +45,18 @@ def delete_course(request):
     used_programs_info = dict()  # {program id (int): program information (str)}
 
     def check_course(prog_or_sub, used_prog_or_sub, used_prog_or_sub_info, c):
+        """ Checks if a course c is in a program/subplan and keeps track of it
+
+        :param prog_or_sub: a list of programs/subplans that depend on c
+        :type prog_or_sub: dict
+        :param used_prog_or_sub: {program/subplan id (int) -> a list of subplans/courses (list)}
+        :type used_prog_or_sub: dict
+        :param used_prog_or_sub_info: {program/subplan id (int) -> program/subplan information (str)}
+        :type used_prog_or_sub_info: dict
+        :param c: course
+        :type c: dict
+        :return: None
+        """
         if len(prog_or_sub) > 0:  # if the course with code equal to c['code'] is used on any program/subplan
             # dont delete the course and keep track of which subplans/programs are dependent on course c
             for ps in prog_or_sub:
@@ -83,6 +95,16 @@ def delete_course(request):
                 used_programs_info[p['id']] = p['name'] + ' (' + p['code'] + ') ' + 'in ' + str(p['year'])
 
     def compose_message(start_msg, content, content_info):
+        """ Composes error message when a course(s) is in any program/subplan
+
+        :param start_msg: start of the message
+        :type start_msg: str
+        :param content: {program/subplan id (int) -> list of programs/subplans (list)}
+        :type content: dict
+        :param content_info: {program/subplan id (int)-> program/subplan information (list)}
+        :type content_info: dict
+        :return: composed message (str)
+        """
         msg = start_msg
         for content_id, elems in content.items():
             is_plural = len(elems) > 1
