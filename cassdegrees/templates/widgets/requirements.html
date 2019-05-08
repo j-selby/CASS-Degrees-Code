@@ -28,9 +28,9 @@
             from the following courses:
         </p>
 
-        <div v-for="(id, index) in details.ids">
-            <select v-model="details.ids[index]" v-on:change="check_options" required>
-                <option v-for="course in courses" v-bind:value="course.id">{{ course.code }} {{ course.name }} {{ course.year }} ({{ course.units }} units)</option>
+        <div v-for="(code, index) in details.codes">
+            <select v-model="details.codes[index]" v-on:change="check_options" required>
+                <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
             </select>
             <input v-if="index != 0" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
         </div>

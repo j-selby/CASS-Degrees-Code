@@ -12,8 +12,8 @@ Vue.component('requirement_course', {
 
             validator: function (value) {
                 // Ensure that the object has all the attributes we need
-                if (!value.hasOwnProperty("ids")) {
-                    value.ids = [-1];
+                if (!value.hasOwnProperty("codes")) {
+                    value.codes = [""];
                 }
 
                 return true;
@@ -30,8 +30,6 @@ Vue.component('requirement_course', {
             "invalid_units": false,
             "invalid_units_step": false,
 
-            "not_enough_courses": false,
-
             "redraw": false
         }
     },
@@ -46,19 +44,19 @@ Vue.component('requirement_course', {
 
             rule.check_options();
         });
-        request.open("GET", "/api/model/course/?format=json");
+        request.open("GET", "/api/search/?select=code,name&from=course");
         request.send();
     },
     methods: {
         add_course: function() {
             // Mutable modification - redraw needed
-            this.details.ids.push(-1);
+            this.details.codes.push(-1);
             this.check_options();
             this.do_redraw();
         },
         remove_course: function(index) {
             // Mutable modification - redraw needed
-            this.details.ids.splice(index, 1);
+            this.details.codes.splice(index, 1);
             this.check_options();
             this.do_redraw();
         },
@@ -67,8 +65,8 @@ Vue.component('requirement_course', {
             this.non_unique_options = false;
             var found = [];
 
-            for (var index in this.details.ids) {
-                var value = this.details.ids[index];
+            for (var index in this.details.codes) {
+                var value = this.details.codes[index];
                 if (found.includes(value)) {
                     this.non_unique_options = true;
                     break;
@@ -81,21 +79,6 @@ Vue.component('requirement_course', {
                 this.invalid_units = this.details.unit_count <= 0;
                 this.invalid_units_step = this.details.unit_count % 6 !== 0;
             }
-
-            // Check that there is at least 12 units selected if students must select from at least 12 units.
-            this.not_enough_courses = false;
-            var total_units = 0;
-            for (var index in this.details.ids) {
-                var value = this.details.ids[index];
-                // Find the raw data for this ID
-                for (var element_index in this.courses) {
-                    var element_value = this.courses[element_index];
-                    if (element_value.id === value) {
-                        total_units += element_value.units;
-                    }
-                }
-            }
-            this.not_enough_courses = total_units < this.details.unit_count;
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
