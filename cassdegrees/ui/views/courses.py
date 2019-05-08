@@ -15,13 +15,13 @@ def create_course(request):
     # Initialise instance with an empty string so that we don't get a "may be referenced before assignment" error below
     instance = ""
 
-    # If we are creating a program from a duplicate, we retrieve the instance with the given id
+    # If we are creating a course from a duplicate, we retrieve the instance with the given id
     # (should always come along with 'duplicate' variable) and return that data to the user.
     if duplicate:
         id = request.GET.get('id')
         if not id:
             return HttpResponseNotFound("Specified ID not found")
-        # Find the program to specifically create from:
+        # Find the course to specifically create from:
         instance = CourseModel.objects.get(id=int(id))
 
     if request.method == 'POST':
