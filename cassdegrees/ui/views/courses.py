@@ -49,11 +49,15 @@ def delete_course(request):
         duplicate_courses = json.loads(search(gen_request).content.decode())
         if len(duplicate_courses) < 2:
             gen_request.GET = {'select': 'code,year,rules', 'from': 'subplan', 'rules': course['code']}
+            # subplans which depend on course where its code is equal to course['code']
             subplans = json.loads(search(gen_request).content.decode())
             gen_request.GET = {'select': 'code,year,rules', 'from': 'program', 'rules': course['code']}
+            # programs which depend on course where its code is equal to course['code']
             programs = json.loads(search(gen_request).content.decode())
 
+            # if there are any subplans/programs that could be affected by the deletion of the selected courses
             if len(subplans) > 0 or len(programs) > 0:
+                # compose error message
                 if len(subplans) > 0:
                     error_msg += course['code'] + " is used in " + \
                                  ", ".join(["{} ({})".format(sp['code'], sp['year']) for sp in subplans]) + \
@@ -62,7 +66,7 @@ def delete_course(request):
                     error_msg += course['code'] + " is used in " + \
                                  ", ".join(["{} ({})".format(sp['code'], sp['year']) for sp in programs]) + \
                                  ", and therefore cannot be deleted.\n"
-                continue
+                continue  # dont append course to the list instances
         instances.append(CourseModel.objects.get(id=course['id']))
 
     if len(error_msg) > 0:
