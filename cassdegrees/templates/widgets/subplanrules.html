@@ -1,11 +1,11 @@
 {% load static %}
 
-<fieldset id="requirementsContainer">
-    <legend>Add Requirements</legend>
+<fieldset id="rulesContainer">
+    <legend>Add Rules</legend>
 
     <br />
 
-    <requirement_container v-bind:rules="rules" />
+    <rule_container v-bind:rules="rules" />
 </fieldset>
 
 {% verbatim %}
@@ -22,7 +22,6 @@
         <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
         <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
         <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
-        <div class="msg-error" v-if="not_enough_courses">Not Enough courses for the number of units specified!</div>
 
         <p>
             from the following courses:
@@ -39,7 +38,7 @@
     </fieldset>
 </script>
 
-<script type="text/x-template" id="requirementTemplate">
+<script type="text/x-template" id="ruleTemplate">
     <div class="card">
         <header class="box-header">
             <a href="#" class="card-header-icon">
@@ -53,19 +52,19 @@
             <input type="button" v-on:click="$emit('remove')" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
         </header>
         <div class="box-solid">
-            <div class="card-content" v-bind:is="'requirement_course'" v-bind:details="details"></div>
+            <div class="card-content" v-bind:is="'rule_course'" v-bind:details="details"></div>
         </div>
     </div>
 </script>
 
-<script type="text/x-template" id="requirementContainerTemplate">
+<script type="text/x-template" id="ruleContainerTemplate">
     <div v-if="!redraw">
         <div v-for="(item, index) in rules" :key="index" >
             <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index)"></rule>
             <div v-if="index < rules.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
         </div>
 
-        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="add_requirement" value="Add New Requirement" />
+        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="add_rule" v-bind:add_a_rule_modal_option="'course'" value="Add New Rule" />
 
 
     </div>
@@ -73,7 +72,7 @@
 {% endverbatim %}
 
 <script src="{% static 'js/vue.js' %}" type="application/javascript"></script>
-<script src="{% static 'js/requirements.js' %}" type="application/javascript"></script>
+<script src="{% static 'js/rules.js' %}" type="application/javascript"></script>
 
 {% if rules != None %}
     <script>
