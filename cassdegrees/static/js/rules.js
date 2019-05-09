@@ -212,6 +212,8 @@ Vue.component('rule_year_level', {
     },
     data: function() {
         return {
+            "year_level_max_range": 9000,
+
             // Display related warnings if true
             "invalid_units": false,
             "invalid_units_step": false,
