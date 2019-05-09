@@ -195,7 +195,7 @@ Vue.component('rule_course', {
     template: '#courseRequirementTemplate'
 });
 
-Vue.component('rule_subject_area_specific', {
+Vue.component('rule_subject_area', {
     props: {
         "details": {
             type: Object,
