@@ -3,6 +3,7 @@
 // Translation table between internal names for components and human readable ones.
 const COMPONENT_NAMES = {
     'subplan': "Subplan",
+    'year_level': 'Year-Level Specific Units',
     'course': "Course",
     'custom_text': "Custom (Text)"
 };
@@ -192,6 +193,72 @@ Vue.component('rule_course', {
         }
     },
     template: '#courseRequirementTemplate'
+});
+
+Vue.component('rule_year_level', {
+    props: {
+        "details": {
+            type: Object,
+
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("year_level")) {
+                    value.year_level = null;
+                }
+
+                return true;
+            }
+        }
+    },
+    data: function() {
+        return {
+            // Display related warnings if true
+            "invalid_units": false,
+            "invalid_units_step": false,
+            "invalid_course_year_level": false,
+
+            "redraw": false
+        }
+    },
+    created: function() {
+        // Javascript has the best indirection...
+        var rule = this;
+
+        var request = new XMLHttpRequest();
+
+        request.addEventListener("load", function() {
+            rule.courses = JSON.parse(request.response);
+
+            rule.check_options();
+        });
+        request.open("GET", "/api/search/?select=code,name&from=course");
+        request.send();
+    },
+    methods: {
+        check_options: function() {
+            // Ensure Unit Count is valid:
+            if (this.details.unit_count != null) {
+                this.invalid_units = this.details.unit_count <= 0;
+                this.invalid_units_step = this.details.unit_count % 6 !== 0;
+            }
+            // Ensure Course Year Level Input is valid
+            if (this.details.year_level != null) {
+                this.invalid_course_year_level = this.details.year_level % 1000 !== 0;
+                console.log(this.details.year_level);
+                console.log(this.details.year_level % 1000 !== 0);
+                console.log("it woooorks");
+            }
+        },
+        // https://michaelnthiessen.com/force-re-render/
+        do_redraw: function() {
+            this.redraw = true;
+
+            this.$nextTick(() => {
+                this.redraw = false;
+            });
+        }
+    },
+    template: '#yearSpecificRuleTemplate'
 });
 
 Vue.component('rule_custom_text', {
