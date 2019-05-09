@@ -230,9 +230,6 @@ Vue.component('rule_year_level', {
             // Ensure Course Year Level Input is valid
             if (this.details.year_level != null) {
                 this.invalid_course_year_level = this.details.year_level % 1000 !== 0;
-                console.log(this.details.year_level);
-                console.log(this.details.year_level % 1000 !== 0);
-                console.log("it woooorks");
             }
         },
         // https://michaelnthiessen.com/force-re-render/
