@@ -3,7 +3,7 @@
 // Translation table between internal names for components and human readable ones.
 const COMPONENT_NAMES = {
     'subplan': "Subplan",
-    'subject_area_specific': "Subject-Area Specific Units",
+    'subject_area': "Subject-Area Units",
     'course': "Course",
     'custom_text': "Custom (Text)"
 };
