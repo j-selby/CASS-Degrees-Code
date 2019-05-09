@@ -259,7 +259,7 @@ Vue.component('rule_subject_area', {
             });
         }
     },
-    template: '#subjectAreaSpecificRuleTemplate'
+    template: '#subjectAreaRuleTemplate'
 });
 
 Vue.component('rule_custom_text', {
