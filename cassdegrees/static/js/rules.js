@@ -212,7 +212,7 @@ Vue.component('rule_year_level', {
     },
     data: function() {
         return {
-            "year_level_max_range": 9000,
+            "number_of_year_levels": 9,
 
             // Display related warnings if true
             "invalid_units": false,

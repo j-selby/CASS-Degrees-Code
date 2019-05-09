@@ -79,7 +79,7 @@
 
         <div>
             <select v-model="details.year_level" v-on:change="check_options" required>
-                <option v-for="year_level in year_level_max_range/1000" v-bind:value="details.year_level">{{  year_level*1000 }}-level</option>
+                <option v-for="year_level in number_of_year_levels" v-bind:value="year_level*1000">{{ year_level*1000 }}-level</option>
             </select>
         </div>
     </fieldset>
