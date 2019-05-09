@@ -220,20 +220,6 @@ Vue.component('rule_year_level', {
             "redraw": false
         }
     },
-    created: function() {
-        // Javascript has the best indirection...
-        var rule = this;
-
-        var request = new XMLHttpRequest();
-
-        request.addEventListener("load", function() {
-            rule.courses = JSON.parse(request.response);
-
-            rule.check_options();
-        });
-        request.open("GET", "/api/search/?select=code,name&from=course");
-        request.send();
-    },
     methods: {
         check_options: function() {
             // Ensure Unit Count is valid:
