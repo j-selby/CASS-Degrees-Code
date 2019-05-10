@@ -59,10 +59,9 @@
                             {% if key != "id" %}
                                 <th>{{ key }}</th>
                             {% else %}
-                                <th>
-                                    <p class="text-center">
-                                        Select All<input title="Select All" type="checkbox" name="select_all" onclick="selectAll(this, '{{ title }}')">
-                                    </p>
+                                <th class="text-center">
+                                    Select All </br>
+                                    <input title="Select All" type="checkbox" name="select_all" onclick="selectAll(this, '{{ title }}')">
                                 </th>
                                 <th>{{ title }}</th>
                             {% endif %}
