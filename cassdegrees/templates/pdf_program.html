@@ -4,11 +4,14 @@
 {% block page-title %}{{ program.name }} ({{ program.year }}){% endblock %}
 
 {% block content %}
+    <div class="box" style="float: right">
+        Student name & ID number: <br />
+        <br />
+    </div>
+
     <h1 class="no-bottom-margin">{{ program.name }} ({{ program.year }}, {{ program.units }} units)</h1>
 
-    <div class="box grey-text">
-        Student name & ID number: <br />
-    </div>
+    <br />
 
     <div class="columns-3 columns-no-gap">
 
@@ -35,6 +38,8 @@
             {% elif rule.type == "custom_text" %}
                 <!-- TODO: render custom text courses here optionallly -->
             {% endif %}
+
+            {% if forloop.last %}<div class="break-box"></div>{% endif %}
         {% endfor %}
 
         <div class="break-column"></div>
@@ -51,11 +56,13 @@
             <div class="box {% if forloop.last %} break-column{% endif %}">
                 {% if rule.type == "min" %}
                     <p>
-                        A <b>minimum</b> of {{ rule.unit_count }} units must come from completion of {{ rule.prettyList }} courses.
+                        {{rule.prettyList}} courses: <br/>
+                        <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> units ({{ rule.unit_count }} <b>minimum</b>)
                     </p>
                 {% elif rule.type == "max" %}
                     <p>
-                        A <b>maximum</b> of {{ rule.unit_count }} units may come from completion of {{ rule.prettyList }} courses.
+                        {{rule.prettyList}} courses: <br/>
+                        <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> units ({{ rule.unit_count }} <b>maximum</b>)
                     </p>
                 {% else %}
                     ERROR: Unknown global requirement type "{{ rule.type }}"!
