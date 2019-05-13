@@ -94,7 +94,7 @@ class EditSubplanFormSnippet(ModelForm):
         }
         error_messages = {
             NON_FIELD_ERRORS: {
-                'unique_together': "A plan with the same %(field_labels)s already exists!",
+                'unique_together': "A Subplan with the same %(field_labels)s already exists!",
             }
         }
 
