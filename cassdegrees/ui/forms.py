@@ -50,7 +50,7 @@ class EditProgramFormSnippet(ModelForm):
         }
         error_messages = {
             NON_FIELD_ERRORS: {
-                'unique_together': "A program with the same %(field_labels)s already exists!",
+                'unique_together': "A Program with the same %(field_labels)s already exists!",
             }
         }
 
