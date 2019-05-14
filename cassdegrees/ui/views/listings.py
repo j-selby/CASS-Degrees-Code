@@ -54,12 +54,13 @@ def data_list(request):
     }
     # No search, render default page
     if not query:
-        return render(request, 'list.html', context={'data': data_dict_as_displayable(
-                {'Program': ProgramModel.objects.values(),
-                 'Subplan': SubplanModel.objects.values(),
-                 'Course': CourseModel.objects.values()}
-            ),
-            'render': render_properties})
+        return render(request, 'list.html',
+                      context={'data': data_dict_as_displayable(
+                                  {'Program': ProgramModel.objects.values(),
+                                   'Subplan': SubplanModel.objects.values(),
+                                   'Course': CourseModel.objects.values()}
+                              ),
+                              'render': render_properties})
     # User search, render results
     else:
         # Remove common words and make the query set unique and uppercase
