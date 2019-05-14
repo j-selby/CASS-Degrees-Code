@@ -32,9 +32,15 @@ class EditProgramFormSnippet(ModelForm):
                   'studentNotes')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. BARTS"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull", 'min': 2000, 'max': 3000}),
+            'year': forms.NumberInput(attrs={'class': "text tfull",
+                                             'onkeydown': "javascript: return event.keyCode === 8 || "
+                                                          "event.keyCode === 46 ? true : !isNaN(Number(event.key))",
+                                             'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Bachelor of Arts"}),
-            'units': forms.NumberInput(attrs={'class': "text tfull", 'step': 6, 'max': 512}),
+            'units': forms.NumberInput(attrs={'class': "text tfull",
+                                              'onkeydown': "javascript: return event.keyCode === 8 || "
+                                                           "event.keyCode === 46 ? true : !isNaN(Number(event.key))",
+                                              'step': 6, 'max': 512}),
             'staffNotes': forms.Textarea(attrs={
                 'class': "tfull",
                 'placeholder': "Notes for other CASS staff - these will not be displayed on the final template"}),

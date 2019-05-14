@@ -15,7 +15,7 @@
             <label>
                 Students must select...
             </label>
-            <input class="text" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+            <input class="text" onkeydown="javascript: return event.keyCode === 8 || event.keyCode === 46 ? true : !isNaN(Number(event.key))" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
             units
         </p>
 
