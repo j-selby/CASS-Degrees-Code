@@ -16,9 +16,9 @@
     {# generate splash menu based on buttons defined in ui/views.py   #}
     {% for button in buttons %}
         <div class = "img_btn_container" style="width: {{ element_width }}">
-            <div>
+            <div class="align-center">
                 <a href={{ button.url }}>
-                    <img src={{ button.img }} alt={{ button.label }}>
+                    <img src={{ button.img }} alt={{ button.label }} style="text-align: center">
                 </a>
             </div>
 

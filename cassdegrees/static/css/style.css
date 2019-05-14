@@ -121,3 +121,7 @@ select.text{
 .no-left-margin {
     margin-left: 0 !important;
 }
+
+.align-center {
+    text-align: center;
+}
