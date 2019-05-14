@@ -89,7 +89,10 @@ class EditSubplanFormSnippet(ModelForm):
         fields = ('code', 'year', 'name', 'units', 'planType', 'rules', 'publish')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH-MIN"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull", 'min': 2000, 'max': 3000}),
+            'year': forms.NumberInput(attrs={'class': "text tfull",
+                                             'onkeydown': "javascript: return event.keyCode === 8 || "
+                                                          "event.keyCode === 46 ? true : !isNaN(Number(event.key))",
+                                             'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Art History Minor"}),
             'publish': forms.CheckboxInput()
             # See units above
@@ -140,10 +143,16 @@ class EditCourseFormSnippet(ModelForm):
         fields = ('code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull", 'type': "number"}),
+            'year': forms.NumberInput(attrs={'class': "text tfull",
+                                             'onkeydown': "javascript: return event.keyCode === 8 || "
+                                                          "event.keyCode === 46 ? true : !isNaN(Number(event.key))",
+                                             'type': "number"}),
             'name': forms.TextInput(attrs={'class': "text tfull",
                                            'placeholder': "e.g. Art and Design Histories: Form and Space"}),
-            'units': forms.NumberInput(attrs={'class': "text tfull", 'type': "number"}),
+            'units': forms.NumberInput(attrs={'class': "text tfull",
+                                              'onkeydown': "javascript: return event.keyCode === 8 || "
+                                                           "event.keyCode === 46 ? true : !isNaN(Number(event.key))",
+                                              'type': "number"}),
         }
         labels = {
             'offeredSem1': "Offered in Semester 1",
