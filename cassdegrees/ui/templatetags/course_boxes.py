@@ -14,6 +14,7 @@ def course_box(context, count):
 
     return Template(output).render(context)
 
+
 @register.simple_tag(takes_context=True)
 def course_box_with_values(context, count, courses):
     output = ""
