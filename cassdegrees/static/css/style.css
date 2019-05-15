@@ -125,3 +125,8 @@ select.text{
 .align-center {
     text-align: center;
 }
+
+.homepage-button {
+    display: block;
+    text-decoration: none;
+}
