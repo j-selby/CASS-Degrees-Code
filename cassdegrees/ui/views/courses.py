@@ -60,6 +60,8 @@ def delete_course(request):
 
     # ids of all the courses that were selected to be deleted
     ids_to_delete = [int(course_id) for course_id in data.getlist('id')]
+    if not ids_to_delete:
+        return redirect('/list/?view=Course&error=Please select a Course to delete!')
     courses_to_delete = [c for c in courses if c['id'] in ids_to_delete]
 
     error_msg = ""
