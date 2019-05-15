@@ -185,7 +185,6 @@ class EditCourseFormSnippet(ModelForm):
 
     def clean_code(self):
         data = self.cleaned_data['code']
-        print(len(data))
         if len(data) != 8 and len(data) != 9:
             raise forms.ValidationError("This should be at least 8-9 characters  (4 Letters, 4 Numbers "
                                         "+ 1 Optional Letter)!")
