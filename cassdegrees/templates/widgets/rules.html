@@ -58,6 +58,47 @@
     </fieldset>
 </script>
 
+<script type="text/x-template" id="eitherTemplate">
+    <div v-if="!redraw">
+        <div v-for="(item, index) in rules" :key="index" >
+            <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index)"></rule>
+            <div v-if="index < rules.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
+        </div>
+
+        <div class="either_1">
+            <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; which_or = 1" value="Add New Rule to Group 1" />
+        </div>
+        <div class="either_2">
+            <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; which_or = 2" value="Add New Rule to Group 2" />
+        </div>
+
+        <div class="modal" v-if="show_add_a_rule_modal">
+            <div class="modal-background" v-on:click="show_add_a_rule_modal = false"></div>
+            <div class="modal-card">
+                <div class="card">
+                    <header class="box-header">
+                        Add a rule...
+                    </header>
+                    <div class="box-solid box-has-footer">
+                        <p>Select a kind of rule to add:</p>
+                        <div class="select">
+                            <select v-model="add_a_rule_modal_option">
+                                <option v-for="(option, index) in component_names" v-bind:value="index">
+                                    {{ option }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <footer class="box-solid">
+                        <button class="button is-success" v-on:click="add_rule">Add</button>
+                        <button class="button" v-on:click="show_add_a_rule_modal = false">Cancel</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
 <script type="text/x-template" id="subjectAreaRuleTemplate">
     <fieldset v-if="!redraw">
         <p class="form-group">
