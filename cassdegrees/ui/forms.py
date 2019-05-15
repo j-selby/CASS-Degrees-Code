@@ -33,13 +33,11 @@ class EditProgramFormSnippet(ModelForm):
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. BARTS"}),
             'year': forms.NumberInput(attrs={'class': "text tfull",
-                                             'onkeydown': "javascript: return event.keyCode === 8 || "
-                                                          "event.keyCode === 46 ? true : !isNaN(Number(event.key))",
+                                             'onkeydown': "javascript: return checkKeys(event)",
                                              'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Bachelor of Arts"}),
             'units': forms.NumberInput(attrs={'class': "text tfull",
-                                              'onkeydown': "javascript: return event.keyCode === 8 || "
-                                                           "event.keyCode === 46 ? true : !isNaN(Number(event.key))",
+                                              'onkeydown': "javascript: return checkKeys(event)",
                                               'step': 6, 'max': 512}),
             'staffNotes': forms.Textarea(attrs={
                 'class': "tfull",
@@ -90,8 +88,7 @@ class EditSubplanFormSnippet(ModelForm):
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH-MIN"}),
             'year': forms.NumberInput(attrs={'class': "text tfull",
-                                             'onkeydown': "javascript: return event.keyCode === 8 || "
-                                                          "event.keyCode === 46 ? true : !isNaN(Number(event.key))",
+                                             'onkeydown': "javascript: return checkKeys(event)",
                                              'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Art History Minor"}),
             'publish': forms.CheckboxInput()
@@ -144,14 +141,12 @@ class EditCourseFormSnippet(ModelForm):
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006"}),
             'year': forms.NumberInput(attrs={'class': "text tfull",
-                                             'onkeydown': "javascript: return event.keyCode === 8 || "
-                                                          "event.keyCode === 46 ? true : !isNaN(Number(event.key))",
+                                             'onkeydown': "javascript: return checkKeys(event)",
                                              'type': "number"}),
             'name': forms.TextInput(attrs={'class': "text tfull",
                                            'placeholder': "e.g. Art and Design Histories: Form and Space"}),
             'units': forms.NumberInput(attrs={'class': "text tfull",
-                                              'onkeydown': "javascript: return event.keyCode === 8 || "
-                                                           "event.keyCode === 46 ? true : !isNaN(Number(event.key))",
+                                              'onkeydown': "javascript: return checkKeys(event)",
                                               'type': "number"}),
         }
         labels = {
