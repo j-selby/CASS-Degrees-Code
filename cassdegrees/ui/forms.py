@@ -103,7 +103,7 @@ class EditSubplanFormSnippet(ModelForm):
             # planType auto generated
         }
         labels = {
-            'planType': "Plan Type",
+            'planType': "Subplan Type",
         }
         error_messages = {
             NON_FIELD_ERRORS: {
