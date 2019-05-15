@@ -89,14 +89,14 @@ def delete_course(request):
                 if len(programs) > 0:
                     for program in programs:
                         error_msg += "Course Code: '" + course['code'] + "'(" + str(course['year']) + \
-                                         ") is used by Program Code: '" + program['code'] + "'(" + \
-                                         str(program['year']) + ").\n"
+                                     ") is used by Program Code: '" + program['code'] + "'(" + \
+                                     str(program['year']) + ").\n"
                 continue  # dont append course to the list instances
         instances.append(CourseModel.objects.get(id=course['id']))
 
     if len(error_msg) > 0:
-        return redirect('/list/?view=Course&error=Failed to Delete Course(s)!\n' + error_msg +
-                        '\nPlease check dependencies!')
+        return redirect('/list/?view=Course&error=Failed to Delete Course(s)!\n' + error_msg
+                        + '\nPlease check dependencies!')
 
     if "confirm" in data:
         for instance in instances:
