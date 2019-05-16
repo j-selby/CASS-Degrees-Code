@@ -7,6 +7,8 @@ from api.models import SubplanModel
 from api.views import search
 import json
 
+import datetime
+
 
 # Using sampleform template and #59 - basic program creation workflow as it's inspirations
 def create_subplan(request):
@@ -124,6 +126,8 @@ def edit_subplan(request):
         form = EditSubplanFormSnippet(request.POST, instance=instance)
 
         if form.is_valid():
+            instance.lastUpdated = datetime.datetime.now().strftime('%Y-%m-%d')
+            instance.save(update_fields=['lastUpdated'])
             form.save()
             return redirect('/list/?view=Subplan&msg=Successfully Edited Subplan!')
 

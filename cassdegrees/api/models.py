@@ -1,5 +1,6 @@
 from django.db import models
 import django.contrib.postgres.fields as psql
+import datetime
 
 
 class SampleModel(models.Model):
@@ -15,6 +16,7 @@ class CourseModel(models.Model):
     units = models.PositiveIntegerField()
     offeredSem1 = models.BooleanField()
     offeredSem2 = models.BooleanField()
+    lastUpdated = models.DateField(default=datetime.datetime.strptime('2019-03-10', '%Y-%m-%d'))
 
     class Meta:
         unique_together = (("code", "year"),)
@@ -26,6 +28,7 @@ class SubplanModel(models.Model):
     year = models.PositiveIntegerField()
     name = models.CharField(max_length=256)
     units = models.PositiveIntegerField()
+    lastUpdated = models.DateField(default=datetime.datetime.strptime('2019-03-10', '%Y-%m-%d'))
     rules = psql.JSONField(default=list)
     publish = models.BooleanField(default=False)
 
@@ -45,6 +48,7 @@ class ProgramModel(models.Model):
     year = models.PositiveIntegerField()
     name = models.CharField(max_length=256)
     units = models.PositiveIntegerField()
+    lastUpdated = models.DateField(default=datetime.datetime.strptime('2019-03-10', '%Y-%m-%d'))
     staffNotes = models.TextField(blank=True, default='')
     studentNotes = models.TextField(blank=True, default='')
 

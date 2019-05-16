@@ -7,6 +7,8 @@ from django.shortcuts import render, redirect
 from ui.forms import EditCourseFormSnippet
 import json
 
+import datetime
+
 
 def create_course(request):
     duplicate = request.GET.get('duplicate', 'false')
@@ -31,6 +33,7 @@ def create_course(request):
         form = EditCourseFormSnippet(request.POST)
 
         if form.is_valid():
+            # instance.lastUpdated = datetime.date.today
             form.save()
             return redirect('/list/?view=Course&msg=Successfully Added Course!')
 
@@ -121,6 +124,8 @@ def edit_course(request):
         form = EditCourseFormSnippet(request.POST, instance=instance)
 
         if form.is_valid():
+            instance.lastUpdated = datetime.datetime.now().strftime('%Y-%m-%d')
+            instance.save(update_fields=['lastUpdated'])
             form.save()
             return redirect('/list/?view=Course&msg=Successfully Edited Course!')
 
