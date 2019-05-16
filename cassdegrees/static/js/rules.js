@@ -7,11 +7,11 @@ const COMPONENT_NAMES = {
     'subject_area': "Subject-Area Units",
     'course': "Course",
     'custom_text': "Custom (Text)",
-    'either': "Either"
+    'either_or': "Either Or"
 };
 
 // For either rule, list everything in the drop down menu except the "Either" option, or recursion will occur.
-const EITHER_COMPONENT_NAMES = {
+const EITHER_OR_COMPONENT_NAMES = {
     'subplan': "Subplan",
     'year_level': 'Level-Specific Units',
     'subject_area': "Subject-Area Units",
@@ -355,10 +355,11 @@ Vue.component('rule_custom_text', {
     template: '#customTextRuleTemplate'
 });
 
-Vue.component('rule_either', {
+Vue.component('rule_either_or', {
     props: {
-        "rules": {
-            type: Array
+        "or_rules": {
+            type: Object,
+            default: function() { return {'or_group_1':[], 'or_group_2':[]}}
         },
         // Message inserted between rules
         "separator": {
@@ -369,10 +370,10 @@ Vue.component('rule_either', {
     data: function() {
         return {
             show_add_a_rule_modal: false,
-            which_or: 1,
+            which_or: 'or_group_1',
             add_a_rule_modal_option: 'subplan',
 
-            component_names: EITHER_COMPONENT_NAMES,
+            component_names: EITHER_OR_COMPONENT_NAMES,
 
             // Forces the element to re-render, if mutable events occurred
             redraw: false
@@ -381,14 +382,15 @@ Vue.component('rule_either', {
     methods: {
         add_rule: function() {
             this.show_add_a_rule_modal = false;
-            console.log(this.rules);
-            this.rules.push({
+            // Add chosen rule to the right or group (based on the button clicked).
+            this.or_rules[this.which_or].push({
                 type: this.add_a_rule_modal_option,
             });
+            console.log(JSON.stringify(this.or_rules[this.which_or]));
             this.do_redraw();
         },
-        remove: function(index) {
-            this.rules.splice(index, 1);
+        remove: function(index, group) {
+            this.or_rules[group].splice(index, 1);
             this.do_redraw();
         },
         // https://michaelnthiessen.com/force-re-render/
@@ -400,7 +402,7 @@ Vue.component('rule_either', {
             });
         }
     },
-    template: '#eitherTemplate'
+    template: '#eitherOrTemplate'
 });
 
 // Handler for different Vue components, redirecting to the right component
@@ -444,10 +446,10 @@ Vue.component('rule_container', {
     methods: {
         add_rule: function() {
             this.show_add_a_rule_modal = false;
-            console.log(this.rules);
             this.rules.push({
                 type: this.add_a_rule_modal_option,
             });
+            console.log(JSON.stringify(this.rules));
             this.do_redraw();
         },
         remove: function(index) {
