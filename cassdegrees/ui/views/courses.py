@@ -33,7 +33,6 @@ def create_course(request):
         form = EditCourseFormSnippet(request.POST)
 
         if form.is_valid():
-            # instance.lastUpdated = datetime.date.today
             form.save()
             return redirect('/list/?view=Course&msg=Successfully Added Course!')
 
