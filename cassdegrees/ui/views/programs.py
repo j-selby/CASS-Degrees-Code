@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from api.models import ProgramModel
 from django.http import HttpResponseNotFound, HttpRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse
@@ -6,6 +8,7 @@ from ui.forms import EditProgramFormSnippet
 from ui.views.subplans import create_subplan
 
 
+@login_required
 def create_program(request):
     duplicate = request.GET.get('duplicate', 'false')
     if duplicate == 'true':
@@ -61,6 +64,7 @@ def create_program(request):
     })
 
 
+@login_required
 def delete_program(request):
     data = request.POST
     instances = []
@@ -82,6 +86,7 @@ def delete_program(request):
         })
 
 
+@login_required
 def edit_program(request):
     id = request.GET.get('id')
     if not id:

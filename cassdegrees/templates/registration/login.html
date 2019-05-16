@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load breadcrumbs %}
+
+{% block page-title %}Login{% endblock %}
+
+{% block subtitle %}CASS Staff Login{% endblock %}
+
+{% block no-breadcrumbs %}{% endblock %}
+
+{% block content %}
+    <form class="anuform" action="" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend>Login Details</legend>
+            {{ form.as_p }}
+        </fieldset>
+
+        <p class="text-right">
+            <input class="btn-uni-grad btn-large" type="submit" value="Login">
+        </p>
+    </form>
+{% endblock %}

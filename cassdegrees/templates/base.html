@@ -42,9 +42,11 @@
                 <div class="left" id="bnr-h-lines">
                     <div class="bnr-line-1 bnr-1line">
                         <h1><a href="/">CASS Program Planner</a></h1>
+                        {% if user.is_authenticated %}<h1>{{ user.username }} (<a href="/accounts/logout/">Logout</a>)</h1>{% endif %}
                     </div>
                 </div>
-            
+
+
                 <div id="bnr-right">
                     {% block right-nav %}&nbsp;{% endblock %}
                 </div>
@@ -64,8 +66,8 @@
             <div id="content-main" class="margintop clearfix">
                 <div id="content-header" class="full nomargintop nomarginbottom">
                     <div id="breadcrumb" class="breadcrumbs">
-                        <a href="/"><img src="//style.anu.edu.au/_anu/images/icons/web/home.png" class="w16px absmiddle" alt="Home"></a>
-                        {% block breadcrumb-trail %} No breadcrumb trail specified {% endblock %}
+                        {% block no-breadcrumbs %}<a href="/"><img src="//style.anu.edu.au/_anu/images/icons/web/home.png" class="w16px absmiddle" alt="Home"></a>
+                        {% block breadcrumb-trail %} No breadcrumb trail specified {% endblock %}{% endblock %}
                     </div>
                     <h1 class="title" id="page-title">{% block subtitle %}No title defined{% endblock %}</h1>
                 </div>
