@@ -22,43 +22,33 @@
 </head>
 <body>
     <!-- Heavily modified from CASS homepage root + ANU styling guide -->
-    <div id="bnr-wrap" class="bnr-gwy-high" role="banner">
-        <div id="bnr-gwy" class="bnr-gwy-high">
-            <div id="bnr-left">
-                <a href="http://www.anu.edu.au/" class="anu-logo-png">
-                    <img class="text-white" src="//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small.png"
-                        onmouseover="this.src='//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small_over.png';"
-                        onfocus="this.src='//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small_over.png';"
-                        onmouseout="this.src='//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small.png'"
-                        onblur="this.src='//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small.png'"
-                        alt="The Australian National University">
-                </a>
+    <div id="bnr-wrap" class="header">
+      <div class="left-header">&nbsp;</div>
+      <div class="logo-header">
+          <a href="http://www.anu.edu.au/">
+             <img class="text-white anu-logo" src="//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small.png"
+                  onmouseover="this.src='//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small_over.png';"
+                  onfocus="this.src='//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small_over.png';"
+                  onmouseout="this.src='//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small.png'"
+                  onblur="this.src='//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small.png'"
+                  alt="The Australian National University Logo">
+          </a>
+      </div>
+      <div class="title-header">
+            <div class="left">
+                <img src="//style.anu.edu.au/_anu/4/images/logos/pipe_logo_small.png" alt="" class="anu-logo-pipe left" width="66" height="51">
             </div>
-            <div id="bnr-mid">
-                <div class="left">
-                    <img src="//style.anu.edu.au/_anu/4/images/logos/pipe_logo_small.png" alt="" class="anu-logo-pipe left" width="66" height="51">
-                </div>
-                
-                <div class="left" id="bnr-h-lines">
-                    <div class="bnr-line-1 bnr-1line">
-                        <h1><a href="/">CASS Program Planner</a></h1>
-                        {% if user.is_authenticated %}<h1>{{ user.username }} (<a href="/accounts/logout/">Logout</a>)</h1>{% endif %}
-                    </div>
-                </div>
-
-
-                <div id="bnr-right">
-                    {% block right-nav %}&nbsp;{% endblock %}
-                </div>
-                
-                <div id="bnr-low">
-                    <div id="utility-menu" class="bnr-gw-util-wrap" role="navigation">
-                        <!-- Non-breaking space, as we want this to force correct layout even if nothing specified -->
-                        {% block utility-menu %}&nbsp;{% endblock %}
-                    </div>
+            <div class="left" id="bnr-h-lines">
+                <div class="bnr-line-1 bnr-1line">
+                    <h1><a href="/">CASS Program Planner</a></h1>
                 </div>
             </div>
-        </div>
+      </div>
+      <div class="right-header">
+          <div class="bnr-line-1 bnr-1line">
+            {% if user.is_authenticated %}<h1>{{ user.username }} (<a href="/accounts/logout/">Logout</a>)</h1>{% endif %}
+          </div>
+      </div>
     </div>
     
     <div id="body-wrap" role="main">
