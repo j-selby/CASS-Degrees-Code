@@ -357,7 +357,7 @@ Vue.component('rule_custom_text', {
 
 Vue.component('rule_either_or', {
     props: {
-        "or_rules": {
+        "details": {
             type: Object,
             default: function() { return {'or_group_1':[], 'or_group_2':[]}}
         },
@@ -382,15 +382,20 @@ Vue.component('rule_either_or', {
     methods: {
         add_rule: function() {
             this.show_add_a_rule_modal = false;
+            if (this.details['or_group_1'] == null) {
+                this.details['or_group_1'] = [];
+            }
+            if (this.details['or_group_2'] == null) {
+                this.details['or_group_2'] = [];
+            }
             // Add chosen rule to the right or group (based on the button clicked).
-            this.or_rules[this.which_or].push({
+            this.details[this.which_or].push({
                 type: this.add_a_rule_modal_option,
             });
-            console.log(JSON.stringify(this.or_rules[this.which_or]));
             this.do_redraw();
         },
         remove: function(index, group) {
-            this.or_rules[group].splice(index, 1);
+            this.details[group].splice(index, 1);
             this.do_redraw();
         },
         // https://michaelnthiessen.com/force-re-render/
@@ -449,7 +454,6 @@ Vue.component('rule_container', {
             this.rules.push({
                 type: this.add_a_rule_modal_option,
             });
-            console.log(JSON.stringify(this.rules));
             this.do_redraw();
         },
         remove: function(index) {

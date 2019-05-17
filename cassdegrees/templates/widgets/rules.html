@@ -60,24 +60,24 @@
 
 <script type="text/x-template" id="eitherOrTemplate">
     <div v-if="!redraw">
-        <fieldset id="rulesContainer">
+        <fieldset id="orRulesContainer">
             <legend>Group 1</legend>
 
-            <div v-for="(item, index) in or_rules['or_group_1']" :key="index" >
-                <rule class="or-rule-container" v-bind:details="item" v-on:update="update(index, 'or_group_1', $event)" v-on:remove="remove(index, 'or_group_1')"></rule>
-                <div v-if="index < or_rules['or_group_1'].length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
+            <div v-for="(item, index) in details['or_group_1']" :key="index" >
+                <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index, 'or_group_1')"></rule>
+                <div v-if="index < details['or_group_1'].length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
             </div>
 
             <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; which_or = 'or_group_1'" value="Add New Rule to Group 1" />
 
         </fieldset>
 
-        <fieldset id="rulesContainer">
+        <fieldset id="orRulesContainer">
             <legend>Group 2</legend>
 
-            <div v-for="(item, index) in or_rules['or_group_2']" :key="index" >
-                <rule class="or-rule-container" v-bind:details="item" v-on:update="update(index, 'or_group_1', $event)" v-on:remove="remove(index, 'or_group_2')"></rule>
-                <div v-if="index < or_rules['or_group_2'].length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
+            <div v-for="(item, index) in details['or_group_2']" :key="index" >
+                <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index, 'or_group_2')"></rule>
+                <div v-if="index < details['or_group_2'].length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
             </div>
 
             <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; which_or = 'or_group_2'" value="Add New Rule to Group 2" />
