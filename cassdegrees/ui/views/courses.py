@@ -6,8 +6,7 @@ from django.shortcuts import render, redirect
 
 from ui.forms import EditCourseFormSnippet
 import json
-
-import datetime
+from django.utils import timezone
 
 
 def create_course(request):
@@ -123,7 +122,7 @@ def edit_course(request):
         form = EditCourseFormSnippet(request.POST, instance=instance)
 
         if form.is_valid():
-            instance.lastUpdated = datetime.datetime.now().strftime('%Y-%m-%d')
+            instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
             instance.save(update_fields=['lastUpdated'])
             form.save()
             return redirect('/list/?view=Course&msg=Successfully Edited Course!')
