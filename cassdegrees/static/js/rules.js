@@ -359,7 +359,14 @@ Vue.component('rule_either_or', {
     props: {
         "details": {
             type: Object,
-            default: function() { return {'or_group_1':[], 'or_group_2':[]}}
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("either_or")) {
+                    value.either_or = [];
+                }
+
+                return true;
+            }
         },
         // Message inserted between rules
         "separator": {
@@ -370,7 +377,7 @@ Vue.component('rule_either_or', {
     data: function() {
         return {
             show_add_a_rule_modal: false,
-            which_or: 'or_group_1',
+            which_or: 0,
             add_a_rule_modal_option: 'subplan',
 
             component_names: EITHER_OR_COMPONENT_NAMES,
@@ -380,22 +387,20 @@ Vue.component('rule_either_or', {
         }
     },
     methods: {
+        add_or: function() {
+            this.details.either_or.push([]);
+            this.do_redraw();
+        },
         add_rule: function() {
             this.show_add_a_rule_modal = false;
-            if (this.details['or_group_1'] == null) {
-                this.details['or_group_1'] = [];
-            }
-            if (this.details['or_group_2'] == null) {
-                this.details['or_group_2'] = [];
-            }
             // Add chosen rule to the right or group (based on the button clicked).
-            this.details[this.which_or].push({
+            this.details.either_or[this.which_or].push({
                 type: this.add_a_rule_modal_option,
             });
             this.do_redraw();
         },
         remove: function(index, group) {
-            this.details[group].splice(index, 1);
+            this.details.either_or[group].splice(index, 1);
             this.do_redraw();
         },
         // https://michaelnthiessen.com/force-re-render/

@@ -60,29 +60,21 @@
 
 <script type="text/x-template" id="eitherOrTemplate">
     <div v-if="!redraw">
-        <fieldset id="orRulesContainer">
-            <legend>Group 1</legend>
+        <div v-for="(item, i) in details.either_or" :key="i">
+            <fieldset id="orRulesContainer">
+                <legend>Group {{ i + 1 }}</legend>
 
-            <div v-for="(item, index) in details['or_group_1']" :key="index" >
-                <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index, 'or_group_1')"></rule>
-                <div v-if="index < details['or_group_1'].length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
-            </div>
+                <div v-for="(item, j) in details.either_or[i]" :key="j" >
+                    <rule class="rule-container" v-bind:details="item" v-on:update="update(j, $event)" v-on:remove="remove(j, i)"></rule>
+                    <div v-if="j < details.either_or[i].length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
+                </div>
 
-            <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; which_or = 'or_group_1'" value="Add New Rule to Group 1" />
+                <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; which_or = i" value="Add New Rule to Group" />
 
-        </fieldset>
+            </fieldset>
+        </div>
 
-        <fieldset id="orRulesContainer">
-            <legend>Group 2</legend>
-
-            <div v-for="(item, index) in details['or_group_2']" :key="index" >
-                <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index, 'or_group_2')"></rule>
-                <div v-if="index < details['or_group_2'].length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
-            </div>
-
-            <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; which_or = 'or_group_2'" value="Add New Rule to Group 2" />
-
-        </fieldset>
+        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="add_or" value="Add new OR Group" />
 
         <div class="modal" v-if="show_add_a_rule_modal">
             <div class="modal-background" v-on:click="show_add_a_rule_modal = false"></div>
