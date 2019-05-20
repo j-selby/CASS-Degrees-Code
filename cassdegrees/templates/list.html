@@ -111,6 +111,7 @@
 
         <script>
             // Creates a list object to be used by list.js for sorting
+            // Should result in something like `CourseOptions = { valueNames: ['Code', 'Year', 'Name', 'Units'] }`
             var {{ title }}Options = {
                 valueNames: [{% for k,v in content.0.items %}'{{ title }}{{ k }}',{% endfor %}]
             };
