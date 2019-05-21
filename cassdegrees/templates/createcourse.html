@@ -13,7 +13,6 @@
     {% else %}
         {% finalcrumb 'Create Course' %}
     {% endif %}
-
 {% endblock %}
 
 {% block content %}
@@ -69,8 +68,20 @@
 
     <p class="text-right">
         <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save{% else %}Create{% endif %}"
-               onclick="if (handleRules()) document.getElementById('mainForm').submit()">
+               onclick="submit_form(this.value)">
     </p>
+
+    <script>
+        function submit_form(form_action) {
+            if (handleRules()) {
+                document.getElementById('mainForm').action.value = form_action;
+                document.getElementById('mainForm').submit();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
 
     <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
 {% endblock %}
