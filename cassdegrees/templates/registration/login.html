@@ -14,7 +14,7 @@
             <legend>Login Details</legend>
             {# Render form errors #}
             {% if form.errors %}
-                &nbsp
+                <br />
                 <div class="msg-error">
                     {% for x in form.errors.values %}{{ x }}{% endfor %}
                 </div>
