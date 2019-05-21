@@ -1,5 +1,16 @@
 //! Vue.js based means of adding/removing rules. Excludes serialization (see programmanagement.js)
 
+// Stores a JSON of all rule names, for internal reference only.
+const ALL_COMPONENT_NAMES = {
+    'program': 'Program',
+    'subplan': "Subplan",
+    'year_level': 'Level-Specific Units',
+    'subject_area': "Subject-Area Units",
+    'course': "Course",
+    'custom_text': "Custom (Text)",
+    'either_or': "Either Or"
+};
+
 // Translation table between internal names for components and human readable ones.
 const COMPONENT_NAMES = {
     'subplan': "Subplan",
@@ -27,6 +38,14 @@ const REQUISITE_COMPONENT_NAMES = {
     'course': "Course",
     'custom_text': "Custom (Text)",
     'either_or': "Either Or"
+};
+
+const REQUISITE_EITHER_OR_COMPONENT_NAMES = {
+    'program': 'Program',
+    'year_level': 'Level-Specific Units',
+    'subject_area': "Subject-Area Units",
+    'course': "Course",
+    'custom_text': "Custom (Text)"
 };
 
 Vue.component('rule_program', {
@@ -454,8 +473,9 @@ Vue.component('rule_either_or', {
         return {
             show_add_a_rule_modal: false,
             which_or: 0,
-            add_a_rule_modal_option: 'subplan',
+            add_a_rule_modal_option: 'course',
 
+            component_groups: { 'rules': EITHER_OR_COMPONENT_NAMES, 'requisites': REQUISITE_EITHER_OR_COMPONENT_NAMES},
             component_names: EITHER_OR_COMPONENT_NAMES,
 
             // Forces the element to re-render, if mutable events occurred
@@ -500,7 +520,7 @@ Vue.component('rule', {
     },
     data: function() {
         return {
-            component_names: COMPONENT_NAMES
+            component_names: ALL_COMPONENT_NAMES
         }
     },
     template: '#ruleTemplate'
@@ -521,7 +541,7 @@ Vue.component('rule_container', {
     data: function() {
         return {
             show_add_a_rule_modal: false,
-            add_a_rule_modal_option: 'subplan',
+            add_a_rule_modal_option: 'course',
 
             component_groups: { 'rules': COMPONENT_NAMES, 'requisites': REQUISITE_COMPONENT_NAMES},
             component_names: null,
