@@ -131,6 +131,17 @@
                 <option v-for="subject_area in subject_areas" v-bind:value="subject_area">{{ subject_area }}</option>
             </select>
         </div>
+
+        <p>
+            within the following year-level:
+        </p>
+
+        <div>
+            <select v-model="details.year_level" v-on:change="check_options" required>
+                <option>Any year-level</option>
+                <option v-for="year_level in number_of_year_levels" v-bind:value="year_level*1000">{{ year_level*1000 }}-level</option>
+            </select>
+        </div>
     </fieldset>
 </script>
 
