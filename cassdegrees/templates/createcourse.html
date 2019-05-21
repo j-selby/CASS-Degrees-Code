@@ -61,12 +61,16 @@
                 </select>
             </p>
         </fieldset>
-
-        <p class="text-right">
-            <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save{% else %}Create{% endif %}"
-                onclick="document.getElementById('mainForm').submit()">
-        </p>
     </form>
+
+    <form class="anuform">
+        {% include "widgets/rules.html" %}
+    </form>
+
+    <p class="text-right">
+        <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save{% else %}Create{% endif %}"
+               onclick="if (handleRules()) document.getElementById('mainForm').submit()">
+    </p>
 
     <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
 {% endblock %}
