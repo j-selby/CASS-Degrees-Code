@@ -2,6 +2,7 @@
 
 // Stores a JSON of all rule names, for internal reference only.
 const ALL_COMPONENT_NAMES = {
+    'incompatibility': "Incompatibility",
     'program': 'Program',
     'subplan': "Subplan",
     'year_level': 'Level-Specific Units',
@@ -32,6 +33,7 @@ const EITHER_OR_COMPONENT_NAMES = {
 
 //
 const REQUISITE_COMPONENT_NAMES = {
+    'incompatibility': "Incompatibility",
     'program': 'Program',
     'year_level': 'Level-Specific Units',
     'subject_area': "Subject-Area Units",
@@ -47,6 +49,91 @@ const REQUISITE_EITHER_OR_COMPONENT_NAMES = {
     'course': "Course",
     'custom_text': "Custom (Text)"
 };
+
+Vue.component('rule_incompatibility', {
+    props: {
+        "details": {
+            type: Object,
+
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("incompatible_courses")) {
+                    value.incompatible_courses = [""];
+                }
+
+                return true;
+            }
+        }
+    },
+    data: function() {
+        return {
+            "courses": [],
+
+            // Display related warnings if true
+            "non_unique_options": false,
+            "inconsistent_units": false,
+
+            "redraw": false
+        }
+    },
+    created: function() {
+        // Javascript has the best indirection...
+        var rule = this;
+
+        var request = new XMLHttpRequest();
+
+        request.addEventListener("load", function() {
+            rule.courses = JSON.parse(request.response);
+
+            rule.check_options();
+        });
+        request.open("GET", "/api/search/?select=code,name&from=course");
+        request.send();
+    },
+    methods: {
+        add_course: function() {
+            // Mutable modification - redraw needed
+            this.details.incompatible_courses.push(-1);
+            this.check_options();
+            this.do_redraw();
+        },
+        remove_course: function(index) {
+            // Mutable modification - redraw needed
+            this.details.incompatible_courses.splice(index, 1);
+            this.check_options();
+            this.do_redraw();
+        },
+        check_options: function() {
+            // Check for duplicates
+            this.non_unique_options = false;
+            var found = [];
+
+            for (var index in this.details.incompatible_courses) {
+                var value = this.details.incompatible_courses[index];
+                if (found.includes(value)) {
+                    this.non_unique_options = true;
+                    break;
+                }
+                found.push(value);
+            }
+
+            // Ensure Unit Count is valid:
+            if (this.details.unit_count != null) {
+                this.invalid_units = this.details.unit_count <= 0;
+                this.invalid_units_step = this.details.unit_count % 6 !== 0;
+            }
+        },
+        // https://michaelnthiessen.com/force-re-render/
+        do_redraw: function() {
+            this.redraw = true;
+
+            this.$nextTick(() => {
+                this.redraw = false;
+            });
+        }
+    },
+    template: '#incompatibilityRuleTemplate'
+});
 
 Vue.component('rule_program', {
     props: {
