@@ -12,7 +12,17 @@
         {% csrf_token %}
         <fieldset>
             <legend>Login Details</legend>
-            {{ form.as_p }}
+            {# Render form errors #}
+            {% if form.errors %}
+                &nbsp
+                <div class="msg-error">
+                    {% for x in form.errors.values %}{{ x }}{% endfor %}
+                </div>
+            {% endif %}
+            {# Render form fields #}
+            {% for field in form.visible_fields %}
+                <p>{{ field.label_tag }} {{ field }}</p>
+            {% endfor %}
         </fieldset>
 
         <p class="text-right">

@@ -58,7 +58,16 @@
             </div>
             <div id="bnr-right">
                 <div class="bnr-line-1 bnr-1line">
-                    {% if user.is_authenticated %}<h1>{{ user.username }} (<a href="/accounts/logout/">Logout</a>)</h1>{% endif %}
+                    {% if user.is_authenticated %}
+                        <div class="dropdown-menu">
+                            <p class="large">{{ user.username }}</p>
+                            <div class="dropdown-content">
+                                {% if user.is_staff %}<a href="/admin/">Admin Site</a>{% endif %}
+                                <a href="/accounts/password_change/">Change Password</a>
+                                <a href="/accounts/logout/">Logout</a>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
