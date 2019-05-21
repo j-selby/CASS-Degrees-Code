@@ -42,25 +42,29 @@
                 {% endfor %}
             {% endfor %}
 
-            <!-- TODO: Unhandled so far -->
-            <p>
-                <label for="text">Requisite Course(s)</label>
-                <select class="text tfull" name="requisites[]" size="5" multiple>
-                    {% for course in courses %}
-                        <option value="{{ course.code }}">{{ course.code }}</option>
-                    {% endfor %}
-                </select>
-            </p>
-
-            <p>
-                <label for="text">Incompatible Course(s)</label>
-                <select class="text tfull" name="incompatibles[]" size="5" multiple>
-                    {% for course in courses %}
-                        <option value="{{ course.code }}">{{ course.code }}</option>
-                    {% endfor %}
-                </select>
-            </p>
+{#            <!-- TODO: Unhandled so far -->#}
+{#            <p>#}
+{#                <label for="text">Requisite Course(s)</label>#}
+{#                <select class="text tfull" name="requisites[]" size="5" multiple>#}
+{#                    {% for course in courses %}#}
+{#                        <option value="{{ course.code }}">{{ course.code }}</option>#}
+{#                    {% endfor %}#}
+{#                </select>#}
+{#            </p>#}
+{##}
+{#            <p>#}
+{#                <label for="text">Incompatible Course(s)</label>#}
+{#                <select class="text tfull" name="incompatibles[]" size="5" multiple>#}
+{#                    {% for course in courses %}#}
+{#                        <option value="{{ course.code }}">{{ course.code }}</option>#}
+{#                    {% endfor %}#}
+{#                </select>#}
+{#            </p>#}
         </fieldset>
+
+        <form class="anuform">
+            {% include "widgets/rules.html" %}
+        </form>
 
         <p class="text-right">
             <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save{% else %}Create{% endif %}"

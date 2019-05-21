@@ -221,12 +221,17 @@ Vue.component('rule_subject_area', {
                     value.subject = "";
                 }
 
+                if (!value.hasOwnProperty("year_level")) {
+                    value.year_level = null;
+                }
+
                 return true;
             }
         }
     },
     data: function() {
         return {
+            "number_of_year_levels": 9,
             "subject_areas": [],
 
             // Display related warnings if true
