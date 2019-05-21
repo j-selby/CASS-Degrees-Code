@@ -21,6 +21,7 @@ const EITHER_OR_COMPONENT_NAMES = {
 
 //
 const REQUISITE_COMPONENT_NAMES = {
+    'program': 'Program',
     'year_level': 'Level-Specific Units',
     'subject_area': "Subject-Area Units",
     'course': "Course",
@@ -28,19 +29,15 @@ const REQUISITE_COMPONENT_NAMES = {
     'either_or': "Either Or"
 };
 
-Vue.component('rule_subplan', {
+Vue.component('rule_program', {
     props: {
         "details": {
             type: Object,
 
             validator: function (value) {
                 // Ensure that the object has all the attributes we need
-                if (!value.hasOwnProperty("ids")) {
-                    value.ids = [-1];
-                }
-
-                if (!value.hasOwnProperty("kind")) {
-                    value.kind = "";
+                if (!value.hasOwnProperty("program")) {
+                    value.program = "";
                 }
 
                 return true;
@@ -49,7 +46,7 @@ Vue.component('rule_subplan', {
     },
     data: function() {
         return {
-            "subplans": [],
+            "programs": [],
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -65,61 +62,14 @@ Vue.component('rule_subplan', {
         var request = new XMLHttpRequest();
 
         request.addEventListener("load", function() {
-            rule.subplans = JSON.parse(request.response);
+            rule.programs = JSON.parse(request.response);
 
             rule.check_options();
         });
-        request.open("GET", "/api/model/subplan/?format=json");
+        request.open("GET", "/api/model/program/?format=json");
         request.send();
     },
     methods: {
-        add_subplan: function() {
-            // Mutable modification - redraw needed
-            this.details.ids.push(-1);
-            this.check_options();
-            this.do_redraw();
-        },
-        remove_subplan: function(index) {
-            // Mutable modification - redraw needed
-            this.details.ids.splice(index, 1);
-            this.check_options();
-            this.do_redraw();
-        },
-        check_options: function() {
-            // Check for duplicates
-            this.non_unique_options = false;
-            var found = [];
-
-            for (var index in this.details.ids) {
-                var value = this.details.ids[index];
-                if (found.includes(value)) {
-                    this.non_unique_options = true;
-                    break;
-                }
-                found.push(value);
-            }
-
-            // Check for inconsistent units
-            this.inconsistent_units = false;
-            var desired_unit_value = 0;
-
-            for (var index in this.details.ids) {
-                var value = this.details.ids[index];
-                // Find the raw data for this ID
-                for (var element_index in this.subplans) {
-                    var element_value = this.subplans[element_index];
-                    if (element_value.id === value) {
-                        if (desired_unit_value === 0) {
-                            desired_unit_value = element_value.units;
-                        } else if (desired_unit_value !== element_value.units) {
-                            this.inconsistent_units = true;
-                        }
-
-                        break;
-                    }
-                }
-            }
-        },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
             this.redraw = true;
@@ -129,7 +79,7 @@ Vue.component('rule_subplan', {
             });
         }
     },
-    template: '#subplanRuleTemplate'
+    template: '#programRuleTemplate'
 });
 
 Vue.component('rule_course', {

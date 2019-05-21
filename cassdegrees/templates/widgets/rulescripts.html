@@ -1,27 +1,17 @@
 {% verbatim %}
-<script type="text/x-template" id="subplanRuleTemplate">
+<script type="text/x-template" id="programRuleTemplate">
     <fieldset v-if="!redraw">
-        <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
-        <div class="msg-error" v-if="inconsistent_units">Options have different unit values!</div>
-
-        <p>
-            Students must pick
-            <input class="text" v-model="details.kind" aria-required="true" placeholder="e.g. Arts Major - brief description for students here"
-                   style="margin-left: 0; width: 400px" required>
-            from the following:
+        <p class="form-group">
+            <label>
+                Students must be studying a program which includes:
+            </label>
         </p>
 
-        <p>
-        </p>
-
-        <div v-for="(id, index) in details.ids">
-            <select v-model="details.ids[index]" v-on:change="check_options" required>
-                <option v-for="subplan in subplans" v-bind:value="subplan.id">{{ subplan.name }} {{ subplan.year }} ({{ subplan.units }} units)</option>
+        <div>
+            <select v-model="details.program" required>
+                <option v-for="program in programs" v-bind:value="program">{{ program.code }} {{ program.name }}</option>
             </select>
-            <input v-if="index != 0" type="button" v-on:click="remove_subplan(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
         </div>
-
-        <input type="button" v-on:click="add_subplan()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
     </fieldset>
 </script>
 
