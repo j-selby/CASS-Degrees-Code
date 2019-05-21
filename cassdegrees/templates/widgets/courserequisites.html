@@ -1,7 +1,7 @@
 {% load static %}
 
 <fieldset id="rulesContainer">
-    <legend>Add Rules</legend>
+    <legend>Add Requisites</legend>
 
     <br />
 
@@ -18,7 +18,7 @@
         </div>
 
 
-        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; component_names = component_groups.rules" value="Add New Rule" />
+        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; component_names = component_groups.requisites" value="Add New Requisite" />
 
         <div class="modal" v-if="show_add_a_rule_modal">
             <div class="modal-background" v-on:click="show_add_a_rule_modal = false"></div>
