@@ -21,12 +21,66 @@ const EITHER_OR_COMPONENT_NAMES = {
 
 //
 const REQUISITE_COMPONENT_NAMES = {
+    'program': 'Program',
     'year_level': 'Level-Specific Units',
     'subject_area': "Subject-Area Units",
     'course': "Course",
     'custom_text': "Custom (Text)",
     'either_or': "Either Or"
 };
+
+Vue.component('rule_program', {
+    props: {
+        "details": {
+            type: Object,
+
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("program")) {
+                    value.program = "";
+                }
+
+                return true;
+            }
+        }
+    },
+    data: function() {
+        return {
+            "programs": [],
+
+            // Display related warnings if true
+            "non_unique_options": false,
+            "inconsistent_units": false,
+
+            "redraw": false
+        }
+    },
+    created: function() {
+        // Javascript has the best indirection...
+        var rule = this;
+
+        var request = new XMLHttpRequest();
+
+        request.addEventListener("load", function() {
+            rule.programs = JSON.parse(request.response);
+
+            rule.check_options();
+        });
+        request.open("GET", "/api/model/program/?format=json");
+        request.send();
+    },
+    methods: {
+        // https://michaelnthiessen.com/force-re-render/
+        do_redraw: function() {
+            this.redraw = true;
+
+            this.$nextTick(() => {
+                this.redraw = false;
+            });
+        }
+    },
+    template: '#programRuleTemplate'
+});
 
 Vue.component('rule_subplan', {
     props: {
