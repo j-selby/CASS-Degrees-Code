@@ -110,9 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'OPTIONS': {'min_length': 10}
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
         'NAME': 'api.Validators.ANUValidator'
     },
 ]

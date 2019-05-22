@@ -37,6 +37,7 @@ def data_dict_as_displayable(data):
 
     return new_dict
 
+
 @login_required
 def data_list(request):
     """ Generates a table based on the JSON objects stored in 'data'
