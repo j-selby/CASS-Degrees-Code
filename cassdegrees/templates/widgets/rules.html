@@ -24,9 +24,9 @@
         <p>
         </p>
 
-        <div v-for="(id, index) in details.codes">
+        <div v-for="(code, index) in details.codes">
             <select v-model="details.codes[index]" v-on:change="check_options" required>
-                <option v-for="subplan in subplans" v-bind:value="subplan.code">{{ subplan.name }} ({{ subplan.code }}): {{ subplan.units }} units</option>
+                <option v-for="subplan in subplans" v-bind:value="subplan.code">{{ subplan.code }} ({{ subplan.name }}): {{ subplan.units }} units</option>
             </select>
             <input v-if="index != 0" type="button" v-on:click="remove_subplan(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
         </div>
