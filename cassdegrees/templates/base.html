@@ -60,7 +60,7 @@
                 <div class="bnr-line-1 bnr-1line">
                     {% if user.is_authenticated %}
                         <div class="dropdown-menu">
-                            <p class="large">{{ user.username }}</p>
+                            <p class="large">{{ user.username }} &#11167;</p>
                             <div class="dropdown-content">
                                 {% if user.is_staff %}<a href="/admin/">Admin Site</a>{% endif %}
                                 <a href="/accounts/password_change/">Change Password</a>
