@@ -26,7 +26,7 @@ Vue.component('rule_subplan', {
 
             validator: function (value) {
                 // Ensure that the object has all the attributes we need
-                if (!value.hasOwnProperty("codes")) {
+                if (!value.hasOwnProperty("code")) {
                     value.codes = [-1];
                 }
 
