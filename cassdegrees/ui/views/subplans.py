@@ -62,47 +62,40 @@ def delete_subplan(request):
     # This is used to get the ids of subplans which are used by programs.
     # Generates an internal request to the search api made by Jack
     gen_request = HttpRequest()
-    gen_request.GET = {'select': 'code,rules,year', 'from': 'program'}
+    # Grab all the subplans in the database
+    gen_request.GET = {'select': 'id,code,year', 'from': 'subplan'}
     # Sends the request to the search api
-    send_search_request = search(gen_request)
-    subplans_in_programs = json.loads(send_search_request.content.decode())
+    subplans = json.loads(search(gen_request).content.decode())
 
-    # Generate another request to get the subplan codes and ids
-    # This is so we can get the code of the subplan from the id we are given
-    gen_request.GET = {'select': 'code,id,year', 'from': 'subplan'}
-    send_search_request = search(gen_request)
-    subplan_ids = json.loads(send_search_request.content.decode())
-
-    # Get the ids to delete and check if they're used by any programs
-    ids_to_delete = data.getlist('id')
-    # Notify the user that nothing was selected.
+    # ids of all the subplans that were selected to be deleted
+    ids_to_delete = [int(subplan_id) for subplan_id in data.getlist('id')]
     if not ids_to_delete:
         return redirect('/list/?view=Subplan&error=Please select a Subplan to delete!')
-    safe_to_delete = True
+    subplans_to_delete = [s for s in subplans if s['id'] in ids_to_delete]
+
     error_msg = ""
-    for id_to_delete in ids_to_delete:
-        # find if the id matches any rules in the programs.
-        for program in subplans_in_programs:
-            for subplans in program['rules']:
-                # check if ids key exists (fixes bug where there isn't any ids in rules)
-                if 'ids' in subplans:
-                    # if we find a subplan in a program then its not safe to delete
-                    if int(id_to_delete) in subplans['ids']:
-                        safe_to_delete = False
-                        # Find the subplan code for the id to delete
-                        for subplan in subplan_ids:
-                            if int(id_to_delete) == subplan['id']:
-                                # Populate the error message with the id's code names we found
-                                error_msg += "Subplan Code: '" + subplan['code'] + "'(" + str(subplan['year']) + \
-                                             ") is used by Program Code: '" + program['code'] \
-                                             + "'(" + str(subplan['year']) + ").\n"
+    instances = []
 
-        # Only delete if its safe to delete, otherwise notify the user of the dependencies
-        if safe_to_delete:
-            instances.append(SubplanModel.objects.get(id=int(id_to_delete)))
+    for subplan in subplans_to_delete:
+        gen_request.GET = {'select': 'code', 'from': 'subplan', 'code': subplan['code']}
+        duplicate_subplans = json.loads(search(gen_request).content.decode())
+        if len(duplicate_subplans) < 2:
+            gen_request.GET = {'select': 'code,year,rules', 'from': 'program', 'rules': subplan['code']}
+            # programs which depend on subplan where its code is equal to subplan['code']
+            programs = json.loads(search(gen_request).content.decode())
 
-    if error_msg != "":
-        return redirect('/list/?view=Subplan&error=Failed to Delete Subplan(s)!\n\n' + error_msg +
+            # if there are any programs that could be affected by the deletion of the selected subplan
+            if len(programs) > 0:
+                # compose error message
+                for program in programs:
+                    error_msg += "Subplans Code: '" + subplan['code'] + "'(" + str(subplan['year']) + \
+                                 ") is used by Program Code: '" + program['code'] + "'(" + \
+                                 str(program['year']) + ").\n"
+                continue  # dont append course to the list instances
+        instances.append(SubplanModel.objects.get(id=subplan['id']))
+
+    if len(error_msg) > 0:
+        return redirect('/list/?view=Course&error=Failed to Delete Subplan(s)!\n' + error_msg +
                         '\nPlease check dependencies!')
 
     if "confirm" in data:
