@@ -26,8 +26,8 @@ Vue.component('rule_subplan', {
 
             validator: function (value) {
                 // Ensure that the object has all the attributes we need
-                if (!value.hasOwnProperty("code")) {
-                    value.codes = [-1];
+                if (!value.hasOwnProperty("ids")) {
+                    value.ids = [-1];
                 }
 
                 if (!value.hasOwnProperty("kind")) {
@@ -60,19 +60,19 @@ Vue.component('rule_subplan', {
 
             rule.check_options();
         });
-        request.open("GET", "/api/search/?select=code,name,units&from=subplan");
+        request.open("GET", "/api/model/subplan/?format=json");
         request.send();
     },
     methods: {
         add_subplan: function() {
             // Mutable modification - redraw needed
-            this.details.codes.push(-1);
+            this.details.ids.push(-1);
             this.check_options();
             this.do_redraw();
         },
         remove_subplan: function(index) {
             // Mutable modification - redraw needed
-            this.details.codes.splice(index, 1);
+            this.details.ids.splice(index, 1);
             this.check_options();
             this.do_redraw();
         },
@@ -81,8 +81,8 @@ Vue.component('rule_subplan', {
             this.non_unique_options = false;
             var found = [];
 
-            for (var index in this.details.codes) {
-                var value = this.details.codes[index];
+            for (var index in this.details.ids) {
+                var value = this.details.ids[index];
                 if (found.includes(value)) {
                     this.non_unique_options = true;
                     break;
@@ -94,12 +94,12 @@ Vue.component('rule_subplan', {
             this.inconsistent_units = false;
             var desired_unit_value = 0;
 
-            for (var index in this.details.codes) {
-                var value = this.details.codes[index];
-                // Find the raw data for this code
+            for (var index in this.details.ids) {
+                var value = this.details.ids[index];
+                // Find the raw data for this ID
                 for (var element_index in this.subplans) {
                     var element_value = this.subplans[element_index];
-                    if (element_value.code === value) {
+                    if (element_value.id === value) {
                         if (desired_unit_value === 0) {
                             desired_unit_value = element_value.units;
                         } else if (desired_unit_value !== element_value.units) {
