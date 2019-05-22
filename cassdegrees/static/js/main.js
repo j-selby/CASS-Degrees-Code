@@ -11,3 +11,17 @@
 function checkKeys(event) {
     return event.keyCode === 8 || event.keyCode === 46 ? true : !isNaN(Number(event.key));
 }
+
+/**
+ * Makes the web page go back to last page in the web browsers history
+ */
+function goBack() {
+    window.history.back();
+}
+
+/**
+ * Returns to the relevant list page
+ */
+function returnToList(pageName) {
+    window.location.href = "/list/?view="+pageName;
+}
