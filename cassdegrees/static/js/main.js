@@ -13,10 +13,10 @@ function checkKeys(event) {
 }
 
 /**
- * Makes the web page go back to last page in the web browsers history
+ * Makes the web page go back to the homepage
  */
 function goBack() {
-    window.history.back();
+    window.location.href= "/";
 }
 
 /**
