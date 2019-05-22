@@ -22,14 +22,14 @@ class ANUValidator(object):
             count += 1
 
         if count < 3:
-            raise ValidationError(   
-                _("The password must contain at least 3 of the following classes: "
-                  +"lowercase characters, uppercase characters, digits, punctuation, unicode characters"),
+            raise ValidationError(
+                _("The password must contain at least 3 of the following classes: \
+                lowercase characters, uppercase characters, digits, punctuation, unicode characters"),
                 code='password_anu_fail',
             )
 
     def get_help_text(self):
         return _(
-            "The password must contain at least 3 of the following classes: "
-            +"lowercase characters, uppercase characters, digits, punctuation, unicode characters"
+            "The password must contain at least 3 of the following classes: \
+            lowercase characters, uppercase characters, digits, punctuation, unicode characters"
         )
