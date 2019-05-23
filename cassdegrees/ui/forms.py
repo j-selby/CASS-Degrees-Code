@@ -34,8 +34,8 @@ class EditProgramFormSnippet(ModelForm):
 
     class Meta:
         model = ProgramModel
-        fields = ('code', 'year', 'name', 'units', 'programType', 'globalRequirements', 'rules', 'publish', 'staffNotes',
-                  'studentNotes')
+        fields = ('code', 'year', 'name', 'units', 'programType', 'globalRequirements', 'rules', 'publish',
+                  'staffNotes', 'studentNotes')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. BARTS"}),
             'year': forms.NumberInput(attrs={'class': "text tfull",
