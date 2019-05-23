@@ -62,7 +62,7 @@ Vue.component('rule_subplan', {
 
             rule.check_options();
         });
-        request.open("GET", "/api/search/?select=id,code,name,units,year&from=subplan");
+        request.open("GET", "/api/search/?select=id,code,name,units,year,publish&from=subplan&publish=true");
         request.send();
 
         rule.program_year = document.getElementById('id_year').value
