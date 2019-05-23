@@ -41,10 +41,12 @@ Vue.component('rule_subplan', {
     data: function() {
         return {
             "subplans": [],
+            "program_year": "",
 
             // Display related warnings if true
             "non_unique_options": false,
             "inconsistent_units": false,
+            "wrong_year_selected": false,
 
             "redraw": false
         }
@@ -60,8 +62,10 @@ Vue.component('rule_subplan', {
 
             rule.check_options();
         });
-        request.open("GET", "/api/model/subplan/?format=json");
+        request.open("GET", "/api/search/?select=id,code,name,units,year&from=subplan");
         request.send();
+
+        rule.program_year = document.getElementById('id_year').value
     },
     methods: {
         add_subplan: function() {
@@ -77,6 +81,15 @@ Vue.component('rule_subplan', {
             this.do_redraw();
         },
         check_options: function() {
+            // Check if invalid subplan year
+            this.wrong_year_selected = false;
+            for (var index in this.details.ids) {
+                if (""+this.subplans[index]['year'] != this.program_year) {
+                    this.wrong_year_selected = true;
+                    break;
+                }
+            }
+
             // Check for duplicates
             this.non_unique_options = false;
             var found = [];
@@ -113,6 +126,7 @@ Vue.component('rule_subplan', {
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
+            this.program_year = document.getElementById('id_year').value
             this.redraw = true;
 
             this.$nextTick(() => {
