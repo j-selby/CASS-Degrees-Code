@@ -65,7 +65,10 @@ Vue.component('rule_subplan', {
         request.open("GET", "/api/search/?select=id,code,name,units,year,publish&from=subplan&publish=true");
         request.send();
 
-        rule.program_year = document.getElementById('id_year').value
+        // Sets the program year to be the value of the id_year field in the original component
+        rule.program_year = document.getElementById('id_year').value;
+        // Modifies the original 'id_year' element by telling it to refresh all components on all keystrokes
+        document.getElementById('id_year').setAttribute("oninput", "redrawVueComponents()");
     },
     methods: {
         add_subplan: function() {
@@ -83,10 +86,17 @@ Vue.component('rule_subplan', {
         check_options: function() {
             // Check if invalid subplan year
             this.wrong_year_selected = false;
-            for (var index in this.details.ids) {
-                if (""+this.subplans[index]['year'] != this.program_year) {
-                    this.wrong_year_selected = true;
-                    break;
+            year_check:
+            for (var selected_index in this.details.ids) {
+                selected_value = this.details.ids[selected_index];
+                for (var element_index in this.subplans) {
+                    var element_value = this.subplans[element_index];
+                    if (element_value.id == selected_value) {
+                        if ("" + element_value['year'] != this.program_year) {
+                            this.wrong_year_selected = true;
+                            break year_check;
+                        }
+                    }
                 }
             }
 
@@ -126,7 +136,7 @@ Vue.component('rule_subplan', {
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
-            this.program_year = document.getElementById('id_year').value
+            this.program_year = document.getElementById('id_year').value;
             this.redraw = true;
 
             this.$nextTick(() => {
@@ -521,5 +531,12 @@ if (reqs.length > 0) {
     var parsed = JSON.parse(reqs);
     if (parsed != null) {
         app.rules = parsed;
+    }
+}
+
+
+function redrawVueComponents(){
+    for (var index in app.$children){
+        app.$children[index].do_redraw();
     }
 }
