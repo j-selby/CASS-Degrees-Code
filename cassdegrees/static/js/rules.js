@@ -535,7 +535,7 @@ if (reqs.length > 0) {
 }
 
 
-function redrawVueComponents(){
+function redrawVueComponents() {
     for (var index in app.$children){
         app.$children[index].do_redraw();
     }
