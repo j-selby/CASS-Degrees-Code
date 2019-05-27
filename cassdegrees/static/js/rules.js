@@ -8,6 +8,7 @@ const ALL_COMPONENT_NAMES = {
     'year_level': 'Level-Specific Units',
     'subject_area': "Subject-Area Units",
     'course': "Course",
+    'course_requisite': "Course",
     'custom_text': "Custom (Text)",
     'either_or': "Either Or"
 };
@@ -37,7 +38,7 @@ const REQUISITE_COMPONENT_NAMES = {
     'program': 'Program',
     'year_level': 'Level-Specific Units',
     'subject_area': "Subject-Area Units",
-    'course': "Course",
+    'course_requisite': "Course",
     'custom_text': "Custom (Text)",
     'either_or': "Either Or"
 };
@@ -46,7 +47,7 @@ const REQUISITE_EITHER_OR_COMPONENT_NAMES = {
     'program': 'Program',
     'year_level': 'Level-Specific Units',
     'subject_area': "Subject-Area Units",
-    'course': "Course",
+    'course_requisite': "Course",
     'custom_text': "Custom (Text)"
 };
 
@@ -377,6 +378,84 @@ Vue.component('rule_course', {
         }
     },
     template: '#courseRequirementTemplate'
+});
+
+Vue.component('rule_course_requisite', {
+    props: {
+        "details": {
+            type: Object,
+
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("codes")) {
+                    value.codes = [""];
+                }
+
+                return true;
+            }
+        }
+    },
+    data: function() {
+        return {
+            "courses": [],
+
+            // Display related warnings if true
+            "non_unique_options": false,
+
+            "redraw": false
+        }
+    },
+    created: function() {
+        // Javascript has the best indirection...
+        var rule = this;
+
+        var request = new XMLHttpRequest();
+
+        request.addEventListener("load", function() {
+            rule.courses = JSON.parse(request.response);
+
+            rule.check_options();
+        });
+        request.open("GET", "/api/search/?select=code,name&from=course");
+        request.send();
+    },
+    methods: {
+        add_course: function() {
+            // Mutable modification - redraw needed
+            this.details.codes.push(-1);
+            this.check_options();
+            this.do_redraw();
+        },
+        remove_course: function(index) {
+            // Mutable modification - redraw needed
+            this.details.codes.splice(index, 1);
+            this.check_options();
+            this.do_redraw();
+        },
+        check_options: function() {
+            // Check for duplicates
+            this.non_unique_options = false;
+            var found = [];
+
+            for (var index in this.details.codes) {
+                var value = this.details.codes[index];
+                if (found.includes(value)) {
+                    this.non_unique_options = true;
+                    break;
+                }
+                found.push(value);
+            }
+        },
+        // https://michaelnthiessen.com/force-re-render/
+        do_redraw: function() {
+            this.redraw = true;
+
+            this.$nextTick(() => {
+                this.redraw = false;
+            });
+        }
+    },
+    template: '#courseRequisiteTemplate'
 });
 
 Vue.component('rule_subject_area', {

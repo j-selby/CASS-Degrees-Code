@@ -94,6 +94,25 @@
     </fieldset>
 </script>
 
+<script type="text/x-template" id="courseRequisiteTemplate">
+    <fieldset v-if="!redraw">
+        <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+
+        <p>
+            Students must have completed the following courses:
+        </p>
+
+        <div v-for="(code, index) in details.codes">
+            <select v-model="details.codes[index]" v-on:change="check_options" required>
+                <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
+            </select>
+            <input v-if="index != 0" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+        </div>
+
+        <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
+    </fieldset>
+</script>
+
 <script type="text/x-template" id="subjectAreaRuleTemplate">
     <fieldset v-if="!redraw">
         <p class="form-group">
