@@ -123,7 +123,7 @@ def edit_course(request):
     # Find the program to specifically edit
     instance = CourseModel.objects.get(id=int(id))
 
-    dependencies = dict()
+    dependencies = dict()  # programs/subplans that are dependent on this course instance {'code': 'name'}
 
     # Generate an internal request to search api made by Jack
     gen_request = HttpRequest()
