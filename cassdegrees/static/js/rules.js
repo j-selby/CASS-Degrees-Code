@@ -10,6 +10,7 @@ const ALL_COMPONENT_NAMES = {
     'course': "Course",
     'course_requisite': "Course",
     'custom_text': "Custom (Text)",
+    'custom_text_req': "Custom (Text)",
     'either_or': "Either Or"
 };
 
@@ -39,7 +40,7 @@ const REQUISITE_COMPONENT_NAMES = {
     'year_level': 'Level-Specific Units',
     'subject_area': "Subject-Area Units",
     'course_requisite': "Course",
-    'custom_text': "Custom (Text)",
+    'custom_text_req': "Custom (Text)",
     'either_or': "Either Or"
 };
 
@@ -48,7 +49,7 @@ const REQUISITE_EITHER_OR_COMPONENT_NAMES = {
     'year_level': 'Level-Specific Units',
     'subject_area': "Subject-Area Units",
     'course_requisite': "Course",
-    'custom_text': "Custom (Text)"
+    'custom_text_req': "Custom (Text)"
 };
 
 Vue.component('rule_incompatibility', {
@@ -614,6 +615,32 @@ Vue.component('rule_custom_text', {
         }
     },
     template: '#customTextRuleTemplate'
+});
+
+Vue.component('rule_custom_text_req', {
+    props: {
+        "details": {
+            type: Object,
+
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("text")) {
+                    value.text = "";
+                }
+
+                return true;
+            }
+        }
+    },
+    data: function() {
+        return {
+        }
+    },
+    methods: {
+        check_options: function() {
+        }
+    },
+    template: '#customTextReqRuleTemplate'
 });
 
 Vue.component('rule_either_or', {

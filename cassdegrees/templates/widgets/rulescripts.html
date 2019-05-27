@@ -200,6 +200,19 @@
     </fieldset>
 </script>
 
+<script type="text/x-template" id="customTextReqRuleTemplate">
+    <fieldset>
+        <p>
+            Students must meet the following requirements:
+        </p>
+
+        <p>
+            <textarea v-model="details.text" style="width: 100%" placeholder="Enter some custom rules here..." aria-required="true" required></textarea>
+        </p>
+
+    </fieldset>
+</script>
+
 <script type="text/x-template" id="ruleTemplate">
     <div class="card">
         <header class="box-header">
