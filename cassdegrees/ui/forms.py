@@ -90,7 +90,6 @@ class EditProgramFormSnippet(ModelForm):
         return data
 
 
-
 class EditSubplanFormSnippet(ModelForm):
     # Automatically injected by default
     units = forms.IntegerField(widget=forms.HiddenInput(), required=False)
@@ -169,9 +168,11 @@ class EditSubplanFormSnippet(ModelForm):
 
 
 class EditCourseFormSnippet(ModelForm):
+    rules = JSONField(field_id='rules', required=False)
+
     class Meta:
         model = CourseModel
-        fields = ('code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2')
+        fields = ('code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2', 'rules')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006, ARTH1100"}),
             'year': forms.NumberInput(attrs={'class': "text tfull",
