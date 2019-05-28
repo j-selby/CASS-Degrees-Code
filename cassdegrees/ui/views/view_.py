@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.forms.models import model_to_dict
 
 from api.models import CourseModel, ProgramModel, SubplanModel
 
@@ -51,15 +52,15 @@ def view_(request):
     url = request.build_absolute_uri()
 
     if "course" in url:
-        course = CourseModel.objects.get(id=int(id_to_edit))
+        course = model_to_dict(CourseModel.objects.get(id=int(id_to_edit)))
         return render(request, 'viewcourse.html', context={'data': course})
 
     elif "subplan" in url:
-        subplan = SubplanModel.objects.get(id=int(id_to_edit))
+        subplan = model_to_dict(SubplanModel.objects.get(id=int(id_to_edit)))
         return render(request, 'viewsubplan.html', context={'data': subplan})
 
     elif "program" in url:
-        program = ProgramModel.objects.get(id=int(id_to_edit))
+        program = model_to_dict(ProgramModel.objects.get(id=int(id_to_edit)))
 
         pretty_print_reqs(program)
         pretty_print_rules(program)
