@@ -1,8 +1,8 @@
 {% load course_boxes %}
 {% load math %}
 
-<!-- Renders a rule for a PDF program -->
-<div class="box">
+{# Renders rule a rule for a PDF program #}
+<div class="box try-complete-box">
     {% if rule.type == "subplan" %}
         <p>Completion of {{ rule.kind }} for {{ rule.units }} units:</p>
     {% elif rule.type == "subject_area" %}
