@@ -148,7 +148,10 @@ def edit_course(request):
             instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
             instance.save(update_fields=['lastUpdated'])
             form.save()
-            return redirect('/list/?view=Course&msg=Successfully Edited Course!')
+            print("LKDSJFLKSDJFLKDSJF")
+            print(request.POST)
+            if 'Save' not in request.POST:
+                return redirect('/list/?view=Course&msg=Successfully Edited Course!')
 
     else:
         form = EditCourseFormSnippet(instance=instance)
