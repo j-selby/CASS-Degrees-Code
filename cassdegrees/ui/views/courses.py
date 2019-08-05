@@ -148,9 +148,8 @@ def edit_course(request):
             instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
             instance.save(update_fields=['lastUpdated'])
             form.save()
-            print("LKDSJFLKSDJFLKDSJF")
-            print(request.POST)
-            if 'Save' not in request.POST:
+            # POST Requests only carry boolean values over as string
+            if request.POST.get('redirect') == 'true':
                 return redirect('/list/?view=Course&msg=Successfully Edited Course!')
 
     else:
