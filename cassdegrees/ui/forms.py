@@ -16,18 +16,19 @@ def contains_word(s, w):
 
 
 # For a given model check constraints c1 and c2 and raise link to conflicting record if applicable
-# url resolution using https://stackoverflow.com/questions/9585491/how-do-i-pass-get-parameters-using-django-urlresolvers-reverse
+# url resolution using
+# https://stackoverflow.com/questions/9585491/how-do-i-pass-get-parameters-using-django-urlresolvers-reverse
 # https://stackoverflow.com/questions/40886048/how-to-put-a-link-into-a-django-error-message
 def raise_unique_error(view_str, conflictID):
-        url = ("%s?id=" + str(conflictID)) % reverse(view_str)
-        msg = format_html('An existing record (<a href="{}" target="_blank">view in new tab</a>) '
-                          'with the same attributes is stopping the creation of this record. To fix this '
-                          'ensure the fields flagged below are unique, continue working on the existing record or '
-                          'delete the existing record.',
-                          url)
-        raise forms.ValidationError([
-            forms.ValidationError(msg, code='testError')
-        ])
+    url = ("%s?id=" + str(conflictID)) % reverse(view_str)
+    msg = format_html('An existing record (<a href="{}" target="_blank">view in new tab</a>) '
+                      'with the same attributes is stopping the creation of this record. To fix this '
+                      'ensure the fields flagged below are unique, continue working on the existing record or '
+                      'delete the existing record.',
+                      url)
+    raise forms.ValidationError([
+        forms.ValidationError(msg, code='testError')
+    ])
 
 
 class JSONField(forms.CharField):
