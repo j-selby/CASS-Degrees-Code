@@ -125,6 +125,9 @@ def edit_subplan(request):
     # Find the program to specifically edit
     instance = SubplanModel.objects.get(id=int(id))
 
+    # Set message to user if needed. Setting it to 'None' will not display the message box.
+    message = None
+
     if request.method == 'POST':
         form = EditSubplanFormSnippet(request.POST, instance=instance)
 
@@ -132,12 +135,17 @@ def edit_subplan(request):
             instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
             instance.save(update_fields=['lastUpdated'])
             form.save()
-            return redirect('/list/?view=Subplan&msg=Successfully Edited Subplan!')
+            # POST Requests only carry boolean values over as string
+            if request.POST.get('redirect') == 'true':
+                return redirect('/list/?view=Course&msg=Successfully Edited Subplan!')
+            else:
+                message = "Successfully Edited Subplan!"
 
     else:
         form = EditSubplanFormSnippet(instance=instance)
 
     return render(request, 'createsubplan.html', context={
+        'render': {'msg': message},
         "edit": True,
         "form": form
     })

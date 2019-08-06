@@ -134,7 +134,7 @@ def edit_course(request):
     gen_request.GET = {'select': 'id,code,name,rules', 'from': 'subplan', 'rules': instance.code}
     subplans = json.loads(search(gen_request).content.decode())
 
-    # Set message to user if needed
+    # Set message to user if needed. Setting it to 'None' will not display the message box.
     message = None
 
     # if there are programs/subplans that depend on the course code
