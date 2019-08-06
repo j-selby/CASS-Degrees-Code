@@ -76,17 +76,17 @@ def check_three_constraint(model, data, c1, c2, c3, view_str):
     # check constraint and return conflicting ID if present
     if draft_c1 is not None and draft_c2 is not None and draft_c3 is not None:
         try:
-            conflict_id = SubplanModel.objects.only('id').get(**{
+            conflict_id = model.objects.only('id').get(**{
                 c1: draft_c1,
                 c2: draft_c2,
                 c3: draft_c3}).id
-        except SubplanModel.DoesNotExist:
+        except model.DoesNotExist:
             conflict_id = None
     else:
         conflict_id = None
 
     if conflict_id is not None:
-        raise_unique_error('edit_subplan', conflict_id)
+        raise_unique_error(view_str, conflict_id)
 
 
 class JSONField(forms.CharField):
