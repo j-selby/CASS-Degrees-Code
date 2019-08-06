@@ -136,6 +136,8 @@ def edit_subplan(request):
             instance.save(update_fields=['lastUpdated'])
             form.save()
             # POST Requests only carry boolean values over as string
+            # Only redirect the user to the list page if the user presses "Save and Exit".
+            # Otherwise, simply display a success message on the same page.
             if request.POST.get('redirect') == 'true':
                 return redirect('/list/?view=Course&msg=Successfully Edited Subplan!')
             else:
