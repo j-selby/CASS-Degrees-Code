@@ -4,12 +4,30 @@ from api.models import ProgramModel, SubplanModel, CourseModel
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.forms import ModelForm
-
+from django.urls import reverse
 
 # fast and easy way to check if a word separated by spaces is in a sentence
 # From: https://stackoverflow.com/questions/5319922/python-check-if-word-is-in-a-string
+from django.utils.html import format_html
+
+
 def contains_word(s, w):
     return f' {w} ' in f' {s} '
+
+
+# For a given model check constraints c1 and c2 and raise link to conflicting record if applicable
+# url resolution using https://stackoverflow.com/questions/9585491/how-do-i-pass-get-parameters-using-django-urlresolvers-reverse
+# https://stackoverflow.com/questions/40886048/how-to-put-a-link-into-a-django-error-message
+def raise_unique_error(view_str, conflictID):
+        url = ("%s?id=" + str(conflictID)) % reverse(view_str)
+        msg = format_html('An existing record (<a href="{}" target="_blank">view in new tab</a>) '
+                          'with the same attributes is stopping the creation of this record. To fix this '
+                          'ensure the fields flagged below are unique, continue working on the existing record or '
+                          'delete the existing record.',
+                          url)
+        raise forms.ValidationError([
+            forms.ValidationError(msg, code='testError')
+        ])
 
 
 class JSONField(forms.CharField):
@@ -89,6 +107,45 @@ class EditProgramFormSnippet(ModelForm):
             raise forms.ValidationError("Units should be a multiple of 6!")
         return data
 
+    # Override clean to return links to existing content if unique_together constraint fails
+    # https://stackoverflow.com/questions/4659360/get-django-object-id-based-on-model-attribute
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
+        try:
+            draft_code = cleaned_data['code']
+        except KeyError:
+            draft_code = None
+        try:
+            draft_year = cleaned_data['year']
+        except KeyError:
+            draft_year = None
+        try:
+            draft_name = cleaned_data['name']
+        except KeyError:
+            draft_name = None
+
+        # check that input has been received for the fields and then check for duplicate
+        if draft_code is not None and draft_year is not None:
+            try:
+                conflict_id = ProgramModel.objects.only('id').get(code=draft_code, year=draft_year).id
+            except ProgramModel.DoesNotExist:
+                conflict_id = None
+        else:
+            conflict_id = None
+
+        # check secondary constraint
+        if conflict_id is None and draft_year is not None and draft_name is not None:
+            try:
+                conflict_id = ProgramModel.objects.only('id').get(name=draft_name, year=draft_year).id
+            except ProgramModel.DoesNotExist:
+                conflict_id = None
+
+        if conflict_id is not None:
+            raise_unique_error('edit_program', conflict_id)
+        return cleaned_data
+
 
 class EditSubplanFormSnippet(ModelForm):
     # Automatically injected by default
@@ -166,6 +223,49 @@ class EditSubplanFormSnippet(ModelForm):
         except KeyError:
             raise forms.ValidationError("Please fill in all fields!")
 
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
+        try:
+            draft_code = cleaned_data['code']
+        except KeyError:
+            draft_code = None
+        try:
+            draft_year = cleaned_data['year']
+        except KeyError:
+            draft_year = None
+        try:
+            draft_name = cleaned_data['name']
+        except KeyError:
+            draft_name = None
+        try:
+            draft_planType = cleaned_data['planType']
+        except KeyError:
+            draft_planType = None
+
+        # check that input has been received for the fields and then check for duplicate
+        # relevant constraints are (code, year) and (name, year, planType)
+        if draft_code is not None and draft_year is not None:
+            try:
+                conflict_id = SubplanModel.objects.only('id').get(code=draft_code, year=draft_year).id
+            except SubplanModel.DoesNotExist:
+                conflict_id = None
+        else:
+            conflict_id = None
+
+        # check secondary constraint
+        if conflict_id is None and draft_year is not None and draft_name is not None and draft_planType is not None:
+            try:
+                conflict_id = SubplanModel.objects.only('id').get(name=draft_name, year=draft_year,
+                                                                  planType=draft_planType).id
+            except SubplanModel.DoesNotExist:
+                conflict_id = None
+
+        if conflict_id is not None:
+            raise_unique_error('edit_subplan', conflict_id)
+        return cleaned_data
+
 
 class EditCourseFormSnippet(ModelForm):
     rules = JSONField(field_id='rules', required=False)
@@ -224,3 +324,30 @@ class EditCourseFormSnippet(ModelForm):
         if int(data) % 6 != 0:
             raise forms.ValidationError("Units should be a multiple of 6!")
         return data
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
+        try:
+            draft_code = cleaned_data['code']
+        except KeyError:
+            draft_code = None
+        try:
+            draft_year = cleaned_data['year']
+        except KeyError:
+            draft_year = None
+
+        # check that input has been received for the fields and then check for duplicate
+        # relevant constraints are (code, year)
+        if draft_code is not None and draft_year is not None:
+            try:
+                conflict_id = CourseModel.objects.only('id').get(code=draft_code, year=draft_year).id
+            except CourseModel.DoesNotExist:
+                conflict_id = None
+        else:
+            conflict_id = None
+
+        if conflict_id is not None:
+            raise_unique_error('edit_course', conflict_id)
+        return cleaned_data
