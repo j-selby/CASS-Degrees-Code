@@ -134,6 +134,9 @@ def edit_course(request):
     gen_request.GET = {'select': 'id,code,name,rules', 'from': 'subplan', 'rules': instance.code}
     subplans = json.loads(search(gen_request).content.decode())
 
+    # Set message to user if needed
+    message = None
+
     # if there are programs/subplans that depend on the course code
     if len(programs) + len(subplans) > 0:
         for program in programs:
@@ -151,12 +154,15 @@ def edit_course(request):
             # POST Requests only carry boolean values over as string
             if request.POST.get('redirect') == 'true':
                 return redirect('/list/?view=Course&msg=Successfully Edited Course!')
+            else:
+                message = "Successfully Edited Course!"
 
     else:
         form = EditCourseFormSnippet(instance=instance)
         form.fields['code'].disabled = len(programs) + len(subplans) > 0
 
     return render(request, 'createcourse.html', context={
+        'render': {'msg': message},
         "edit": True,
         "form": form,
         "courses": CourseModel.objects.values(),
