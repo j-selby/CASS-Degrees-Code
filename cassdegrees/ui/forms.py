@@ -31,6 +31,64 @@ def raise_unique_error(view_str, conflictID):
     ])
 
 
+# for any constraints c1 c2
+# https://stackoverflow.com/questions/4659360/get-django-object-id-based-on-model-attribute
+def check_constraint(model, data, c1, c2, view_str):
+    # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
+    try:
+        draft_c1 = data[c1]
+    except KeyError:
+        draft_c1 = None
+    try:
+        draft_c2 = data[c2]
+    except KeyError:
+        draft_c2 = None
+
+    # check that input has been received for the fields and then check for duplicate
+    if draft_c1 is not None and draft_c2 is not None:
+        try:
+            conflict_id = model.objects.only('id').get(**{c1: draft_c1, c2: draft_c2}).id
+        except model.DoesNotExist:
+            conflict_id = None
+    else:
+        conflict_id = None
+
+    if conflict_id is not None:
+        raise_unique_error(view_str, conflict_id)
+
+
+# for any constraints c1 c2 c3
+def check_three_constraint(model, data, c1, c2, c3, view_str):
+    # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
+    try:
+        draft_c1 = data[c1]
+    except KeyError:
+        draft_c1 = None
+    try:
+        draft_c2 = data[c2]
+    except KeyError:
+        draft_c2 = None
+    try:
+        draft_c3 = data[c3]
+    except KeyError:
+        draft_c3 = None
+
+    # check constraint and return conflicting ID if present
+    if draft_c1 is not None and draft_c2 is not None and draft_c3 is not None:
+        try:
+            conflict_id = SubplanModel.objects.only('id').get(**{
+                c1: draft_c1,
+                c2: draft_c2,
+                c3: draft_c3}).id
+        except SubplanModel.DoesNotExist:
+            conflict_id = None
+    else:
+        conflict_id = None
+
+    if conflict_id is not None:
+        raise_unique_error('edit_subplan', conflict_id)
+
+
 class JSONField(forms.CharField):
 
     def __init__(self, *args, field_id, **kwargs):
@@ -109,42 +167,12 @@ class EditProgramFormSnippet(ModelForm):
         return data
 
     # Override clean to return links to existing content if unique_together constraint fails
-    # https://stackoverflow.com/questions/4659360/get-django-object-id-based-on-model-attribute
     def clean(self):
         cleaned_data = super().clean()
 
-        # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
-        try:
-            draft_code = cleaned_data['code']
-        except KeyError:
-            draft_code = None
-        try:
-            draft_year = cleaned_data['year']
-        except KeyError:
-            draft_year = None
-        try:
-            draft_name = cleaned_data['name']
-        except KeyError:
-            draft_name = None
+        check_constraint(ProgramModel, cleaned_data, 'code', 'year', 'edit_program')
+        check_constraint(ProgramModel, cleaned_data, 'name', 'year', 'edit_program')
 
-        # check that input has been received for the fields and then check for duplicate
-        if draft_code is not None and draft_year is not None:
-            try:
-                conflict_id = ProgramModel.objects.only('id').get(code=draft_code, year=draft_year).id
-            except ProgramModel.DoesNotExist:
-                conflict_id = None
-        else:
-            conflict_id = None
-
-        # check secondary constraint
-        if conflict_id is None and draft_year is not None and draft_name is not None:
-            try:
-                conflict_id = ProgramModel.objects.only('id').get(name=draft_name, year=draft_year).id
-            except ProgramModel.DoesNotExist:
-                conflict_id = None
-
-        if conflict_id is not None:
-            raise_unique_error('edit_program', conflict_id)
         return cleaned_data
 
 
@@ -227,44 +255,10 @@ class EditSubplanFormSnippet(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
-        try:
-            draft_code = cleaned_data['code']
-        except KeyError:
-            draft_code = None
-        try:
-            draft_year = cleaned_data['year']
-        except KeyError:
-            draft_year = None
-        try:
-            draft_name = cleaned_data['name']
-        except KeyError:
-            draft_name = None
-        try:
-            draft_planType = cleaned_data['planType']
-        except KeyError:
-            draft_planType = None
-
-        # check that input has been received for the fields and then check for duplicate
         # relevant constraints are (code, year) and (name, year, planType)
-        if draft_code is not None and draft_year is not None:
-            try:
-                conflict_id = SubplanModel.objects.only('id').get(code=draft_code, year=draft_year).id
-            except SubplanModel.DoesNotExist:
-                conflict_id = None
-        else:
-            conflict_id = None
+        check_constraint(SubplanModel, cleaned_data, 'code', 'year', 'edit_subplan')
+        check_three_constraint(SubplanModel, cleaned_data, 'name', 'year', 'planType', 'edit_subplan')
 
-        # check secondary constraint
-        if conflict_id is None and draft_year is not None and draft_name is not None and draft_planType is not None:
-            try:
-                conflict_id = SubplanModel.objects.only('id').get(name=draft_name, year=draft_year,
-                                                                  planType=draft_planType).id
-            except SubplanModel.DoesNotExist:
-                conflict_id = None
-
-        if conflict_id is not None:
-            raise_unique_error('edit_subplan', conflict_id)
         return cleaned_data
 
 
@@ -329,26 +323,6 @@ class EditCourseFormSnippet(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
-        try:
-            draft_code = cleaned_data['code']
-        except KeyError:
-            draft_code = None
-        try:
-            draft_year = cleaned_data['year']
-        except KeyError:
-            draft_year = None
+        check_constraint(CourseModel, cleaned_data, 'code', 'year', 'edit_course')
 
-        # check that input has been received for the fields and then check for duplicate
-        # relevant constraints are (code, year)
-        if draft_code is not None and draft_year is not None:
-            try:
-                conflict_id = CourseModel.objects.only('id').get(code=draft_code, year=draft_year).id
-            except CourseModel.DoesNotExist:
-                conflict_id = None
-        else:
-            conflict_id = None
-
-        if conflict_id is not None:
-            raise_unique_error('edit_course', conflict_id)
         return cleaned_data
