@@ -94,7 +94,7 @@ def bulk_data_upload(request):
                     subplan_instance.units = int(row[map['units']])
                     subplan_instance.planType = str(row[map['planType']])
                     subplan_str = str(subplan_instance.year) + " - " + subplan_instance.code + " - " + \
-                                  subplan_instance.name
+                        subplan_instance.name
 
                     # Save the subplan instance
                     try:
