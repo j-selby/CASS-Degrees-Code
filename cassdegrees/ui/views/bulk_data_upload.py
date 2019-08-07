@@ -18,8 +18,6 @@ from django.shortcuts import render
 # code%year%name%units%planType
 # ARTI-SPEC%2016%Artificial Intelligence%24%SPEC
 # ...
-from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 
 
 @login_required
