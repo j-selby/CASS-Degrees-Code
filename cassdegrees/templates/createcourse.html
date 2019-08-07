@@ -61,6 +61,8 @@
     </form>
 
     <p class="text-right">
+        <input class="btn-uni-grad btn-large" type="button" value="Cancel"
+               onclick="{% if edit %}returnToList('Course'){% else %}goBack(){% endif %}">
         {% if edit %}
             <input class="btn-uni-grad btn-large" type="submit" value="Save"
                onclick="submit_form(this.value, false)">
