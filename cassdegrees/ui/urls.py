@@ -24,6 +24,7 @@ from .views.programs import *
 from .views.sampleform import *
 from .views.subplans import *
 from .views.view_ import *
+from .views.student import *
 
 urlpatterns = [
     path('', index),
@@ -43,4 +44,6 @@ urlpatterns = [
     path('view/subplan/', view_),
     path('view/course/', view_),
     path('pdf/program/', view_program_pdf),
+
+    path('student/', student_index)
 ]
