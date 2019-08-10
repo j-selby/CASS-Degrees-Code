@@ -16,12 +16,12 @@ function checkKeys(event) {
  * Makes the web page go back to the homepage
  */
 function goBack() {
-    window.location.href= "/";
+    window.location.href= "/admin/home/";
 }
 
 /**
  * Returns to the relevant list page
  */
 function returnToList(pageName) {
-    window.location.href = "/list/?view="+pageName;
+    window.location.href = "/admin/list/?view="+pageName;
 }
