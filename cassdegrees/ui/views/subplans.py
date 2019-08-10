@@ -105,8 +105,8 @@ def delete_subplan(request):
             instances.append(SubplanModel.objects.get(id=int(id_to_delete)))
 
     if error_msg != "":
-        return redirect(list_subplan_url + '&error=Failed to Delete Subplan(s)!\n\n' + error_msg +
-                        '\nPlease check dependencies!')
+        return redirect(list_subplan_url + '&error=Failed to Delete Subplan(s)!\n\n' + error_msg
+                        + '\nPlease check dependencies!')
 
     if "confirm" in data:
         for instance in instances:
