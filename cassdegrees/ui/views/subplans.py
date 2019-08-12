@@ -9,8 +9,9 @@ from api.views import search
 import json
 from django.utils import timezone
 
+admin_url_prefix = "/admin/"
 
-list_subplan_url = "/admin/list/?view=Subplan"
+list_subplan_url = admin_url_prefix + "list/?view=Subplan"
 
 
 # Using sampleform template and #59 - basic program creation workflow as it's inspirations

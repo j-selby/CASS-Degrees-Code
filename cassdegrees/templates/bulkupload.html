@@ -26,7 +26,7 @@
 
     {% for type in upload_type %}
         <div id="{{ type }}Page" hidden>
-            <form class="anuform" action="/admin/bulk_upload/?type={{ type }}" method="post" enctype="multipart/form-data">
+            <form class="anuform" action="?type={{ type }}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                  <fieldset>
                      <legend>Upload {{ type }} File</legend>
