@@ -27,7 +27,7 @@
     </div>
 
     {% for rule in program.rules %}
-        {% include "widgets/pdf_rules.html" %}
+        {{ rule.type }}
     {% endfor %}
 
 {% endblock %}
