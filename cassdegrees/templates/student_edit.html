@@ -12,6 +12,8 @@
 {% endblock %}
 
 {% block content %}
+    {# program is the full program object as selected by the user, superuser is if an authenticated #}
+    {# user is logged in #}
     <div class="box bdr-solid bdr-uni">
         <label for="plan-name">Name:</label>
         <input id="plan-name" type="text" placeholder="e.g. {{ program.name }}" />
