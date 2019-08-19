@@ -1,5 +1,6 @@
 import csv
 from io import TextIOWrapper
+import pandas as pd
 
 from api.models import CourseModel, SubplanModel
 from django.contrib.auth.decorators import login_required
@@ -35,12 +36,7 @@ def bulk_data_upload(request):
         # Open file in text mode:
         # https://stackoverflow.com/questions/16243023/how-to-resolve-iterator-should-return-strings-not-bytes
         uploaded_file = TextIOWrapper(request.FILES['uploaded_file'], encoding=request.encoding)
-
-        # Reading the '%' using the csv import module came from:
-        # https://stackoverflow.com/questions/13992971/reading-and-parsing-a-tsv-file-then-manipulating-it-for-saving-as-csv-efficie
-
-        # % is used instead of comma since the course name may include commas (which would break this function)
-        uploaded_file = csv.reader(uploaded_file, delimiter='%')
+        print(uploaded_file.name[-4:])
 
         # First row contains the column type headings (code, name etc). We can't add them to the db.
         first_row_checked = False
@@ -51,6 +47,17 @@ def bulk_data_upload(request):
         any_success = False
         failed_to_upload = []
         correctly_uploaded = []
+
+        if uploaded_file.name[-4] == "xlsx":
+            # https://stackoverflow.com/questions/16888888/how-to-read-a-xlsx-file-using-the-pandas-library-in-ipython
+            uploaded_file = pd.read_excel(uploaded_file.name, sheet_name=None)
+            print(uploaded_file)
+        else:
+            # Reading the '%' using the csv import module came from:
+            # https://stackoverflow.com/questions/13992971/reading-and-parsing-a-tsv-file-then-manipulating-it-for-saving-as-csv-efficie
+
+            # % is used instead of comma since the course name may include commas (which would break this function)
+            uploaded_file = csv.reader(uploaded_file, delimiter='%')
 
         # Stores the index of the column containing the data type of each row,
         # so that the right data is stored in the right column
