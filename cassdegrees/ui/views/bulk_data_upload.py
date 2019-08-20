@@ -1,6 +1,6 @@
 import csv
 from io import TextIOWrapper
-import pandas as pd
+import openpyxl
 
 from api.models import CourseModel, SubplanModel
 from django.contrib.auth.decorators import login_required
@@ -20,6 +20,9 @@ from django.shortcuts import render
 # ARTI-SPEC%2016%Artificial Intelligence%24%SPEC
 # ...
 
+# 20/08/19 changes: Support added for excel sheets in the same rules as above (no % needed, but put each word between
+# the % sign in a new cell in that row.
+
 
 @login_required
 def bulk_data_upload(request):
@@ -35,8 +38,8 @@ def bulk_data_upload(request):
 
         # Open file in text mode:
         # https://stackoverflow.com/questions/16243023/how-to-resolve-iterator-should-return-strings-not-bytes
-        uploaded_file = TextIOWrapper(request.FILES['uploaded_file'], encoding=request.encoding)
-        print(uploaded_file.name[-4:])
+        raw_uploaded_file = request.FILES['uploaded_file']
+        uploaded_file = TextIOWrapper(raw_uploaded_file, encoding=request.encoding)
 
         # First row contains the column type headings (code, name etc). We can't add them to the db.
         first_row_checked = False
@@ -48,10 +51,22 @@ def bulk_data_upload(request):
         failed_to_upload = []
         correctly_uploaded = []
 
+        # If the uploaded file was an excel sheet, convert it to a format that is the same as the output of when
+        # the percent separated value files are processed by the else statement below.
+        # This is done so that the code below the if else statement here works for both types of files.
         if uploaded_file.name[-4:] == "xlsx":
-            # https://stackoverflow.com/questions/16888888/how-to-read-a-xlsx-file-using-the-pandas-library-in-ipython
-            uploaded_file = pd.read_excel(uploaded_file.name)
-            print(uploaded_file.columns)
+            # Used https://www.pythoncircle.com/post/591/how-to-upload-and-process-the-excel-file-in-django/
+            # to help me read the excel files.
+            excel_file = openpyxl.load_workbook(raw_uploaded_file)
+            sheet = excel_file["Sheet1"]
+
+            uploaded_file = list()
+            for row in sheet.iter_rows():
+                row_data = list()
+                for cell in row:
+                    row_data.append(str(cell.value))
+                uploaded_file.append(row_data)
+
         else:
             # Reading the '%' using the csv import module came from:
             # https://stackoverflow.com/questions/13992971/reading-and-parsing-a-tsv-file-then-manipulating-it-for-saving-as-csv-efficie
