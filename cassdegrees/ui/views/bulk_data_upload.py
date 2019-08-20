@@ -48,10 +48,10 @@ def bulk_data_upload(request):
         failed_to_upload = []
         correctly_uploaded = []
 
-        if uploaded_file.name[-4] == "xlsx":
+        if uploaded_file.name[-4:] == "xlsx":
             # https://stackoverflow.com/questions/16888888/how-to-read-a-xlsx-file-using-the-pandas-library-in-ipython
-            uploaded_file = pd.read_excel(uploaded_file.name, sheet_name=None)
-            print(uploaded_file)
+            uploaded_file = pd.read_excel(uploaded_file.name)
+            print(uploaded_file.columns)
         else:
             # Reading the '%' using the csv import module came from:
             # https://stackoverflow.com/questions/13992971/reading-and-parsing-a-tsv-file-then-manipulating-it-for-saving-as-csv-efficie
