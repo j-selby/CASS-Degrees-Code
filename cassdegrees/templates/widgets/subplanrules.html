@@ -21,7 +21,7 @@
             <option v-for="(msg, type) in list_types" v-bind:value="type">{{ msg }}</option>
         </select>
 
-{#       instyle css only temporary #}
+<!-- {#       instyle css only temporary #} -->
         <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" required> units
 
         <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
