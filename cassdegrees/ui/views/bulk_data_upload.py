@@ -23,10 +23,12 @@ from django.shortcuts import render
 # 20/08/19 changes: Support added for excel sheets in the same rules as above (no % needed, but put each word between
 # the % sign in a new cell in that row.
 
+# 21/08/19 changes: Support added for CASS teaching plan excel file.
+
 
 @login_required
 def bulk_data_upload(request):
-    context = {}
+    context = dict()
     context['upload_type'] = ['Courses', 'Subplans']
     content_type = request.GET.get('type')
 
@@ -54,18 +56,103 @@ def bulk_data_upload(request):
         # If the uploaded file was an excel sheet, convert it to a format that is the same as the output of when
         # the percent separated value files are processed by the else statement below.
         # This is done so that the code below the if else statement here works for both types of files.
-        if uploaded_file.name[-4:] == "xlsx":
+        if uploaded_file.name[-4:] == "xlsx" or uploaded_file.name[-3:] == "xls":
             # Used https://www.pythoncircle.com/post/591/how-to-upload-and-process-the-excel-file-in-django/
             # to help me read the excel files.
             excel_file = openpyxl.load_workbook(raw_uploaded_file)
             sheet = excel_file["Sheet1"]
 
+            # This is not the best way to make sure
+            cass_course_custom_format = (list(sheet.iter_rows())[0][0].value is None)
+
             uploaded_file = list()
-            for row in sheet.iter_rows():
-                row_data = list()
-                for cell in row:
-                    row_data.append(str(cell.value))
-                uploaded_file.append(row_data)
+
+            # If the uploaded excel sheet is in format of what CASS already has, do special processing.
+            # Change this if statement when the checkbox is implemented.
+            if cass_course_custom_format:
+                year_range_found = False
+                columns_set = False
+                col_index = dict()
+                col_counter = 0
+
+                start_year = int()
+                end_year = int()
+
+                uploaded_file.append(["code", "year", "name", "units", "offeredSem1", "offeredSem2"])
+                for row in sheet.iter_rows():
+
+                    sem_offer_value = ""
+                    if columns_set:
+                        sem_offer_value = row[col_index["Semesters"]].value
+
+                    if not year_range_found or not columns_set:
+                        for cell in row:
+                            if not year_range_found:
+                                if cell.value is not None:
+                                    stripped_title = cell.value.split()
+
+                                    start_year = int(stripped_title[-3])
+                                    end_year = int(stripped_title[-1])
+
+                                    year_range_found = True
+
+                            elif not columns_set:
+                                if cell.value is not None:
+                                    # Find and store the index of all the column positions
+                                    col_index[cell.value] = col_counter
+                                    col_counter += 1
+
+                                # If every column has been indexed, then mark columns_set as true.
+                                if col_counter + 1 == len(row):
+                                    columns_set = True
+
+                    else:
+                        if sem_offer_value == "Other" or sem_offer_value == "Offered only in sessions":
+                            skipped_course = "{} - {} - Unknown/Unsupported course offering".format(
+                                row[col_index["Course Code"]].value,
+                                row[col_index["Course Title"]].value)
+
+                            failed_to_upload.append(skipped_course)
+                            # failed_to_upload.append(row[col_index["Course Code"]].value)
+                            any_error = True
+                            continue
+                        sem_offer_args = sem_offer_value.split()
+
+                        for year in range(start_year, end_year + 1):
+                            s1_offer = False
+                            s2_offer = False
+
+                            # Skip for this year if the semester offer states it is not offered in odd/even years.
+                            if sem_offer_args[0] == "Even":
+                                if year % 2 == 1:
+                                    continue
+                            elif sem_offer_args[0] == "Odd":
+                                if year % 2 == 0:
+                                    continue
+
+                            if sem_offer_args[-1] == "Semester" or \
+                                    ("S1" in sem_offer_value and "S2" in sem_offer_value):
+                                s1_offer = True
+                                s2_offer = True
+                            elif sem_offer_args[-1] == "S1":
+                                s1_offer = True
+                            elif sem_offer_args[-1] == "S2":
+                                s2_offer = True
+
+                            # Assume all courses are worth 6 units,
+                            # since unit value is not included in the CASS course list excel sheet.
+                            row_data = [row[col_index["Course Code"]].value, year,
+                                        row[col_index["Course Title"]].value, 6, s1_offer, s2_offer]
+                            uploaded_file.append(row_data)
+
+            # If the uploaded excel sheet is in custom format specified in line 23,
+            # then simply convert from the excel format to a list of lists.
+            else:
+                for row in sheet.iter_rows():
+                    row_data = list()
+                    for cell in row:
+                        row_data.append(str(cell.value))
+                    uploaded_file.append(row_data)
 
         else:
             # Reading the '%' using the csv import module came from:
@@ -101,7 +188,8 @@ def bulk_data_upload(request):
                         any_success = True
                         correctly_uploaded.append(course_str)
                     except:
-                        failed_to_upload.append(course_str)
+                        error_message = course_str + " Couldn't add: Check for duplicate course"
+                        failed_to_upload.append(error_message)
                         any_error = True
 
                 elif content_type == 'Subplans':
