@@ -15,12 +15,14 @@
             <label>
                 Students must complete:
             </label>
-            <select v-model="details.list_type" required>
-                <option v-for="(msg, type) in list_types" v-bind:value="type">{{ msg }}</option>
-            </select>
         </p>
 
-        <input class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required> units
+        <select v-model="details.list_type" required>
+            <option v-for="(msg, type) in list_types" v-bind:value="type">{{ msg }}</option>
+        </select>
+
+{#       instyle css only temporary #}
+        <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" required> units
 
         <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
         <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
