@@ -65,7 +65,7 @@ def student_index(request):
             plan = decompress(val)
             try:
                 instance = model_to_dict(ProgramModel.objects.get(id=plan['program_id']))
-                plans.append({'name':plan_name[5:], 'date': plan['date'], 'program': instance['name']})
+                plans.append({'name': plan_name[5:], 'date': plan['date'], 'program': instance['name']})
             except ProgramModel.DoesNotExist:
                 continue
 
@@ -78,7 +78,7 @@ def student_delete(request):
 
     if plan_name is not None:
         try:
-            del request.session['plan:'+plan_name]
+            del request.session['plan:' + plan_name]
         except KeyError:
             pass
 
@@ -125,8 +125,7 @@ def student_edit(request):
             plans = [plan[5:] for plan in request.session.keys() if plan[:5] == "plan:"]
             if new_plan_name in plans:
                 new_plan = {key: request.POST[key] for key in request.POST.keys()
-                            if key != 'csrfmiddlewaretoken' and key != 'plan_name'
-                }
+                            if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
                 render_settings['error'] = 'A plan already exists with that name. Please choose a different name.'
                 return render(request, 'student_edit.html', context={'plan': new_plan,
                                                                      'program': {},
@@ -134,10 +133,9 @@ def student_edit(request):
                                                                      'superuser': request.user.is_authenticated})
             else:
                 new_plan = {key: request.POST[key] for key in request.POST.keys()
-                            if key != 'csrfmiddlewaretoken' and key != 'plan_name'
-                }
+                            if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
                 new_plan['date'] = timezone.now().strftime('%d/%m/%Y')
-                request.session['plan:'+new_plan_name] = compress(new_plan)
+                request.session['plan:' + new_plan_name] = compress(new_plan)
 
                 try:
                     del request.session['plan:' + plan_name]
@@ -146,16 +144,15 @@ def student_edit(request):
         # If the plan name stayed the same, update the old plan
         else:
             new_plan = {key: request.POST[key] for key in request.POST.keys()
-                        if key != 'csrfmiddlewaretoken' and key != 'plan_name'
-            }
+                        if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
             new_plan['date'] = timezone.now().strftime('%d/%m/%Y')
             request.session['plan:' + new_plan_name] = compress(new_plan)
         request.session['message'] = 'Successfully saved'
-        return redirect('/edit/?plan='+new_plan_name)
+        return redirect('/edit/?plan=' + new_plan_name)
     # If the user submits a get request
     else:
         # Decompress and read the plan from the cookies
-        compressed_plan = request.session.get("plan:"+plan_name, '')
+        compressed_plan = request.session.get("plan:" + plan_name, '')
         if compressed_plan:
             plan = decompress(compressed_plan)
             plan['name'] = plan_name
