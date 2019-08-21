@@ -121,14 +121,25 @@ def student_edit(request):
         new_plan_name = request.POST.get('plan_name', None)
 
         # If the plan name changed, delete the old one and create the new one
-        if new_plan_name != plan_name:
+        if not new_plan_name or new_plan_name != plan_name:
             plans = [plan[5:] for plan in request.session.keys() if plan[:5] == "plan:"]
-            if new_plan_name in plans:
+            # If the new plan doesn't have a name or has the same name as another, notify the user
+            if not new_plan_name or new_plan_name in plans:
+                if not new_plan_name:
+                    render_settings['error'] = 'Please choose a name for your plan'
+                else:
+                    render_settings['error'] = 'A plan already exists with that name. Please choose a different name.'
+
+                # Get the current plan state from the cookies and redraw it
                 new_plan = {key: request.POST[key] for key in request.POST.keys()
                             if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
-                render_settings['error'] = 'A plan already exists with that name. Please choose a different name.'
+                try:
+                    instance = model_to_dict(ProgramModel.objects.get(id=new_plan['program_id']))
+                except ProgramModel.DoesNotExist:
+                    render_settings['error'] = 'This program plan is not valid. Please create a new Program Plan'
+                    instance = {}
                 return render(request, 'student_edit.html', context={'plan': new_plan,
-                                                                     'program': {},
+                                                                     'program': instance,
                                                                      'render': render_settings,
                                                                      'superuser': request.user.is_authenticated})
             else:
