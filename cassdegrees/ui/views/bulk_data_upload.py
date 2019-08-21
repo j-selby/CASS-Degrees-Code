@@ -78,6 +78,7 @@ def bulk_data_upload(request):
                 start_year = int()
                 end_year = int()
 
+                # Add columns that are matching the custom format designed in this script, detailed in line 10 - 26.
                 uploaded_file.append(["code", "year", "name", "units", "offeredSem1", "offeredSem2"])
                 for row in sheet.iter_rows():
 
@@ -85,8 +86,11 @@ def bulk_data_upload(request):
                     if columns_set:
                         sem_offer_value = row[col_index["Semesters"]].value
 
+                    # This is the initialisation phase,
+                    # where the file reader determines the year ranges and column positions.
                     if not year_range_found or not columns_set:
                         for cell in row:
+                            # Split the string in the first line of the excel sheet to get start and end year
                             if not year_range_found:
                                 if cell.value is not None:
                                     stripped_title = cell.value.split()
@@ -96,6 +100,7 @@ def bulk_data_upload(request):
 
                                     year_range_found = True
 
+                            # Once the year range is set, then determine the column positions of the excel sheet.
                             elif not columns_set:
                                 if cell.value is not None:
                                     # Find and store the index of all the column positions
@@ -106,16 +111,20 @@ def bulk_data_upload(request):
                                 if col_counter + 1 == len(row):
                                     columns_set = True
 
+                    # Once the year range and the column positions are set,
+                    # check the offerings specified in the 'Semester' column and process accordingly.
                     else:
+                        # Right now, courses with offering type 'other' and 'sessions' are not supported,
+                        # so add them to the list of 'failed' courses and move on to the next course.
                         if sem_offer_value == "Other" or sem_offer_value == "Offered only in sessions":
                             skipped_course = "{} - {} - Unknown/Unsupported course offering".format(
                                 row[col_index["Course Code"]].value,
                                 row[col_index["Course Title"]].value)
 
                             failed_to_upload.append(skipped_course)
-                            # failed_to_upload.append(row[col_index["Course Code"]].value)
                             any_error = True
                             continue
+
                         sem_offer_args = sem_offer_value.split()
 
                         for year in range(start_year, end_year + 1):
@@ -130,6 +139,7 @@ def bulk_data_upload(request):
                                 if year % 2 == 0:
                                     continue
 
+                            # Set the boolean values to true if the semester offerings say they are offered.
                             if sem_offer_args[-1] == "Semester" or \
                                     ("S1" in sem_offer_value and "S2" in sem_offer_value):
                                 s1_offer = True
