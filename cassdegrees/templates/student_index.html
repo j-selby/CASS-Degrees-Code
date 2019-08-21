@@ -33,15 +33,31 @@
     <div>
     {% for plan in plans %}
         {% if plan.name %}
-        <div>
-            <a href="/edit/?plan={{ plan.name }}" class="hide-link-underline">
-                <input class="btn-uni-grad btn-large" type="button"
-                       value="Continue previous plan: '{{ plan.name }}', last updated {{ plan.date }}" />
-            </a>
-            &nbsp;
-            <a href="/delete/?plan={{ plan.name }}">
-                <input type="button" class="btn-uni-grad btn-snall no-left-margin" value="Remove" formaction="D"/>
-            </a>
+        <div class="list w-full">
+            <div class="left w-two-third">
+                <a href="/edit/?plan={{ plan.name }}" class="hide-link-underline">
+                    <div class="card selectable-card">
+                        <div class="box-solid">
+                            <div class="card-content">
+                                <b>{{ plan.name }} </b><text class="right">{{ plan.date }}</text>
+                                <br />
+                                {{ plan.program }}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="w-full">
+                <a href="/delete/?plan={{ plan.name }}" class="hide-link-underline">
+                    <div class="card selectable-card">
+                        <div class="box-solid">
+                            <div class="card-content center">
+                                <p>Remove</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
         </div>
         {% endif %}
     {% endfor %}

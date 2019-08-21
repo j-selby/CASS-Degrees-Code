@@ -58,11 +58,16 @@ def student_index(request):
     # Load up the error and regular messages to render in the plan
     render_settings = load_messages(request.session)
 
-    # Generate a list of name-date tuples for all plans saved in the cookies
-    plans = [
-        {'name':plan[5:], 'date': decompress(val)['date']}
-        for plan, val in request.session.items() if plan[:5] == "plan:"
-    ]
+    # Generate a dict containing the plan name, date, and program name for all plans saved in the cookies
+    plans = []
+    for plan_name, val in request.session.items():
+        if plan_name[:5] == "plan:":
+            plan = decompress(val)
+            try:
+                instance = model_to_dict(ProgramModel.objects.get(id=plan['program_id']))
+                plans.append({'name':plan_name[5:], 'date': plan['date'], 'program': instance['name']})
+            except ProgramModel.DoesNotExist:
+                continue
 
     return render(request, 'student_index.html', context={'plans': plans, 'render': render_settings})
 
