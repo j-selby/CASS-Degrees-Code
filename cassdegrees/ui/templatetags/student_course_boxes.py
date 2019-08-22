@@ -20,7 +20,7 @@ def student_course_box(context, count):
                   "<span class=\"grey-text\">Course #" + str(i + 1) + ":&nbsp;</span>" \
                   "<span class=\"course-code\"></span>&nbsp;" \
                   "<input type=\"button\" class=\"course-clear-button\" onclick=\"clearCourse(this.parentElement)\" " \
-                      "class=\"btn-uni-grad btn-snall\" value=\"Remove\" />" \
+                  "class=\"btn-uni-grad btn-snall\" value=\"Remove\" />" \
                   "</div></div>"
 
     return Template(output).render(context)
@@ -40,6 +40,7 @@ def student_course_box_with_values(context, count, courses):
                   "</div>"
 
     return Template(output).render(context)
+
 
 # https://stackoverflow.com/questions/4651172/reference-list-item-by-index-within-django-template/29664945#29664945
 @register.filter
