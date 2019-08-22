@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}{% if edit %}Edit{% else %}Create{% endif %} List{% endblock %}
+
+{% block subtitle %}{% if edit %}Edit{% else %}Create{% endif %} List{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb '/admin/home' 'Admin Home'%}
+    {% breadcrumb '/admin/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% if edit %}
+        {% finalcrumb 'Edit List' %}
+    {% else %}
+        {% finalcrumb 'Create List' %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if render.msg != None %}
+        <p class="msg-success">{{ render.msg }}</p>
+    {% endif %}
+
+    {% for error in form.non_field_errors %}
+         <p class="msg-error">{{ error }}</p>
+    {% endfor %}
+
+    <form class="anuform" id="mainForm" action="" method="post" onsubmit="return false;" autocomplete="off">
+        {% csrf_token %}
+
+        <input type="hidden" id="redirect" name="redirect">
+
+        <fieldset>
+            <legend>Configure List Details</legend>
+
+            {{ form.management_form }}
+
+            {% for field in form %}
+                    <p class="form-group">
+                        {% if not field.is_hidden  %}
+                            {{ field.label_tag }}
+                        {% endif %}
+                        {{ field }}
+                    </p>
+                    {% for error in field.errors %}
+                         <div class="msg-error inline-error">{{ error }}</div>
+                    {% endfor %}
+            {% endfor %}
+
+            <input type="hidden" name="action" value="Save" />
+        </fieldset>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
+
+<div id="app">
+  <multiselect
+          :options="options"
+          :value="optionsProxy"
+          @input="updateSelected"
+          @search-change="searchQuery"
+          :show-labels="true"
+          :multiple="true"
+          :searchable="true"
+          :close-on-select="true"
+          placeholder="Search"
+          :custom-label="customLabel"
+          track-by="name"
+          :loading="showLoadingSpinner">
+  </multiselect>
+
+    <ul class="resources-list">
+        <template v-for="(resource, index) in selectedResources">
+            <li class="resource-item" :data-index="index">
+                <div class="resource-info">
+                    <div class="resource-title" :id="index">
+                        <span>[[ resource.code ]] - [[ resource.name ]]</span>
+                    </div>
+                </div>
+                <div class="delete-controls" v-on:click.prevent="removeDependency(index)">
+                    <i class="fa fa-times fa-fw"></i>
+                </div>
+            </li>
+        </template>
+    </ul>
+</div>
+
+    <script src="{% static 'js/multiselect.js' %}" type="application/javascript"></script>
+
+{% endblock %}

@@ -21,7 +21,7 @@
         <p class="msg-error">{{ render.error|linebreaksbr }}</p>
     {% endif %}
 
-    <form class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar" action="?action=Search" method="get">
+    <form class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar" action="/list/?action=Search" method="get">
         <input class="text" name="q" size="24" maxlength="75" type="text"
                placeholder="Search Programs, Subplans, or Courses..."
                value="{{ autofill }}"

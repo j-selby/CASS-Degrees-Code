@@ -1,6 +1,6 @@
 import json
 
-from api.models import ProgramModel, SubplanModel, CourseModel
+from api.models import ProgramModel, SubplanModel, CourseModel, ListModel
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.forms import ModelForm
@@ -268,6 +268,20 @@ class EditSubplanFormSnippet(ModelForm):
         check_three_constraint(SubplanModel, cleaned_data, 'name', 'year', 'planType', 'edit_subplan', formID)
 
         return cleaned_data
+
+
+class EditListFormSnippet(ModelForm):
+    rules = JSONField(field_id='elements', required=False)
+
+    class Meta:
+        model = ListModel
+        fields = ('name', 'year', 'elements')
+        widgets = {
+            'name': forms.TextInput(attrs={'class': "text tfull"}),
+            'year': forms.NumberInput(attrs={'class': "text tfull",
+                                             'onkeydown': "javascript: return checkKeys(event)",
+                                             'type': "number"}),
+        }
 
 
 class EditCourseFormSnippet(ModelForm):

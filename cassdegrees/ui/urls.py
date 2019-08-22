@@ -25,6 +25,7 @@ from .views.sampleform import *
 from .views.subplans import *
 from .views.view_ import *
 from .views.student import *
+from .views.lists import *
 
 urlpatterns = [
     path('', student_index),
@@ -48,4 +49,5 @@ urlpatterns = [
     path('admin/view/subplan/', view_),
     path('admin/view/course/', view_),
     path('admin/pdf/program/', view_program_pdf),
+    path('admin/create/list', create_list),
 ]

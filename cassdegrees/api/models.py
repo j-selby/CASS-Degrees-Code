@@ -23,6 +23,17 @@ class CourseModel(models.Model):
         unique_together = (("code", "year"),)
 
 
+# todo: Add type for elements
+class ListModel(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=32)
+    year = models.PositiveIntegerField()
+    elements = psql.JSONField(default=list)
+
+    class Meta:
+        unique_together = ("name", "year")
+
+
 class SubplanModel(models.Model):
     id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=32)
