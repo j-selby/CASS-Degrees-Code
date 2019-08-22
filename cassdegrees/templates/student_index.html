@@ -32,34 +32,80 @@
 
     <div>
     {% for plan in plans %}
-        {% if plan.name %}
-        <div class="list w-full">
-            <div class="left w-two-third">
+        {% if plan.name %}{% with i=forloop.counter0 %}
+        <div class="list w-full block-center">
+            {# Render the plan loading button #}
+            <div class="large-menu-item">
                 <a href="/edit/?plan={{ plan.name }}" class="hide-link-underline">
                     <div class="card selectable-card">
-                        <div class="box-solid">
-                            <div class="card-content">
-                                <b>{{ plan.name }} </b><text class="right">{{ plan.date }}</text>
-                                <br />
-                                {{ plan.program }}
-                            </div>
+                        <div class="box-solid card-content">
+                            <b>{{ plan.name }} </b><text class="right">{{ plan.date }}</text>
+                            <br />
+                            {{ plan.program }}
                         </div>
                     </div>
                 </a>
             </div>
-            <div class="w-full">
-                <a href="/delete/?plan={{ plan.name }}" class="hide-link-underline">
+            {# Render the plan duplicate button #}
+            <div id="{{ i }}Duplicate" class="small-menu-item">
+                <a href="#NotYetImplemented" class="hide-link-underline">
                     <div class="card selectable-card">
-                        <div class="box-solid">
-                            <div class="card-content center">
-                                <p>Remove</p>
-                            </div>
+                        <div class="box-solid card-content center noborder-left">
+                            <p>Duplicate</p>
                         </div>
                     </div>
                 </a>
             </div>
+            {# Render the plan delete button #}
+            <div id="{{ i }}Remove" class="small-menu-item">
+                <a href="javascript:void(0);" class="hide-link-underline">
+                    <div class="card selectable-card">
+                        <div class="box-solid card-content center noborder-left">
+                            <p>Remove</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {# Render the plan deletion confirmation button #}
+            <div hidden id="{{ i }}Confirm" class="small-menu-item">
+                <a href="/delete/?plan={{ plan.name }}" class="hide-link-underline">
+                    <div class="card">
+                        <div class="box-solid card-content center delete-color noborder-left">
+                            <p >Confirm</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {# Render the plan delete cancel button #}
+            <div hidden id="{{ i }}Cancel" class="small-menu-item">
+                <a href="javascript:void(0);" class="hide-link-underline">
+                    <div class="card selectable-card">
+                        <div class="box-solid card-content center noborder-left">
+                            <p id="{{ plan.name }}Test2">Cancel</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {# Script to make the buttons switch when certain buttons are clicked #}
+            <script type="text/javascript">
+                // Get the relevant elements
+                var dup{{ i }} = document.getElementById("{{ i }}Duplicate");
+                var rem{{ i }} = document.getElementById("{{ i }}Remove");
+                var can{{ i }} = document.getElementById("{{ i }}Cancel");
+                var con{{ i }} = document.getElementById("{{ i }}Confirm");
+
+                // Create a function to switch the confirm, delete, duplicate, and cancel buttons
+                fn{{ i }} = function() {
+                    rem{{ i }}.hidden = !rem{{ i }}.hidden;
+                    dup{{ i }}.hidden = !dup{{ i }}.hidden;
+                    can{{ i }}.hidden = !can{{ i }}.hidden;
+                    con{{ i }}.hidden = !con{{ i }}.hidden;
+                }
+                rem{{ i }}.onclick = fn{{ i }};
+                can{{ i }}.onclick = fn{{ i }};
+            </script>
         </div>
-        {% endif %}
+        {% endwith %}{% endif %}
     {% endfor %}
     </div>
 

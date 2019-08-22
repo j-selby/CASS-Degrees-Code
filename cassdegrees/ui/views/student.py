@@ -93,7 +93,7 @@ def student_create(request):
     if id_to_view:
         # Create a new cookie in the default plan location containing compressed relevant plan details
         request.session['plan:'] = compress(
-            {'program_id': int(id_to_view), 'date': timezone.now().strftime('%d/%m/%Y')}
+            {'program_id': int(id_to_view), 'date': timezone.localtime().strftime('%d/%m/%Y %H:%M')}
         )
 
         # Redirect to the student edit page and add the '?plan=' url parameter
@@ -145,7 +145,7 @@ def student_edit(request):
             else:
                 new_plan = {key: request.POST[key] for key in request.POST.keys()
                             if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
-                new_plan['date'] = timezone.now().strftime('%d/%m/%Y')
+                new_plan['date'] = timezone.localtime().strftime('%d/%m/%Y %H:%M')
                 request.session['plan:' + new_plan_name] = compress(new_plan)
 
                 try:
@@ -156,7 +156,7 @@ def student_edit(request):
         else:
             new_plan = {key: request.POST[key] for key in request.POST.keys()
                         if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
-            new_plan['date'] = timezone.now().strftime('%d/%m/%Y')
+            new_plan['date'] = timezone.localtime().strftime('%d/%m/%Y %H:%M')
             request.session['plan:' + new_plan_name] = compress(new_plan)
         request.session['message'] = 'Successfully saved'
         return redirect('/edit/?plan=' + new_plan_name)
