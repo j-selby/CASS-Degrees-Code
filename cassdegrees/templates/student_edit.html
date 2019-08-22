@@ -41,22 +41,21 @@
             {% endif %}
         </div>
 
-        <br>
-        <br>
         <div>
             {% for rule in program.rules %}
+                <br>
                 {% if rule.type == 'subplan' %}
                     You must choose one subplan from the following list to complete:
                     <br>
                     Current Choice: <input type="text" value=
                         {% if plan.subplan %}
-                            "{{ plan.subplan | index:forloop.counter0 }}"
+                            "{{ plan.subplan | listIndex:forloop.counter0 }}"
                         {% else %}
                             ""
                         {% endif %}
                             name="subplan.{{ forloop.counter0 }}" readonly>
 
-                    <button onclick="hide(this)" type="button">Hide Options</button>
+                    <button onclick="show_hide(this)" type="button">Hide Options</button>
 
                     <br>
                     <br>
@@ -73,7 +72,6 @@
                     </div>
 
                 {% endif %}
-                <br>
             {% endfor %}
         </div>
 

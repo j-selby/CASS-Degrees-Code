@@ -206,6 +206,4 @@ def new_plan_from_request(request_post):
                 plan[key_name] = list
             else:
                 plan[key] = request_post[key]
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    print(plan)
     return plan
