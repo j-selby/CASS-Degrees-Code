@@ -134,8 +134,8 @@ def student_edit(request):
                     render_settings['error'] = 'A plan already exists with that name. Please choose a different name.'
 
                 # Get the current plan state from the cookies and redraw it
-                new_plan = {key: request.POST[key] for key in request.POST.keys()
-                            if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
+                new_plan = new_plan_from_request(request.POST)
+
                 try:
                     instance = model_to_dict(ProgramModel.objects.get(id=new_plan['program_id']))
                 except ProgramModel.DoesNotExist:
@@ -148,8 +148,7 @@ def student_edit(request):
                                                                      'render': render_settings,
                                                                      'superuser': request.user.is_authenticated})
             else:
-                new_plan = {key: request.POST[key] for key in request.POST.keys()
-                            if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
+                new_plan = new_plan_from_request(request.POST)
                 new_plan['date'] = timezone.localtime().strftime('%d/%m/%Y %H:%M')
                 request.session['plan:' + new_plan_name] = compress(new_plan)
 
@@ -159,8 +158,7 @@ def student_edit(request):
                     pass
         # If the plan name stayed the same, update the old plan
         else:
-            new_plan = {key: request.POST[key] for key in request.POST.keys()
-                        if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
+            new_plan = new_plan_from_request(request.POST)
             new_plan['date'] = timezone.localtime().strftime('%d/%m/%Y %H:%M')
             request.session['plan:' + new_plan_name] = compress(new_plan)
         request.session['message'] = 'Successfully saved'
@@ -189,3 +187,25 @@ def student_edit(request):
         else:
             request.session['error_message'] = 'Invalid plan name given'
             return redirect(student_index)
+
+
+def new_plan_from_request(request_post):
+    plan = {}
+    for key in request_post.keys():
+        if key != 'csrfmiddlewaretoken' and key != 'plan_name':
+            if len(key.split('.')) > 1:
+                key_list = key.split('.')
+                key_name = key_list[0]
+                key_index = int(key_list[1])
+
+                if key_index == 0:
+                    list = []
+                else:
+                    list = plan[key_name]
+                list.append(request_post[key])
+                plan[key_name] = list
+            else:
+                plan[key] = request_post[key]
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    print(plan)
+    return plan
