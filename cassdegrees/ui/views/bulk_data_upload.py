@@ -90,15 +90,17 @@ def bulk_data_upload(request):
                     # where the file reader determines the year ranges and column positions.
                     if not year_range_found or not columns_set:
                         for cell in row:
-                            # Split the string in the first line of the excel sheet to get start and end year
+                            # Split the string in the first line of the excel sheet to get start and end years.
                             if not year_range_found:
                                 if cell.value is not None:
                                     stripped_title = cell.value.split()
 
-                                    start_year = int(stripped_title[-3])
-                                    end_year = int(stripped_title[-1])
+                                    # Only extract years if we found the right cell
+                                    if " ".join(stripped_title[0:5]) == "CASS 3 Year Teaching Plan:":
+                                        start_year = int(stripped_title[-3])
+                                        end_year = int(stripped_title[-1])
 
-                                    year_range_found = True
+                                        year_range_found = True
 
                             # Once the year range is set, then determine the column positions of the excel sheet.
                             elif not columns_set:
@@ -110,6 +112,12 @@ def bulk_data_upload(request):
                                 # If every column has been indexed, then mark columns_set as true.
                                 if col_counter + 1 == len(row):
                                     columns_set = True
+
+                        # If years are not determined in the first row, the excel file is not in the desirable format.
+                        if not year_range_found:
+                            any_error = True
+                            failed_to_upload.append("Unknown File Format")
+                            break
 
                     # Once the year range and the column positions are set,
                     # check the offerings specified in the 'Semester' column and process accordingly.
