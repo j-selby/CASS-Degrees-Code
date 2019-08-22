@@ -20,10 +20,10 @@ from django.shortcuts import render
 # ARTI-SPEC%2016%Artificial Intelligence%24%SPEC
 # ...
 
-# 20/08/19 changes: Support added for excel sheets in the same rules as above (no % needed, but put each word between
-# the % sign in a new cell in that row.
+# Support is available for excel sheets in the same rules as above (no % needed, but put each word between
+# the % sign in a new cell in that row).
 
-# 21/08/19 changes: Support added for CASS teaching plan excel file.
+# Support is available for CASS' custom teaching plan excel file.
 
 
 @login_required
