@@ -340,3 +340,9 @@ select.text{
 .pagination a {
     text-decoration: none;
 }
+
+/* Keeps e.g. a dialog on the screen always, floating instead when it reaches the end of the viewport */
+.stay-on-screen {
+    position: sticky;
+    top: 10px;
+}
