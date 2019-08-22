@@ -189,4 +189,3 @@ def student_edit(request):
         else:
             request.session['error_message'] = 'Invalid plan name given'
             return redirect(student_index)
-
