@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render
 
 
-admin_url_prefix = "/admin/"
+admin_url_prefix = "/staff/"
 
 
 def data_dict_as_displayable(data):

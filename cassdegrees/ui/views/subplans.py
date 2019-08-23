@@ -9,7 +9,7 @@ from api.views import search
 import json
 from django.utils import timezone
 
-admin_url_prefix = "/admin/"
+admin_url_prefix = "/staff/"
 
 list_subplan_url = admin_url_prefix + "list/?view=Subplan"
 

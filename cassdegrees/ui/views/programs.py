@@ -8,7 +8,7 @@ from ui.forms import EditProgramFormSnippet
 from ui.views.subplans import create_subplan
 from django.utils import timezone
 
-admin_url_prefix = "/admin/"
+admin_url_prefix = "/staff/"
 
 list_program_url = admin_url_prefix + "list/?view=Program"
 

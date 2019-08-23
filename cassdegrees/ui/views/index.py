@@ -7,7 +7,7 @@ from django.shortcuts import render
 @login_required
 def index(request):
 
-    admin_url_prefix = "/admin/"
+    admin_url_prefix = "/staff/"
 
     # add button parameters to be rendered on the main menu
     buttons = [
