@@ -29,16 +29,25 @@
         <input type="hidden" name="program_id" value="{{ plan.program_id }}" />
 
         <label for="plan-name">Name:</label>
-        <input id="plan-name" name="plan_name" type="text" placeholder="e.g. {{ program.name }}" value="{{ plan.name }}"/>
+        <input id="plan-name" name="name" type="text" placeholder="e.g. {{ program.name }}" value="{{ plan.name }}"/>
         &nbsp;|&nbsp;
         <span>Last Edited: {{ plan.date }}</span>
 
+        <input type="hidden" id="action_to_perform" name="action">
+
         <div class="float-right">
-            <input type="button" onclick="prepareSubmit()" class="btn-uni-grad btn-small" value="Save...">
+            <input type="button" onclick="prepareSubmit('save')" class="btn-uni-grad btn-small" value="Save...">
+            <input type="button" onclick="prepareSubmit('export')" class="btn-uni-grad btn-small" value="Export...">
             {% if superuser %}
-                <input type="button" onclick="prepareSubmit()" class="btn-uni-grad btn-small" value="Save & Approve...">
+                <input type="button" onclick="prepareSubmit('approve')" class="btn-uni-grad btn-small" value="Save & Approve...">
             {% endif %}
         </div>
+
+        {% if render.popup %}
+            <p class="anuform">
+                {{ render.popup |safe }}
+            </p>
+        {% endif %}
     </form>
 
 
