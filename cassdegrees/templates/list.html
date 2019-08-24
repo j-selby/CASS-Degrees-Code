@@ -123,21 +123,18 @@
 
         <script>
             // Pagination for list.js
-            window.addEventListener('DOMContentLoaded', function() {
-                console.log("Calling next onload for {{ title }}:");
-                var {{ title }}Options = {
-                    valueNames: [{% for k,v in content.0.items %}'{{ title }}{{ k }}',{% endfor %}],
-                    page: 20,
-                    pagination: {
-                        innerWindow: 2,
-                        left: 1,
-                        right: 1,
-                        paginationClass: "pagination",
-                    }
-                };
+            var {{ title }}Options = {
+                valueNames: [{% for k,v in content.0.items %}'{{ title }}{{ k }}',{% endfor %}],
+                page: 20,
+                pagination: {
+                    innerWindow: 2,
+                    left: 1,
+                    right: 1,
+                    paginationClass: "pagination",
+                }
+            };
 
-                var {{ title }}List = new List("{{ title }}Sorter", {{ title }}Options);
-            }, false);
+            var {{ title }}List = new List("{{ title }}Sorter", {{ title }}Options);
         </script>
     {% endfor %}
 
