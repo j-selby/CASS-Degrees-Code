@@ -103,7 +103,7 @@ def student_create(request):
         return response
     # If a plan name is given, copy that plan
     elif plan_to_duplicate:
-        plan = decompress(request.session.get('plan:'+plan_to_duplicate, None))
+        plan = decompress(request.session.get('plan:' + plan_to_duplicate, None))
         print(plan)
         if plan:
             new_plan_name = plan['name'] + ' (Copy)'
@@ -113,7 +113,7 @@ def student_create(request):
 
             # Redirect to the student edit page and add the '?plan=' url parameter
             response = redirect(student_edit)
-            response['Location'] += '?plan='+new_plan_name
+            response['Location'] += '?plan=' + new_plan_name
             return response
         else:
             request.session['error_message'] = "Invalid plan name given"
