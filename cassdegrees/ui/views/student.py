@@ -118,14 +118,14 @@ def student_edit(request):
     subplans = SubplanModel.objects.all()
     exclude_keys = ['csrfmiddlewaretoken', 'action']
 
-    plan_name = request.GET.get('plan', '')
+    plan_name = request.GET.get('plan', None)
     compressed_plan = request.GET.get('load', '').replace(' ', '+')
 
     # Load up the error and regular messages to render in the plan
     render_settings = load_messages(request.session)
 
     # If no plan name is specified, redirect them to the plan creation page
-    if not plan_name and not compressed_plan:
+    if plan_name is None and not compressed_plan:
         request.session['error_message'] = 'No plan name given'
         return redirect(student_index)
     # If the user submits a POST request
@@ -176,7 +176,7 @@ def student_edit(request):
             request.session['plan:' + new_plan_name] = compressed_plan
         request.session['message'] = 'Successfully saved'
         if request.POST.get('action', '') == 'export':
-            request.session['popup'] = 'Your plan link is: <textarea class=tfull cols=40 rows=10>'+request.META['HTTP_HOST']+'/edit/?load='+compressed_plan+'</textarea>'
+            request.session['popup'] = request.META['HTTP_HOST']+'/edit/?load='+compressed_plan
         return redirect('/edit/?plan=' + new_plan_name)
     # If the user submits a get request
     else:
