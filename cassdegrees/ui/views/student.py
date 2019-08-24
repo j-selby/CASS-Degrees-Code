@@ -164,10 +164,12 @@ def student_edit(request):
                 compressed_plan = compress(new_plan)
                 request.session['plan:' + new_plan_name] = compressed_plan
 
-                try:
-                    del request.session['plan:' + plan_name]
-                except KeyError:
-                    pass
+                # If the plan had a previous name
+                if plan_name is not None:
+                    try:
+                        del request.session['plan:' + plan_name]
+                    except KeyError:
+                        pass
         # If the plan name stayed the same, update the old plan
         else:
             new_plan = {key: request.POST[key] for key in request.POST.keys() if key not in exclude_keys}
