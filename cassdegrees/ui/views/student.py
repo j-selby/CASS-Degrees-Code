@@ -176,7 +176,7 @@ def student_edit(request):
             request.session['plan:' + new_plan_name] = compressed_plan
         request.session['message'] = 'Successfully saved'
         if request.POST.get('action', '') == 'export':
-            request.session['popup'] = request.META['HTTP_HOST']+'/edit/?load='+compressed_plan
+            request.session['popup'] = request.META['HTTP_HOST'] + '/edit/?load=' + compressed_plan
         return redirect('/edit/?plan=' + new_plan_name)
     # If the user submits a get request
     else:
