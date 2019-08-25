@@ -22,7 +22,7 @@
 
     {# program is the full program object as selected by the user, superuser is if an authenticated #}
     {# user is logged in #}
-    <form action="" id="main-form" method="post" class="box bdr-solid bdr-uni">
+    <form action="" id="main-form" method="post" class="box bdr-solid bdr-uni auto-overflow">
         {% csrf_token %}
 
         <input type="hidden" id="plan-courses" name="plan_courses" value="{{ plan.plan_courses }}" />
