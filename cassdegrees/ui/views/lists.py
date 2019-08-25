@@ -5,6 +5,7 @@ from api.views import search
 
 from django.http import HttpResponseNotFound, HttpRequest
 from django.shortcuts import render, redirect
+from django.utils import timezone
 
 from ui.forms import EditListFormSnippet
 
@@ -12,6 +13,7 @@ from ui.forms import EditListFormSnippet
 #         return render(request, 'viewcourse.html', context={'data': course})
 
 admin_url_prefix = "/admin/"
+list_program_url = admin_url_prefix + "list/?view=Program"
 
 list_course_url = admin_url_prefix + "list/?view=Course"
 
@@ -119,59 +121,49 @@ def create_list(request):
 #         })
 #
 #
-# @login_required
-# def edit_course(request):
-#     id = request.GET.get('id')
-#     if not id:
-#         return HttpResponseNotFound("Specified ID not found")
-#
-#     # Find the program to specifically edit
-#     instance = CourseModel.objects.get(id=int(id))
-#
-#     dependencies = dict()  # programs/subplans that are dependent on this course instance {'code': 'name'}
-#
-#     # Generate an internal request to search api made by Jack
-#     gen_request = HttpRequest()
-#
-#     # Grab all the courses in the database
-#     gen_request.GET = {'select': 'id,code,name,rules', 'from': 'program', 'rules': instance.code}
-#     programs = json.loads(search(gen_request).content.decode())
-#     gen_request.GET = {'select': 'id,code,name,rules', 'from': 'subplan', 'rules': instance.code}
-#     subplans = json.loads(search(gen_request).content.decode())
-#
-#     # Set message to user if needed. Setting it to 'None' will not display the message box.
-#     message = None
-#
-#     # if there are programs/subplans that depend on the course code
-#     if len(programs) + len(subplans) > 0:
-#         for program in programs:
-#             dependencies[program['code']] = program['name']
-#         for subplan in subplans:
-#             dependencies[subplan['code']] = subplan['name']
-#
-#     if request.method == 'POST':
-#         form = EditCourseFormSnippet(request.POST, instance=instance)
-#         form.fields['code'].disabled = len(programs) + len(subplans) > 0
-#         if form.is_valid():
-#             instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
-#             instance.save(update_fields=['lastUpdated'])
-#             form.save()
-#             # POST Requests only carry boolean values over as string
-#             # Only redirect the user to the list page if the user presses "Save and Exit".
-#             # Otherwise, simply display a success message on the same page.
-#             if request.POST.get('redirect') == 'true':
-#                 return redirect(list_course_url + '&msg=Successfully Edited Course!')
-#             else:
-#                 message = "Successfully Edited Course!"
-#
-#     else:
-#         form = EditCourseFormSnippet(instance=instance)
-#         form.fields['code'].disabled = len(programs) + len(subplans) > 0
-#
-#     return render(request, 'createcourse.html', context={
-#         'render': {'msg': message},
-#         "edit": True,
-#         "form": form,
-#         "courses": CourseModel.objects.values(),
-#         "dependencies": dependencies
-#     })
+@login_required
+def edit_list(request):
+    id = request.GET.get('id')
+    if not id:
+        return HttpResponseNotFound("Specified ID not found")
+
+    # Find the program to specifically edit
+    instance = ListModel.objects.get(id=int(id))
+
+    # Set message to user if needed. Setting it to 'None' will not display the message box.
+    message = None
+
+    if request.method == 'POST':
+        form = EditListFormSnippet(request.POST, instance=instance)
+
+        if form.is_valid():
+            instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
+            instance.save(update_fields=['lastUpdated'])
+            form.save()
+            # POST Requests only carry boolean values over as string
+            # Only redirect the user to the list page if the user presses "Save and Exit".
+            # Otherwise, simply display a success message on the same page.
+            if request.POST.get('redirect') == 'true':
+                return redirect(list_program_url + '&msg=Successfully Edited Program!')
+            else:
+                message = "Successfully Edited Program!"
+
+    else:
+        # If the cached path matches the current path, load the cached form and then clear the cache
+        if request.session.get('cached_program_form_source', '') == request.build_absolute_uri():
+            form = EditListFormSnippet(request.session.get('cached_program_form_data', ''), instance=instance)
+
+            try:
+                del request.session['cached_program_form_data']
+                del request.session['cached_program_form_source']
+            except KeyError:
+                pass
+        else:
+            form = EditListFormSnippet(instance=instance)
+
+    return render(request, 'createprogram.html', context={
+        'render': {'msg': message},
+        "edit": True,
+        "form": form,
+        "render_separately": ["staffNotes", "studentNotes"]
+    })

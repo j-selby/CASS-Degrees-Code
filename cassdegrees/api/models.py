@@ -29,6 +29,7 @@ class ListModel(models.Model):
     name = models.CharField(max_length=32)
     year = models.PositiveIntegerField()
     elements = psql.JSONField(default=list)
+    lastUpdated = models.DateField(default=timezone.now)
 
     class Meta:
         unique_together = ("name", "year")

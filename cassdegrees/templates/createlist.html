@@ -47,47 +47,75 @@
                     {% endfor %}
             {% endfor %}
 
-            <input type="hidden" name="action" value="Save" />
+            <div id="app">
+                <multiselect
+                        :options="options"
+                        :value="optionsProxy"
+                        @input="updateSelected"
+                        @search-change="searchQuery"
+                        :show-labels="true"
+                        :multiple="true"
+                        :searchable="true"
+                        :close-on-select="false"
+{#                        @close="reactiveWindow"#}
+                        :options-limit="5"
+                        placeholder="Search"
+                        :custom-label="customLabel"
+                        track-by="name"
+                        :loading="showLoadingSpinner"
+                        ref="multiselectref"
+                        >
+                </multiselect>
+
+                <ul class="resources-list">
+                    <template v-for="(resource, index) in selectedResources">
+                        <li class="resource-item" :data-index="index">
+                            <div class="resource-info">
+                                <div class="resource-title" :id="index">
+                                    <span>[[ resource.code ]] - [[ resource.name ]] - [[resource.id]]</span>
+                                </div>
+                            </div>
+                            <div class="delete-controls" v-on:click.prevent="removeDependency(index)">
+                                <i class="fa fa-times fa-fw"></i>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+
+            </div>
         </fieldset>
     </form>
+
+    <p class="text-right">
+        <input class="btn-uni-grad btn-large" type="button" value="Cancel"
+               onclick="{% if edit %}returnToList('Course'){% else %}goBack(){% endif %}">
+        {% if edit %}
+            <input class="btn-uni-grad btn-large" type="submit" value="Save"
+               onclick="submit_form(this.value, false)">
+        {% endif %}
+        <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save and Exit{% else %}Create{% endif %}"
+               onclick="submit_form(this.value, true)">
+    </p>
+
+    <script>
+        function submit_form(form_action, redirect) {
+            if (true) {
+                document.getElementById('mainForm').action.value = form_action;
+                document.getElementById('redirect').value = redirect;
+                document.getElementById('mainForm').submit();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
     <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
 
-<div id="app">
-  <multiselect
-          :options="options"
-          :value="optionsProxy"
-          @input="updateSelected"
-          @search-change="searchQuery"
-          :show-labels="true"
-          :multiple="true"
-          :searchable="true"
-          :close-on-select="true"
-          placeholder="Search"
-          :custom-label="customLabel"
-          track-by="name"
-          :loading="showLoadingSpinner">
-  </multiselect>
-
-    <ul class="resources-list">
-        <template v-for="(resource, index) in selectedResources">
-            <li class="resource-item" :data-index="index">
-                <div class="resource-info">
-                    <div class="resource-title" :id="index">
-                        <span>[[ resource.code ]] - [[ resource.name ]]</span>
-                    </div>
-                </div>
-                <div class="delete-controls" v-on:click.prevent="removeDependency(index)">
-                    <i class="fa fa-times fa-fw"></i>
-                </div>
-            </li>
-        </template>
-    </ul>
-</div>
-
     <script src="{% static 'js/multiselect.js' %}" type="application/javascript"></script>
+
 
 {% endblock %}
