@@ -116,9 +116,7 @@ def student_create(request):
             request.session['plan:' + new_plan_name] = compress(plan)
 
             # Redirect to the student edit page and add the '?plan=' url parameter
-            response = redirect(student_edit)
-            response['Location'] += '?plan=' + new_plan_name
-            return response
+            return redirect('/edit/?plan=' + new_plan_name)
         else:
             request.session['error_message'] = "Invalid plan name given"
             redirect(student_index)
