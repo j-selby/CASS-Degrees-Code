@@ -10,7 +10,6 @@ from django.utils import timezone
 from ui.forms import EditListFormSnippet
 
 # course = model_to_dict(CourseModel.objects.get(id=int(id_to_edit)))
-#         return render(request, 'viewcourse.html', context={'data': course})
 
 admin_url_prefix = "/admin/"
 list_program_url = admin_url_prefix + "list/?view=Program"
@@ -29,21 +28,22 @@ def create_list(request):
     # Initialise instance with an empty string so that we don't get a "may be referenced before assignment" error below
     instance = ""
 
-    # If we are creating a course from a duplicate, we retrieve the instance with the given id
+    # If we are creating a list from a duplicate, we retrieve the instance with the given id
     # (should always come along with 'duplicate' variable) and return that data to the user.
     if duplicate:
         id = request.GET.get('id')
         if not id:
             return HttpResponseNotFound("Specified ID not found")
-        # Find the course to specifically create from:
+        # Find the list to specifically create from:
         instance = ListModel.objects.get(id=int(id))
 
     if request.method == 'POST':
         form = EditListFormSnippet(request.POST)
 
+        # todo: implement list view on admin view page then change url
         if form.is_valid():
             form.save()
-            return redirect(list_course_url + '&msg=Successfully Added Course!')
+            return redirect(list_course_url + '&msg=Successfully Added List!')
 
     else:
         if duplicate:
@@ -54,7 +54,6 @@ def create_list(request):
     return render(request, 'createlist.html', context={
         "edit": False,
         "form": form,
-        "courses": CourseModel.objects.values()
     })
 
 
@@ -127,7 +126,7 @@ def edit_list(request):
     if not id:
         return HttpResponseNotFound("Specified ID not found")
 
-    # Find the program to specifically edit
+    # Find the list to specifically edit
     instance = ListModel.objects.get(id=int(id))
 
     # Set message to user if needed. Setting it to 'None' will not display the message box.
@@ -143,12 +142,14 @@ def edit_list(request):
             # POST Requests only carry boolean values over as string
             # Only redirect the user to the list page if the user presses "Save and Exit".
             # Otherwise, simply display a success message on the same page.
+            # todo: implement list view for admin page then change url
             if request.POST.get('redirect') == 'true':
-                return redirect(list_program_url + '&msg=Successfully Edited Program!')
+                return redirect(list_program_url + '&msg=Successfully Edited List!')
             else:
-                message = "Successfully Edited Program!"
+                message = "Successfully Edited List!"
 
     else:
+        # todo: what is happening here?
         # If the cached path matches the current path, load the cached form and then clear the cache
         if request.session.get('cached_program_form_source', '') == request.build_absolute_uri():
             form = EditListFormSnippet(request.session.get('cached_program_form_data', ''), instance=instance)
@@ -161,9 +162,8 @@ def edit_list(request):
         else:
             form = EditListFormSnippet(instance=instance)
 
-    return render(request, 'createprogram.html', context={
+    return render(request, 'createlist.html', context={
         'render': {'msg': message},
         "edit": True,
         "form": form,
-        "render_separately": ["staffNotes", "studentNotes"]
     })

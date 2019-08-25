@@ -49,6 +49,6 @@ urlpatterns = [
     path('admin/view/subplan/', view_),
     path('admin/view/course/', view_),
     path('admin/pdf/program/', view_program_pdf),
-    path('admin/create/list', create_list),
-    path('admin/edit/list', edit_list),
+    path('admin/create/list/', create_list),
+    path('admin/edit/list/', edit_list),
 ]

@@ -47,24 +47,23 @@
                     {% endfor %}
             {% endfor %}
 
+        <br>
+        <h4>Course listing</h4>
             <div id="app">
                 <multiselect
                         :options="options"
                         :value="optionsProxy"
                         @input="updateSelected"
-                        @search-change="searchQuery"
                         :show-labels="true"
                         :multiple="true"
                         :searchable="true"
                         :close-on-select="false"
-{#                        @close="reactiveWindow"#}
-                        :options-limit="5"
-                        placeholder="Search"
+                        placeholder="Search courses"
                         :custom-label="customLabel"
                         track-by="name"
+                        :max-height="100"
                         :loading="showLoadingSpinner"
-                        ref="multiselectref"
-                        >
+                        ref="multiselectref">
                 </multiselect>
 
                 <ul class="resources-list">

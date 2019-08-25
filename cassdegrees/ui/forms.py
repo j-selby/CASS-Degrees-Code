@@ -281,6 +281,8 @@ class EditListFormSnippet(ModelForm):
             'year': forms.NumberInput(attrs={'class': "text tfull",
                                              'onkeydown': "javascript: return checkKeys(event)",
                                              'type': "number"}),
+            # elements is hidden field as it will be populated in the background by the multiselect widget
+            'elements': forms.HiddenInput
         }
 
 
