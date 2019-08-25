@@ -84,10 +84,7 @@ new Vue({
 
                 // get all element data
                 this.options = []
-                console.log("options: " + this.options)
                 this.selectedResources = []
-                console.log("resources: " + this.selectedResources)
-                console.log(response.body)
                 response.body.forEach((object) => {
                     this.options.push(object)
                 });
