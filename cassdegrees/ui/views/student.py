@@ -94,7 +94,7 @@ def student_create(request):
     if id_to_view:
         # Create a new cookie in the default plan location containing compressed relevant plan details
         request.session['plan:'] = compress(
-            {'program_id': int(id_to_view), 'date': timezone.localtime().strftime('%d/%m/%Y %H:%M')}
+            {'name': '', 'program_id': int(id_to_view), 'date': timezone.localtime().strftime('%d/%m/%Y %H:%M')}
         )
 
         # Redirect to the student edit page and add the '?plan=' url parameter
@@ -104,9 +104,13 @@ def student_create(request):
     # If a plan name is given, copy that plan
     elif plan_to_duplicate:
         plan = decompress(request.session.get('plan:' + plan_to_duplicate, None))
-        print(plan)
         if plan:
-            new_plan_name = plan['name'] + ' (Copy)'
+            # Find the next available plan name
+            count = 1
+            while 'plan:{} ({})'.format(plan['name'], count) in request.session:
+                count += 1
+            new_plan_name = '{} ({})'.format(plan['name'], count)
+
             plan['name'] = new_plan_name
             plan['date'] = timezone.localtime().strftime('%d/%m/%Y %H:%M')
             request.session['plan:' + new_plan_name] = compress(plan)
@@ -139,7 +143,7 @@ def student_edit(request):
         return redirect(student_index)
     # If the user submits a POST request
     if request.method == "POST":
-        new_plan_name = request.POST.get('plan_name', None)
+        new_plan_name = request.POST.get('name', None)
 
         # If the plan name changed, delete the old one and create the new one
         if not new_plan_name or new_plan_name != plan_name:
@@ -153,7 +157,7 @@ def student_edit(request):
 
                 # Get the current plan state from the cookies and redraw it
                 new_plan = {key: request.POST[key] for key in request.POST.keys()
-                            if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
+                            if key != 'csrfmiddlewaretoken' and key != 'name'}
                 try:
                     instance = model_to_dict(ProgramModel.objects.get(id=new_plan['program_id']))
                 except ProgramModel.DoesNotExist:
@@ -167,7 +171,7 @@ def student_edit(request):
                                                                      'superuser': request.user.is_authenticated})
             else:
                 new_plan = {key: request.POST[key] for key in request.POST.keys()
-                            if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
+                            if key != 'csrfmiddlewaretoken'}
                 new_plan['date'] = timezone.localtime().strftime('%d/%m/%Y %H:%M')
                 request.session['plan:' + new_plan_name] = compress(new_plan)
 
@@ -178,7 +182,7 @@ def student_edit(request):
         # If the plan name stayed the same, update the old plan
         else:
             new_plan = {key: request.POST[key] for key in request.POST.keys()
-                        if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
+                        if key != 'csrfmiddlewaretoken'}
             new_plan['date'] = timezone.localtime().strftime('%d/%m/%Y %H:%M')
             request.session['plan:' + new_plan_name] = compress(new_plan)
         request.session['message'] = 'Successfully saved'
