@@ -49,10 +49,11 @@
                 <br>
                 {% if rule.type == 'subplan' %}
                     {% include "widgets/subplan_choice.html" %}
+                {% else %}
+                    <input type="hidden" name="plan_rules.{{ forloop.counter0 }}">
                 {% endif %}
             {% endfor %}
         </div>
-
 
     </form>
 

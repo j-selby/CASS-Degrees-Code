@@ -7,12 +7,12 @@
     <br>
     <div style="margin-left:10px;">
         Current Choice: <input type="text" value=
-            {% if plan.subplan %}
-                "{{ plan.subplan | listIndex:forloop.counter0 }}"
+            {% if plan.plan_rules %}
+                "{{ plan.plan_rules | listIndex:forloop.counter0 }}"
             {% else %}
                 ""
             {% endif %}
-                name="subplan.{{ forloop.counter0 }}" readonly>
+                name="plan_rules.{{ forloop.counter0 }}" readonly>
 
         <button onclick="show_hide(this)" type="button">Hide Options</button>
 
