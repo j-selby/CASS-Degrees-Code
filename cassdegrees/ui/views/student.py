@@ -256,6 +256,7 @@ def new_plan_from_request(request_post):
                 plan[key] = request_post[key]
     return plan
 
+
 def student_pdf(request):
     """ Renders a student defined plan to a PDF. """
 
