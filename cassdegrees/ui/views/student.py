@@ -140,7 +140,6 @@ def student_create(request):
 def student_edit(request):
     courses = CourseModel.objects.all()
     subplans = SubplanModel.objects.all()
-    exclude_keys = ['csrfmiddlewaretoken', 'action']
 
     plan_name = request.GET.get('plan', None)
     compressed_plan = request.GET.get('load', '').replace(' ', '+')
@@ -170,7 +169,7 @@ def student_edit(request):
                     render_settings['error'] = 'A plan already exists with that name. Please choose a different name.'
 
                 # Get the current plan state from the cookies and redraw it
-                new_plan = {key: request.POST[key] for key in request.POST.keys() if key not in exclude_keys}
+                new_plan = new_plan_from_request(request.POST)
                 try:
                     instance = model_to_dict(ProgramModel.objects.get(id=new_plan['program_id']))
                 except ProgramModel.DoesNotExist:
@@ -183,7 +182,7 @@ def student_edit(request):
                                                                      'render': render_settings,
                                                                      'superuser': request.user.is_authenticated})
             else:
-                new_plan = {key: request.POST[key] for key in request.POST.keys() if key not in exclude_keys}
+                new_plan = new_plan_from_request(request.POST)
                 new_plan['date'] = timezone.localtime().strftime('%d/%m/%Y %H:%M')
                 compressed_plan = compress(new_plan)
                 request.session['plan:' + new_plan_name] = compressed_plan
@@ -196,7 +195,7 @@ def student_edit(request):
                         pass
         # If the plan name stayed the same, update the old plan
         else:
-            new_plan = {key: request.POST[key] for key in request.POST.keys() if key not in exclude_keys}
+            new_plan = new_plan_from_request(request.POST)
             new_plan['date'] = timezone.localtime().strftime('%d/%m/%Y %H:%M')
             compressed_plan = compress(new_plan)
             request.session['plan:' + new_plan_name] = compressed_plan
@@ -237,9 +236,11 @@ def student_edit(request):
 
 
 def new_plan_from_request(request_post):
+    exclude_keys = ['csrfmiddlewaretoken', 'action']
+
     plan = {}
     for key in request_post.keys():
-        if key != 'csrfmiddlewaretoken' and key != 'plan_name':
+        if key not in exclude_keys:
             if len(key.split('.')) > 1:
                 key_list = key.split('.')
                 key_name = key_list[0]
