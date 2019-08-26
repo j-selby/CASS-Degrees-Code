@@ -47,6 +47,7 @@ def student_course_box_with_values(context, count, courses):
 def index(List, i):
     return List.filter(id=int(i))[0]
 
+
 @register.filter
 def listIndex(List, i):
     return List[i]
