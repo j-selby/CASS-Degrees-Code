@@ -27,6 +27,7 @@
 
         <input type="hidden" id="plan-courses" name="plan_courses" value="{{ plan.plan_courses }}" />
         <input type="hidden" name="program_id" value="{{ plan.program_id }}" />
+        <input type="hidden" id="hidden_comments" name="comments" value="{{ plan.comments }}" />
 
         <label for="plan-name">Name:</label>
         <input id="plan-name" name="name" type="text" placeholder="e.g. {{ program.name }}" value="{{ plan.name }}"/>
@@ -43,15 +44,6 @@
                 <input type="button" onclick="prepareSubmit('approve')" class="btn-uni-grad btn-small" value="Save & Approve...">
             {% endif %}
         </div>
-
-        <p class="form-group anuform">
-            <textarea name="comments" cols="40" rows="10" class="tfull"
-                      placeholder="Comments section for important information">{{ plan.comments }}</textarea>
-        </p>
-        {% for error in form.studentNotes.errors %}
-            <div class="msg-error inline-error">{{ error }}</div>
-        {% endfor %}
-
     </form>
 
 
@@ -110,6 +102,10 @@
                         </div>
                     </div>
                 </div>
+                <p class="form-group anuform">
+                    <textarea id="comments" name="comments" cols="40" rows="10" class="tfull"
+                              placeholder="Comments section for important information">{{ plan.comments }}</textarea>
+                </p>
             </div>
         </div>
     </div>
