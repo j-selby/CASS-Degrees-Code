@@ -12,10 +12,30 @@ var options = {
     }
 };
 
+// Script to allow interactivity in the popup menu
+function setupPopup() {
+    var plan_link = document.getElementById("plan_link");
+    var copy = document.getElementById("copy_to_clipboard");
+    var close = document.getElementById("close_modal");
+
+    plan_link.onclick = function () {
+        this.select();
+    };
+    copy.onclick = function () {
+        plan_link.select();
+        plan_link.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        document.getElementById("modal_content").innerHTML = "(Copied)";
+    };
+    close.onclick = function () {
+        document.getElementById("plan_popup").remove();
+    };
+}
+
 var courseSearch = new List('courses', options);
 
 // Gets metadata from all applied courses and stores it
-function prepareSubmit() {
+function prepareSubmit(action) {
     var elements = document.getElementsByClassName("course-drop");
     var course_codes = [];
 
@@ -25,6 +45,12 @@ function prepareSubmit() {
     }
 
     document.getElementById("plan-courses").value = JSON.stringify(course_codes);
+    document.getElementById("action_to_perform").value = action;
+
+    if (action === "pdf") {
+        // Ensure that the PDF opens in a new page
+        document.getElementById("main-form").setAttribute("target", "_blank");
+    }
 
     document.getElementById("main-form").submit();
 }

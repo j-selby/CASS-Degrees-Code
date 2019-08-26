@@ -22,21 +22,25 @@
 
     {# program is the full program object as selected by the user, superuser is if an authenticated #}
     {# user is logged in #}
-    <form action="" id="main-form" method="post" class="box bdr-solid bdr-uni">
+    <form action="" id="main-form" method="post" class="box bdr-solid bdr-uni auto-overflow">
         {% csrf_token %}
 
         <input type="hidden" id="plan-courses" name="plan_courses" value="{{ plan.plan_courses }}" />
         <input type="hidden" name="program_id" value="{{ plan.program_id }}" />
 
         <label for="plan-name">Name:</label>
-        <input id="plan-name" name="plan_name" type="text" placeholder="e.g. {{ program.name }}" value="{{ plan.name }}"/>
+        <input id="plan-name" name="name" type="text" placeholder="e.g. {{ program.name }}" value="{{ plan.name }}"/>
         &nbsp;|&nbsp;
         <span>Last Edited: {{ plan.date }}</span>
 
+        <input type="hidden" id="action_to_perform" name="action">
+
         <div class="float-right">
-            <input type="button" onclick="prepareSubmit()" class="btn-uni-grad btn-small" value="Save...">
+            <input type="button" onclick="prepareSubmit('save')" class="btn-uni-grad btn-small" value="Save...">
+            <input type="button" onclick="prepareSubmit('pdf')" class="btn-uni-grad btn-small" value="Save as PDF...">
+            <input type="button" onclick="prepareSubmit('export')" class="btn-uni-grad btn-small" value="Export...">
             {% if superuser %}
-                <input type="button" onclick="prepareSubmit()" class="btn-uni-grad btn-small" value="Save & Approve...">
+                <input type="button" onclick="prepareSubmit('approve')" class="btn-uni-grad btn-small" value="Save & Approve...">
             {% endif %}
         </div>
 
@@ -92,7 +96,7 @@
                     </div>
 
 
-                    <ul class="pagination"></ul>
+                    <div class="pagination align-center"></div>
                 </div>
 
                 <i>Or some other credit not here:</i>
@@ -112,8 +116,32 @@
         </div>
     </div>
 
+    {# Popup for copying plan link #}
+    {% if render.popup %}
+    <div id="plan_popup" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card card">
+            <header class="box-header">
+                Plan Link
+            </header>
+            <div class="box-solid box-has-footer">
+                <div class="anuform w-full">
+                    Your plan link is:
+                    <textarea id="plan_link" readonly class="w-full no-overflow" rows=10>{{ render.popup }}</textarea>
+                </div>
+                <div id="modal_content"></div>
+            </div>
+            <footer class="box-solid">
+                <input type="button" id="copy_to_clipboard" class="btn-uni-grad btn-small" value="Copy to Clipboard" />
+                <input type="button" id="close_modal" class="right btn-uni-grad btn-small" value="OK" />
+            </footer>
+        </div>
+    </div>
+    {% endif %}
+
     <script src="{% static 'js/list.js' %}" type="application/javascript"></script>
     <script src="{% static 'js/interact.js' %}" type="application/javascript"></script>
     <script src="{% static 'js/student_edit.js' %}" type="application/javascript"></script>
+    <script type="application/javascript">setupPopup()</script>
 
 {% endblock %}
