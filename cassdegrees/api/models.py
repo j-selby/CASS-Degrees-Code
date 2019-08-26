@@ -69,8 +69,3 @@ class ProgramModel(models.Model):
 
     class Meta:
         unique_together = (("code", "year"), ("name", "year"))
-
-
-class StudentModel(models.Model):
-    id = models.AutoField(primary_key=True)
-    comments = models.TextField(blank=True, default='')

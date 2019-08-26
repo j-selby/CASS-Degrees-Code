@@ -4,8 +4,6 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
-from ui.forms import EditStudentFormSnippet
-
 import zlib
 import base64
 import json
@@ -207,15 +205,12 @@ def student_edit(request):
                 render_settings['error'] = 'This program plan is not valid. Please create a new Program Plan'
                 instance = {}
 
-            form = EditStudentFormSnippet()
-
             return render(request, 'student_edit.html', context={'plan': plan,
                                                                  'program': instance,
                                                                  'courses': courses,
                                                                  'subplans': subplans,
                                                                  'render': render_settings,
-                                                                 'superuser': request.user.is_authenticated,
-                                                                 'form': form})
+                                                                 'superuser': request.user.is_authenticated})
         else:
             request.session['error_message'] = 'Invalid plan name given'
             return redirect(student_index)

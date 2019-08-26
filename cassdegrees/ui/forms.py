@@ -1,6 +1,6 @@
 import json
 
-from api.models import ProgramModel, SubplanModel, CourseModel, StudentModel
+from api.models import ProgramModel, SubplanModel, CourseModel
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.forms import ModelForm
@@ -334,20 +334,3 @@ class EditCourseFormSnippet(ModelForm):
         check_constraint(CourseModel, cleaned_data, 'code', 'year', 'edit_course', self.instance.id)
 
         return cleaned_data
-
-
-class EditStudentFormSnippet(ModelForm):
-
-    class Meta:
-        model = StudentModel
-
-        fields = ('comments',)
-
-        widgets = {
-            'comments': forms.Textarea(attrs={
-                'class': "tfull",
-                'placeholder': "Comments section for important information"})
-        }
-        labels = {
-            'comments': "Comments",
-        }
