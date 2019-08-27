@@ -28,9 +28,11 @@
             placeholder="Search courses, press esc or tab to close when done"
             :custom-label="customLabel"
             track-by="name"
-            :max-height="100"
+            :max-height="300"
+            :open-direction="'top'"
             :loading="showLoadingSpinner"
-            ref="multiselectref">
+            ref="multiselectref"
+            >
     </multiselect>
 
     <ul class="resources-list">
@@ -65,11 +67,13 @@
             Multiselect: window.VueMultiselect.default
         },
 
-        data: {
-            options: [],
-            optionsProxy: [],
-            selectedResources: [],
-            showLoadingSpinner: false
+        data(){
+            return{
+                options: [],
+                optionsProxy: [],
+                selectedResources: [],
+                showLoadingSpinner: false,
+            }
         },
 
         // http element used for constructing API call in courseRequest
@@ -86,21 +90,20 @@
         },
 
         methods: {
+
+            resetHeight(){
+              this.dynamicHeight = 0
+            },
+
             // Todo check what this is doing
             // The label that will be displayed on the list item
             customLabel(option) {
                 return `${option.code} - ${option.name}`
             },
 
-            // todo: check for ways to conceal dropdown until user enters input
-            // check for input and keep dropdown closed if none
-            // checkForInput(){
-            //     if (this.value == null) {
-            //         this.$refs.multiselectref.maxHeight = 0
-            //     } else {
-            //         this.$refs.multiselectref.maxHeight = 300
-            //     }
-            // },
+
+            // todo: check for ways to conceal dropdown until user enters input rather than open above
+
 
             // Update an array of selected values and remove the selected item from the list of available options
             updateSelected(value) {
@@ -129,7 +132,6 @@
             },
 
             courseRequest(value) {
-                // Todo: adjust implementation to cater for generalisation of multiselect beyond courses
                 this.$http.get(API_MODEL_URL).then((response) => {
 
                     // get all element data
