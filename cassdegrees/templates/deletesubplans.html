@@ -18,9 +18,13 @@
 
         <fieldset>
             <p>Are you sure you want to delete:</p>
-            {% for instance in instances %}
+            {% for instance in display_instances %}
                 <p>
-                    {{ instance.name }} ({{ instance.code }}) in {{ instance.year }}
+                    {% if instance.name == None %}
+                        {{ instance }}
+                    {% else %}
+                        {{ instance.name }} ({{ instance.code }}) in {{ instance.year }}
+                    {% endif %}
                 </p>
                 <input type="number" hidden value="{{ instance.id }}" name="id" />
             {% endfor %}

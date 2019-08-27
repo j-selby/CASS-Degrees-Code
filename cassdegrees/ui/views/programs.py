@@ -86,8 +86,20 @@ def delete_program(request):
 
         return redirect(list_program_url + '&msg=Successfully Deleted Program(s)!')
     else:
+        # To avoid the delete confirmation page from being too long, only show the first 5 programs.
+        show_count = 5
+        num_instances = len(instances)
+        display_instances = instances[:show_count]
+        # Only insert the "... and x more programs" if length is more than show_count.
+        if num_instances > show_count:
+            if num_instances == show_count + 1:
+                display_instances.append("... and {} more program".format(len(instances) - show_count))
+            else:
+                display_instances.append("... and {} more programs".format(len(instances) - show_count))
+
         return render(request, 'deleteprograms.html', context={
-            "instances": instances
+            "instances": instances,
+            "display_instances": display_instances
         })
 
 

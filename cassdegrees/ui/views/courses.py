@@ -114,8 +114,20 @@ def delete_course(request):
 
         return redirect(list_course_url + '&msg=Successfully Deleted Course(s)!')
     else:
+        # To avoid the delete confirmation page from being too long, only show the first 5 courses.
+        show_count = 5
+        num_instances = len(instances)
+        display_instances = instances[:show_count]
+        # Only insert the "... and x more courses" if length is more than show_count.
+        if num_instances > show_count:
+            if num_instances == show_count + 1:
+                display_instances.append("... and {} more course".format(len(instances) - show_count))
+            else:
+                display_instances.append("... and {} more courses".format(len(instances) - show_count))
+
         return render(request, 'deletecourses.html', context={
-            "instances": instances
+            "instances": instances,
+            "display_instances": display_instances
         })
 
 

@@ -115,8 +115,20 @@ def delete_subplan(request):
 
         return redirect(list_subplan_url + '&msg=Successfully Deleted Subplan(s)!')
     else:
+        # To avoid the delete confirmation page from being too long, only show the first 5 subplans.
+        show_count = 5
+        num_instances = len(instances)
+        display_instances = instances[:show_count]
+        # Only insert the "... and x more subplans" if length is more than show_count.
+        if num_instances > show_count:
+            if num_instances == show_count + 1:
+                display_instances.append("... and {} more subplan".format(len(instances) - show_count))
+            else:
+                display_instances.append("... and {} more subplans".format(len(instances) - show_count))
+
         return render(request, 'deletesubplans.html', context={
-            "instances": instances
+            "instances": instances,
+            "display_instances": display_instances
         })
 
 
