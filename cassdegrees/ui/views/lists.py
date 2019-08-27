@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from ui.forms import EditListFormSnippet
 
-admin_url_prefix = "/admin/"
+admin_url_prefix = "/staff/"
 list_program_url = admin_url_prefix + "list/?view=Program"
 
 list_course_url = admin_url_prefix + "list/?view=Course"
