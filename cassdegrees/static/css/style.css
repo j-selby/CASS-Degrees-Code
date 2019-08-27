@@ -53,6 +53,21 @@
     width: 100%;
 }
 
+.large-menu-item {
+    width:50%;
+}
+.small-menu-item {
+    width:25%;
+}
+.delete-color {
+    background-color:lightcoral;
+    color:#FFF;
+}
+.delete-color:hover {
+    background-color:indianred;
+    color:#FFF;
+}
+
 /* Adds carets to list sorting options */
 table th {}
 .sort:after{
@@ -104,6 +119,9 @@ select.text{
     box-sizing: border-box;
 
     padding: 4px 25px 4px 25px;
+}
+.anuform .no-overflow {
+    box-sizing: border-box;
 }
 
 /* ANU doesn't provide modal systems */
@@ -231,7 +249,11 @@ select.text{
 
 /* Gives a little hover animation to course cards */
 .selectable-card :hover {
-    background: #E3EEF3;
+    background: #E3EEF3 !important;
+}
+
+.hover {
+    background: lightgreen !important;
 }
 
 /* Hides an element */
@@ -242,6 +264,119 @@ select.text{
 /* Pushes content to the right of the parent container */
 .float-right {
     float: right;
+}
+
+/* Basic CSS columns */
+.columns-1-of-3 {
+    width: calc(33% - 10px);
+    padding: 5px;
+}
+
+.columns-2-of-3 {
+    width: calc(66% - 10px);
+    padding: 5px;
+}
+
+.grey-text {
+    color: grey;
+}
+
+/* Makes the mouse cursor behave correctly with draggable elements */
+.draggable {
+    touch-action: none;
+    user-select: none;
+    cursor: move;
+}
+
+/* Ensures course drop boxes are of the right size */
+.course-drop {
+    min-height: 60px;
+}
+
+/* Only show delete button if course is configured for a particular box: */
+/* For nulled values: */
+.course-drop:not([data-course-code]) .course-clear-button {
+    display: none;
+}
+/* For empty/cleared values: */
+.course-drop[data-course-code=""] .course-clear-button {
+    display: none;
+}
+
+/* Defines a full width element */
+.full-width {
+    width: 80%;
+}
+
+/* Simple pagination tabs */
+.pagination li {
+    display: inline-block;
+    width: 30px;
+    height: 20px;
+
+    text-align: center;
+
+    margin: 3px;
+}
+
+.pagination li:not(.disabled) {
+    cursor: pointer;
+    border: 1px solid black;
+}
+
+.pagination li:not(.disabled).active {
+    background: #E3EEF3;
+}
+
+.pagination li:not(.disabled):hover {
+    background: #E3EEF3;
+}
+
+.pagination li.disabled a {
+    cursor: default;
+    border: none;
+}
+
+.pagination li:link {
+    text-decoration: none;
+}
+
+.pagination a {
+    text-decoration: none;
+}
+
+/* Keeps e.g. a dialog on the screen always, floating instead when it reaches the end of the viewport */
+.stay-on-screen {
+    position: sticky;
+    top: 10px;
+}
+
+/* Automatically handle overflowing text */
+.auto-overflow {
+    overflow: auto;
+}
+
+/* Display a border if the element is the side */
+.border-on-md {
+    /* Fill the row */
+    width: 100%;
+}
+
+@media only screen and (min-width:64em) {
+    .border-on-md {
+        border-left: 1px solid black;
+    }
+}
+
+/* Hide this element on smaller screens */
+.hide-on-small-screen {
+    display: none;
+}
+
+@media only screen and (min-width:37.5em) {
+    .hide-on-small-screen {
+        display: block;
+    }
 }
 
 /*todo remove*/

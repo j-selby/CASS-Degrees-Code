@@ -122,7 +122,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Australia/Sydney'
 
 USE_I18N = True
 
@@ -145,3 +145,5 @@ STATICFILES_DIRS = [
 
 LOGIN_REDIRECT_URL = '/'
 
+# Default value of 1000 restricted the ability to delete courses en masse.
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 2147483647
