@@ -5,7 +5,7 @@ var options = {
     pagination: true,
     fuzzySearch: {
         searchClass: "fuzzy-search",
-        location: 0,
+        location: 8,
         distance: 1000,
         threshold: 0.3,
         multiSearch: true
