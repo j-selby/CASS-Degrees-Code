@@ -44,7 +44,8 @@ def create_program(request):
 
         if form.is_valid():
             form.save()
-            return redirect(list_program_url + '&msg=Successfully Added Program!')
+            return redirect(list_program_url + '&msg=Successfully Added a New Program: {}!'
+                            .format(form['name'].value()))
 
     else:
         if duplicate:
