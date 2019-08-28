@@ -121,9 +121,10 @@ def edit_program(request):
             # Only redirect the user to the list page if the user presses "Save and Exit".
             # Otherwise, simply display a success message on the same page.
             if request.POST.get('redirect') == 'true':
-                return redirect(list_program_url + '&msg=Successfully Edited Program!')
+                return redirect(list_program_url + '&msg=Successfully Edited the Program: {}!'
+                                .format(form['name'].value()))
             else:
-                message = "Successfully Edited Program!"
+                message = 'Successfully Edited the Program: {}!'.format(form['name'].value())
 
     else:
         # If the cached path matches the current path, load the cached form and then clear the cache
