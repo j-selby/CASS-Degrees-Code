@@ -121,7 +121,7 @@ def delete_course(request):
         # Only insert the "... and x more courses" if length is more than show_count.
         if num_instances > show_count:
             if num_instances == show_count + 1:
-                display_instances.append("... and {} more course".format(len(instances) - show_count))
+                display_instances.append("... and 1 more course")
             else:
                 display_instances.append("... and {} more courses".format(len(instances) - show_count))
 

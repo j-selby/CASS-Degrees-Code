@@ -93,7 +93,7 @@ def delete_program(request):
         # Only insert the "... and x more programs" if length is more than show_count.
         if num_instances > show_count:
             if num_instances == show_count + 1:
-                display_instances.append("... and {} more program".format(len(instances) - show_count))
+                display_instances.append("... and 1 more program")
             else:
                 display_instances.append("... and {} more programs".format(len(instances) - show_count))
 

@@ -122,7 +122,7 @@ def delete_subplan(request):
         # Only insert the "... and x more subplans" if length is more than show_count.
         if num_instances > show_count:
             if num_instances == show_count + 1:
-                display_instances.append("... and {} more subplan".format(len(instances) - show_count))
+                display_instances.append("... and 1 more subplan")
             else:
                 display_instances.append("... and {} more subplans".format(len(instances) - show_count))
 
