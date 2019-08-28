@@ -456,8 +456,6 @@ Vue.component('rule_course', {
                 }
             }
             this.is_blank = this.is_blank || this.details.list_type === "";
-            console.log("asdasdasdasd");
-            console.log(this.details.list_type);
 
             // Check for duplicates
             this.non_unique_options = false;
