@@ -28,10 +28,6 @@
     margin: 12px;
 }
 
-.course_list_types {
-    margin-left: 0;
-}
-
 .comments {
     resize: none;
     height: 5em; /* 1em height = 1 row */
