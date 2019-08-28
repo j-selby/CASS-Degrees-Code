@@ -408,6 +408,7 @@ Vue.component('rule_course', {
             "invalid_units": false,
             "invalid_units_step": false,
             "is_blank": false,
+            "is_complete": false,
 
             "redraw": false
         }
@@ -455,7 +456,9 @@ Vue.component('rule_course', {
                     break;
                 }
             }
-            this.is_blank = this.is_blank.details.list_type == null;
+            this.is_complete = this.details.list_type === "";
+            console.log("asdasdasdasd");
+            console.log(this.details.list_type);
 
             // Check for duplicates
             this.non_unique_options = false;
@@ -476,7 +479,7 @@ Vue.component('rule_course', {
                 this.invalid_units_step = this.details.unit_count % 6 !== 0;
             }
 
-            return !this.non_unique_options && !this.invalid_units && !this.invalid_units_step && !this.is_blank;
+            return !this.non_unique_options && !this.invalid_units && !this.invalid_units_step && !this.is_blank && !this.is_complete;
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
