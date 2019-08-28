@@ -41,7 +41,7 @@ def create_course(request):
 
         if form.is_valid():
             form.save()
-            return redirect(list_course_url + '&msg=Successfully Added The Course ' + instance + '!')
+            return redirect(list_course_url + '&msg=Successfully Added a New Course: ' + form['code'].value() + '!')
 
     else:
         if duplicate:
