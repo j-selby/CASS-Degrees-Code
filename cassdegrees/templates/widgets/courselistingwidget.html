@@ -2,10 +2,10 @@
 
 {# Usage: Must pass in a string app_name that is id of the particular widget the app is to be bound to#}
 {# Must include imports below once in the relevant template prior to insertion of a widget #}
-{#    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>#}
-{#    <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>#}
-{#    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>#}
-{#    <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">#}
+{% comment %}    <script src="{% static "js/vue.js" %}"></script>
+    <script src="{% static "js/vue-multiselect.js" %}"></script>
+    <script src="{% static "js/vue-resource.js" %}"></script>
+    <link rel="stylesheet" href="{% static "css/vue-multiselect.css" %}">{% endcomment %}
 
 {#    content for multiselect#}
 {#    sources (including for HTML and CSS):#}
@@ -53,7 +53,6 @@
 </div>
 
 <script type="application/javascript">
-
 
     API_MODEL_URL = 'api/model/course/'
 
@@ -140,6 +139,8 @@
                     response.body.forEach((object) => {
                         this.options.push(object)
                     });
+
+                    this.options.sort(((a, b) => (a.code > b.code) ? 1 : -1))
 
                     this.showLoadingSpinner = false
 

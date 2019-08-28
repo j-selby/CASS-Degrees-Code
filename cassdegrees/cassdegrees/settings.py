@@ -136,6 +136,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Todo: check on consistency with Allowed Hosts before final deployment
 # https://www.youtube.com/watch?v=OIbndrrUYiY
 CORS_ORIGIN_WHITELIST = 'http://localhost:8000', 'http://127.0.0.1:8000',
 
