@@ -381,7 +381,7 @@ select.text{
 
 /* Restricts the height of a particular search result */
 /* https://stackoverflow.com/questions/3922739/limit-text-length-to-n-lines-using-css */
-.card-content {
+.limit-card-size {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
