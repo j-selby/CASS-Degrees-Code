@@ -22,7 +22,7 @@ def data_dict_as_displayable(data):
     desired_columns = {
         'Program': ['id', 'code', 'year', 'name', 'units', 'lastUpdated'],
         'Subplan': ['id', 'code', 'year', 'name', 'planType', 'lastUpdated'],
-        'Course': ['id', 'code', 'year', 'name', 'units', 'lastUpdated']
+        'Course': ['id', 'code', 'name', 'units', 'lastUpdated']
     }
 
     for key, value in data.items():
