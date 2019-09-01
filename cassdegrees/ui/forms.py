@@ -303,6 +303,12 @@ class EditCourseFormSnippet(ModelForm):
         labels = {
             'offeredSem1': "Offered in Semester 1",
             'offeredSem2': "Offered in Semester 2",
+            'offeredSummer': "Offered in Summer",
+            'offeredAutumn': "Offered in Autumn",
+            'offeredWinter': "Offered in Winter",
+            'offeredSpring': "Offered in Spring",
+            'otherOffering': "Other Offering",
+            'currentlyActive': "Currently Active Course",
         }
         error_messages = {
             NON_FIELD_ERRORS: {
@@ -322,12 +328,6 @@ class EditCourseFormSnippet(ModelForm):
         if len(data) == 9 and not data[-1:].isalpha():
             raise forms.ValidationError("Extra Key should be a letter e.g. A, B, C")
         return data.upper()
-
-    def clean_year(self):
-        data = self.cleaned_data['year']
-        if data < 2000 or data > 3000:
-            raise forms.ValidationError("This should be between 2000-3000!")
-        return data
 
     def clean_name(self):
         data = self.cleaned_data['name']
