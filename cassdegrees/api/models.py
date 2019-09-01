@@ -11,16 +11,28 @@ class SampleModel(models.Model):
 class CourseModel(models.Model):
     id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=32)
-    year = models.PositiveIntegerField()
     name = models.CharField(max_length=256)
     units = models.PositiveIntegerField()
+
+    evenYear = models.BooleanField()
+    oddYear = models.BooleanField()
+
     offeredSem1 = models.BooleanField()
     offeredSem2 = models.BooleanField()
+    offeredSummer = models.BooleanField()
+    offeredAutumn = models.BooleanField()
+    offeredWinter = models.BooleanField()
+    offeredSpring = models.BooleanField()
+
+    otherOffering = models.BooleanField()
+
+    currentlyActive = models.BooleanField()
+
     rules = psql.JSONField(default=list)
     lastUpdated = models.DateField(default=timezone.now)
 
     class Meta:
-        unique_together = (("code", "year"),)
+        unique_together = (("code", "name"),)
 
 
 class SubplanModel(models.Model):

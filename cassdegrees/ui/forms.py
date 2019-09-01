@@ -275,7 +275,20 @@ class EditCourseFormSnippet(ModelForm):
 
     class Meta:
         model = CourseModel
-        fields = ('code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2', 'rules')
+        fields = ('code',
+                  'name',
+                  'units',
+                  'evenYear',
+                  'oddYear',
+                  'offeredSem1',
+                  'offeredSem2',
+                  'offeredSummer',
+                  'offeredAutumn',
+                  'offeredWinter',
+                  'offeredSpring',
+                  'otherOffering',
+                  'currentlyActive',
+                  'rules')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006, ARTH1100"}),
             'year': forms.NumberInput(attrs={'class': "text tfull",
