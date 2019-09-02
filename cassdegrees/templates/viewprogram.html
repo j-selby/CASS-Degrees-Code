@@ -105,6 +105,9 @@
                 {# Custom-text Rules #}
                 {% elif rule.type == "custom_text" %}
                     <p>{{ rule.units }} units from {{ rule.text }}</p>
+                {# Elective Rules #}
+                {% elif rule.type == "elective" %}
+                    <p>{{ rule.units }} units from the completion of elective courses offered by the ANU</p>
                 {# Either-or Rules #}
                 {% elif rule.type == 'either_or' %}
                     Either:
@@ -155,6 +158,9 @@
                                 {# Custom-text Or Rule #}
                                 {% elif sub_rule.type == "custom_text" %}
                                     <p>{{ sub_rule.units }} units from {{ sub_rule.text }}</p>
+                                {# Elective Or Rule #}
+                                {% elif sub_rule.type == "elective" %}
+                                    <p>{{ sub_rule.units }} units from the completion of elective courses offered by the ANU</p>
                                 {% endif %}
                             {% endfor %}
                         </div>
