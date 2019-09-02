@@ -200,12 +200,43 @@ interact('.dropzone').dropzone({
 
 
 // When selecting a sublan from a list of subplans, sets the chosen subplan as the saved value
-function subplanSelect(element){
+function subplanSelect(element, year){
     var inputField = element.parentNode;
     while (inputField.tagName !== 'INPUT') {
         inputField = inputField.previousSibling;
     }
     inputField.value = element.attributes['name'].value;
+
+    // Set the box values
+    var code = inputField.value.split(' ', 1);
+    var request = new XMLHttpRequest();
+    request.addEventListener("load", function() {
+        var rule = JSON.parse(request.response)[0]["rules"];
+        console.log(rule);
+        var card = inputField.parentNode.nextSibling;
+        while (card.tagName !== 'DIV')
+            card = card.nextSibling;
+        for (var i=0; i<rule.length; i++){
+            if (rule[i]["codes"].length*6 === parseInt(rule[i]["unit_count"]) && rule[i]["list_type"] === "exact"){
+                for (var j=0; j<rule[i]["codes"].length; j++){
+                    var course = rule[i]["codes"][j];
+                    card.childNodes[0].setAttribute("data-course-code", course);
+                    card.getElementsByClassName("course-code")[0].innerText = course;
+                    card = card.nextSibling;
+                    while (card.tagName !== 'DIV')
+                        card = card.nextSibling;
+                }
+            }
+            else{}
+        }
+        while(card.nextSibling) {
+            if (card.tagName === 'DIV')
+                clearCourse(card.childNodes[0]);
+            card = card.nextSibling;
+        }
+    });
+    request.open("GET", "/api/search/?select=code,year,rules&from=subplan&year="+year+"&code="+code);
+    request.send();
 }
 
 
