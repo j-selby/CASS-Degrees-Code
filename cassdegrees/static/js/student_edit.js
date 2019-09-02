@@ -79,13 +79,15 @@ function prepareSubmit(action) {
     document.getElementById("plan-courses").value = JSON.stringify(course_codes);
     document.getElementById("action_to_perform").value = action;
 
-    if (action === "pdf") {
+    if (action === "pdf")
         // Ensure that the PDF opens in a new page
         document.getElementById("main-form").setAttribute("target", "_blank");
-    }
 
     document.getElementById("hidden_comments").value = document.getElementById("comments").value;
     document.getElementById("main-form").submit();
+   
+    if (action === "pdf")
+        document.getElementById("main-form").removeAttribute("target");
 }
 
 // Parses course codes from the document
