@@ -28,6 +28,12 @@
     margin: 12px;
 }
 
+.comments {
+    resize: none;
+    height: 5em; /* 1em height = 1 row */
+    width: 98.36%; /* textarea need custom width as anu styling width makes it longer */
+}
+
 .custom_search_bar input[type=text]{
     height: 30px;
     width: 78%;
@@ -377,6 +383,17 @@ select.text{
     .hide-on-small-screen {
         display: block;
     }
+}
+
+/* Restricts the height of a particular search result */
+/* https://stackoverflow.com/questions/3922739/limit-text-length-to-n-lines-using-css */
+.limit-card-size {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    max-height: 3.6em;
+    line-height: 1.8em;
 }
 
 /* https://medium.com/@hugodesigns/how-to-use-the-most-complete-selecting-solution-for-vue-js-f991b2605364 */

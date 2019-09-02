@@ -1,16 +1,50 @@
 /* Small list.js helper for student creation of plans */
+
 var options = {
-    valueNames: ['course-details'],
-    page: 3,
-    pagination: true,
-    fuzzySearch: {
-        searchClass: "fuzzy-search",
-        location: 0,
-        distance: 1000,
-        threshold: 0.3,
-        multiSearch: true
-    }
+    valueNames: ['course-name', 'course-code'],
+    page: 4,
+    pagination: true
 };
+
+var courseSearch = new List('courses', options);
+
+// Create fuse.js instance for searching
+var fuseOptions = {
+    shouldSort: true,
+    //tokenize: true,
+    findAllMatches: false,
+    threshold: 0.2,
+    location: 0,
+    distance: 100,
+    maxPatternLength: 32,
+    minMatchCharLength: 1,
+    keys: ['course-name', 'course-code']
+};
+
+var fuse = new Fuse(courseSearch.toJSON(), fuseOptions);
+
+function searchQuery(query) {
+    if (query.length === 0) {
+        courseSearch.filter();
+    } else {
+        var results = fuse.search(query);
+
+        // Display top 3 pages of results
+        results = results.slice(0, 4 * 3);
+
+        // Rotate results to use course codes as keys
+        var sortedResults = {};
+        for (var i = 0; i < results.length; i++) {
+            var result = results[i];
+            result.sortPos = i;
+            sortedResults[result['course-code']] = result;
+        }
+
+        courseSearch.filter(function(item) {
+            return sortedResults[item.values()["course-code"]];
+        });
+    }
+}
 
 // Script to allow interactivity in the popup menu
 function setupPopup() {
@@ -32,8 +66,6 @@ function setupPopup() {
     };
 }
 
-var courseSearch = new List('courses', options);
-
 // Gets metadata from all applied courses and stores it
 function prepareSubmit(action) {
     var elements = document.getElementsByClassName("course-drop");
@@ -52,6 +84,7 @@ function prepareSubmit(action) {
         document.getElementById("main-form").setAttribute("target", "_blank");
     }
 
+    document.getElementById("hidden_comments").value = document.getElementById("comments").value;
     document.getElementById("main-form").submit();
 }
 
