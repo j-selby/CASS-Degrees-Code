@@ -291,9 +291,6 @@ class EditCourseFormSnippet(ModelForm):
                   'rules')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006, ARTH1100"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull",
-                                             'onkeydown': "javascript: return checkKeys(event)",
-                                             'type': "number"}),
             'name': forms.TextInput(attrs={'class': "text tfull",
                                            'placeholder': "e.g. Art and Design Histories: Form and Space"}),
             'units': forms.NumberInput(attrs={'class': "text tfull",
