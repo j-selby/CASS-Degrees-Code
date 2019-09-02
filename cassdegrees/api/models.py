@@ -14,8 +14,14 @@ class CourseModel(models.Model):
     name = models.CharField(max_length=256)
     units = models.PositiveIntegerField()
 
-    evenYear = models.BooleanField()
-    oddYear = models.BooleanField()
+    offered_years_choices = [
+        ("ALL", "Every Year"),
+        ("ODD", "Odd Years"),
+        ("EVEN", "Even Years"),
+        ("OTHER", "Other/Unknown")
+    ]
+
+    offeredYears = models.CharField(choices=offered_years_choices, max_length=5)
 
     offeredSem1 = models.BooleanField()
     offeredSem2 = models.BooleanField()

@@ -278,8 +278,7 @@ class EditCourseFormSnippet(ModelForm):
         fields = ('code',
                   'name',
                   'units',
-                  'evenYear',
-                  'oddYear',
+                  'offeredYears',
                   'offeredSem1',
                   'offeredSem2',
                   'offeredSummer',
@@ -289,17 +288,24 @@ class EditCourseFormSnippet(ModelForm):
                   'otherOffering',
                   'currentlyActive',
                   'rules')
+
+        offered_years_choices = [
+            ("ALL", "Every Year"),
+            ("ODD", "Odd Years"),
+            ("EVEN", "Even Years"),
+            ("OTHER", "Other/Unknown")
+        ]
+
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006, ARTH1100"}),
             'name': forms.TextInput(attrs={'class': "text tfull",
                                            'placeholder': "e.g. Art and Design Histories: Form and Space"}),
             'units': forms.NumberInput(attrs={'class': "text tfull",
                                               'onkeydown': "javascript: return checkKeys(event)",
-                                              'type': "number"})
+                                              'type': "number"}),
+            'offeredYears': forms.Select(choices=offered_years_choices)
         }
         labels = {
-            'evenYear': "Offered in Even Years",
-            'oddYear': "Offered in Odd Years",
             'offeredSem1': "Offered in Semester 1",
             'offeredSem2': "Offered in Semester 2",
             'offeredSummer': "Offered in Summer",

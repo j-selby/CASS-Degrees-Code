@@ -19,24 +19,33 @@
                 <h4>Code</h4>
                 <li>{{ data.code }}</li>
             </div>
-            <div class="right">
-                <h4>Year</h4>
-                <li>{{ data.year }}</li>
-            </div>
 
             </br>
             </br>
             </br>
 
             <h4>Offered in</h4>
+            {% if data.offeredYears == "ALL" %}
+                <li>
+                    Every Year
+                </li>
+            {% elif data.offeredYears == "ODD" %}
+                <li>
+                    Odd Years Only
+                </li>
+            {% elif data.offeredYears == "EVEN" %}
+                <li>
+                    Even Years Only
+                </li>
+            {% endif %}
             {% if data.offeredSem1 %}
                 <li>
-                    First Semester {{ data.year }}
+                    First Semesters
                 </li>
             {% endif %}
             {% if data.offeredSem2 %}
                 <li>
-                    Second Semester {{ data.year }}
+                    Second Semesters
                 </li>
             {% endif %}
         </div>
