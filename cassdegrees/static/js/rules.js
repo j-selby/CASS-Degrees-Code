@@ -11,6 +11,7 @@ const ALL_COMPONENT_NAMES = {
     'course_requisite': "Course",
     'custom_text': "Custom (Text)",
     'custom_text_req': "Custom (Text)",
+    'elective': "Elective Units",
     'either_or': "Either Or"
 };
 
@@ -33,6 +34,8 @@ const ALL_COMPONENT_HELP = {
     'custom_text_req': "If other rules don't entirely fit the requirements of a rule, the custom text field allows " +
                        "for the specification of other program content. Note that this isn't enforced in student-facing " +
                        "tools.",
+    'elective': "A rule which allows students to choose any courses offered by the ANU as electives to fill a set" +
+                " amount of units.",
     'either_or': "A rule which allows for the specification of sets of different paths that students can take. Each " +
                  "\"OR\" group is a collection of rules which must be completed if students were to pick that specific " +
                  "group."
@@ -45,6 +48,7 @@ const COMPONENT_NAMES = {
     'subject_area': "Subject-Area Units",
     'course': "Course",
     'custom_text': "Custom (Text)",
+    'elective': "Elective",
     'either_or': "Either Or"
 };
 
@@ -54,7 +58,8 @@ const EITHER_OR_COMPONENT_NAMES = {
     'year_level': 'Level-Specific Units',
     'subject_area': "Subject-Area Units",
     'course': "Course",
-    'custom_text': "Custom (Text)"
+    'custom_text': "Custom (Text)",
+    'elective': "Elective"
 };
 
 //
@@ -804,6 +809,39 @@ Vue.component('rule_custom_text_req', {
         }
     },
     template: '#customTextReqRuleTemplate'
+});
+
+Vue.component('rule_elective', {
+    props: {
+        "details": {
+            type: Object,
+
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("units")) {
+                    value.units = 0;
+                }
+
+                return true;
+            }
+        }
+    },
+    data: function() {
+        return {
+            "not_divisible": false,
+        }
+    },
+    created: function() {
+        this.check_options();
+    },
+    methods: {
+        check_options: function() {
+            this.not_divisible = this.details.units % 6 !== 0;
+
+            return !this.not_divisible;
+        }
+    },
+    template: '#electiveRuleTemplate'
 });
 
 Vue.component('rule_either_or', {

@@ -217,6 +217,19 @@
     </fieldset>
 </script>
 
+<script type="text/x-template" id="electiveRuleTemplate">
+    <fieldset>
+        <p>
+            Students must complete
+            <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number" min="0" step="6" max="1000" v-model="details.units" aria-required="true" required>
+            units of elective courses. 
+        </p>
+
+        <div class="msg-error" v-if="not_divisible">Units must be divisible by 6!</div>
+
+    </fieldset>
+</script>
+
 <script type="text/x-template" id="customTextReqRuleTemplate">
     <fieldset>
         <p>
