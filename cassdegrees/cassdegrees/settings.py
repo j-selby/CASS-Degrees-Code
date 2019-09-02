@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',  # added this for the REST framework
     'ui',  # our UI app
-    'corsheaders', #for api call in multiselect
+    'corsheaders',  # for api call in multiselect
 ]
 
 MIDDLEWARE = [
