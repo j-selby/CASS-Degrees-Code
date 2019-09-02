@@ -30,6 +30,8 @@
                 {% endif %}
             {% endwith %}
         {% endwith %}
+    {% elif rule.type == "elective" %}
+        <p>{{ rule.units }} units from the completion of elective courses offered by the ANU</p>
     {% elif rule.type == "either_or" %}
         <p class="bottom-margin">Either:</p>
 
@@ -76,5 +78,7 @@
         {% if rule.show_course_boxes %}
             {% student_course_box rule.units %}
         {% endif %}
+    {% elif rule.type == "elective" %}
+        {% student_course_box rule.units %}
     {% endif %}
 </div>
