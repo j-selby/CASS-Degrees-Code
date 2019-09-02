@@ -76,7 +76,8 @@
     <script>
         function submit_form(form_action, redirect) {
             if (true) {
-                document.getElementById('mainForm').setAttribute('action', form_action);
+                document.getElementById('mainForm').action.value = form_action;
+                {#document.getElementById('mainForm').setAttribute('action', form_action);#}
                 document.getElementById('redirect').value = redirect;
                 document.getElementById('mainForm').submit();
                 return true;
