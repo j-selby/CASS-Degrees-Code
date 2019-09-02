@@ -298,6 +298,8 @@ class EditCourseFormSnippet(ModelForm):
                                               'type': "number"})
         }
         labels = {
+            'evenYear': "Offered in Even Years",
+            'oddYear': "Offered in Odd Years",
             'offeredSem1': "Offered in Semester 1",
             'offeredSem2': "Offered in Semester 2",
             'offeredSummer': "Offered in Summer",
