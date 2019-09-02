@@ -111,14 +111,13 @@ def data_list(request):
                 new_query['Program']['date'] |= Q(year=int(term)) | Q(name__icontains=term) | Q(code__icontains=term)
             # If the search term has no obvious structure, search for it in the code and name fields
             else:
-                build_query(new_query['List'], Q(code__icontains=term) | Q(name__icontains=term))
                 build_query(new_query['Course'], Q(code__icontains=term) | Q(name__icontains=term))
                 build_query(new_query['Subplan'], Q(code__icontains=term) | Q(name__icontains=term))
                 build_query(new_query['Program'], Q(code__icontains=term) | Q(name__icontains=term))
 
         # If the program, subplan, or course searches are non-empty, query the database
         data = {}
-        for target, model in [('Program', ProgramModel), ('Subplan', SubplanModel), ('Course', CourseModel), ('List', ListModel)]:
+        for target, model in [('Program', ProgramModel), ('Subplan', SubplanModel), ('Course', CourseModel)]:
             # If the query is not blank, search for it in the database (Prevents unnecessary searches)
             if new_query[target]['AND'].children or new_query[target]['date'].children:
                 # SELECT from the the appropriate relation with the AND and OR queries
