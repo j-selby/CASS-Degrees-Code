@@ -75,16 +75,13 @@
 
     <script>
         function submit_form(form_action, redirect) {
-            if (true) {
-                document.getElementById('mainForm').action.value = form_action;
-                {#document.getElementById('mainForm').setAttribute('action', form_action);#}
-                document.getElementById('redirect').value = redirect;
-                document.getElementById('mainForm').submit();
-                return true;
-            } else {
-                return false;
-            }
+            document.getElementById('mainForm').action.value = form_action;
+            document.getElementById('redirect').value = redirect;
+            document.getElementById('mainForm').submit();
+            return true;
         }
     </script>
+
+    <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
 
 {% endblock %}
