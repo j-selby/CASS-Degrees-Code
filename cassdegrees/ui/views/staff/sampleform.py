@@ -57,4 +57,4 @@ def sampleform(request):
                 return HttpResponse('Failed to delete record!')
 
     else:
-        return render(request, 'sampleform.html')
+        return render(request, 'staff/sampleform.html')
