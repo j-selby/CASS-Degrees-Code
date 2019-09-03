@@ -20,34 +20,91 @@
                 <li>{{ data.code }}</li>
             </div>
 
-            </br>
-            </br>
-            </br>
+            <div class="right">
+                <h4>Years Offered:</h4>
+                {% if data.offeredYears == "ALL" %}
+                    <li>
+                        Every Year
+                    </li>
+                {% elif data.offeredYears == "ODD" %}
+                    <li>
+                        Odd Years Only
+                    </li>
+                {% elif data.offeredYears == "EVEN" %}
+                    <li>
+                        Even Years Only
+                    </li>
+                {% else %}
+                    Other/Unknown
+                {% endif %}
+            </div>
 
-            <h4>Offered in</h4>
-            {% if data.offeredYears == "ALL" %}
-                <li>
-                    Every Year
-                </li>
-            {% elif data.offeredYears == "ODD" %}
-                <li>
-                    Odd Years Only
-                </li>
-            {% elif data.offeredYears == "EVEN" %}
-                <li>
-                    Even Years Only
-                </li>
+            <br />
+            <br />
+            <br />
+
+            {% if data.offeredSem1 or data.offeredSem2 %}
+                <div class="left">
+                    <h4>Semesters:</h4>
+                    {% if data.offeredSem1 %}
+                        <li>
+                            First Semesters
+                        </li>
+                    {% endif %}
+                    {% if data.offeredSem2 %}
+                        <li>
+                            Second Semesters
+                        </li>
+                    {% endif %}
+                </div>
             {% endif %}
-            {% if data.offeredSem1 %}
-                <li>
-                    First Semesters
-                </li>
+
+            {% if data.offeredSummer or data.offeredAutumn or data.offeredWinter or data.offeredSpring %}
+                {% if data.offeredSem1 or data.offeredSem2 %}
+                <div class="right">
+                {% else %}
+                <div class="left">
+                {% endif %}
+                    <h4>Sessions:</h4>
+                    {% if data.offeredSummer %}
+                        <li>
+                            Summer
+                        </li>
+                    {% endif %}
+                    {% if data.offeredAutumn %}
+                        <li>
+                            Autumn
+                        </li>
+                    {% endif %}
+                    {% if data.offeredWinter %}
+                        <li>
+                            Winter
+                        </li>
+                    {% endif %}
+                    {% if data.offeredSpring %}
+                        <li>
+                            Spring
+                        </li>
+                    {% endif %}
+                </div>
             {% endif %}
-            {% if data.offeredSem2 %}
-                <li>
-                    Second Semesters
-                </li>
-            {% endif %}
+
+            <br />
+            <br />
+            <br />
+
+            <div class="left">
+                <h4>Course Status:</h4>
+                {% if data.currentlyActive %}
+                    Currently Active
+                {% else %}
+                    Currently Inactive
+                {% endif %}
+
+                {% if data.otherOffering %}
+                    + Other offerings
+                {% endif %}
+            </div>
         </div>
     </div>
 
