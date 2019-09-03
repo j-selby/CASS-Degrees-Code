@@ -81,7 +81,7 @@ def edit_list(request):
             # Otherwise, simply display a success message on the same page.
             # todo: implement list view for admin page then change url
             if request.POST.get('redirect') == 'true':
-                return redirect(list_program_url + '&msg=Successfully Edited List!')
+                return redirect(list_course_group_url + '&msg=Successfully Edited List!')
             else:
                 message = "Successfully Edited List!"
 
