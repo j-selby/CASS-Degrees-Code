@@ -10,7 +10,7 @@ import json
 
 from django_weasyprint import WeasyTemplateResponse
 
-from ui.views.view_ import pretty_print_reqs, pretty_print_rules
+from ui.views.staff.view import pretty_print_reqs, pretty_print_rules
 
 
 def compress(dct):

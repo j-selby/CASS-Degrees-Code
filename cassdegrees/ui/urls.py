@@ -20,7 +20,6 @@ from .views.staff.courses import *
 from .views.staff.index import *
 from .views.staff.listings import *
 from .views.staff.programs import *
-from .views.staff.sampleform import *
 from .views.staff.subplans import *
 from .views.staff.view import *
 from .views.staff.lists import *
@@ -37,7 +36,6 @@ urlpatterns = [
     path('delete/', student_delete),
 
     path(staff_url_prefix, index),
-    path(staff_url_prefix + 'sampleform/', sampleform),
     path(staff_url_prefix + 'create/course/', create_course),
     path(staff_url_prefix + 'create/program/', create_program),
     path(staff_url_prefix + 'create/subplan/', create_subplan),

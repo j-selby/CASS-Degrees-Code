@@ -5,7 +5,7 @@ from django.http import HttpResponseNotFound, HttpRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse
 
 from ui.forms import EditProgramFormSnippet
-from ui.views.subplans import create_subplan
+from ui.views.staff.subplans import create_subplan
 from django.utils import timezone
 
 staff_url_prefix = "/staff/"
