@@ -18,11 +18,6 @@
             {% endif %}
             courses:
         </p>
-    {% elif rule.type == "subject_area" %}
-        {# https://stackoverflow.com/questions/4831306/need-to-convert-a-string-to-int-in-a-django-template #}
-        {# add:"0" needed to cast units to int #}
-        <p>Complete {{ rule.unit_count }} units from {% if rule.unit_count|add:"0" <= 6 %}a{% endif %}
-            {{ rule.subject }} course{% if rule.unit_count|add:"0" > 6 %}s{% endif %}:</p>
     {% elif rule.type == "year_level" %}
         <p>Complete {{ rule.unit_count }} units from {% if rule.unit_count|add:"0" <= 6 %}a{% endif %}
             {{ rule.year_level }}-level course{% if rule.unit_count|add:"0" > 6 %}s{% endif %}:</p>

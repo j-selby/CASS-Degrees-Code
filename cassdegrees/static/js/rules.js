@@ -20,8 +20,6 @@ const ALL_COMPONENT_HELP = {
     'subplan': "A rule which gives students a choice from a particular set of majors, minors, specialisations or " +
                "other subplans. The description here is used to describe the rule when displaying this rule to " +
                "students.",
-    'year_level': 'A rule which specifies that students must complete a number of units from a particular year level.',
-    'subject_area': "A rule which specifies that students must complete a number of units from a particular field.",
     'course': "A rule which specifies that students should pick a certain amount of units from a set of available " +
               "courses.",
     'course_requisite': "A rule which specifies that students should have taken a set of courses before taking this " +
@@ -60,6 +58,7 @@ const EITHER_OR_COMPONENT_NAMES = {
 const REQUISITE_COMPONENT_NAMES = {
     'incompatibility': "Incompatibility",
     'program': 'Program',
+    'elective': "Elective",
     'course_requisite': "Course",
     'custom_text_req': "Custom (Text)",
     'either_or': "Either Or"
@@ -67,6 +66,7 @@ const REQUISITE_COMPONENT_NAMES = {
 
 const REQUISITE_EITHER_OR_COMPONENT_NAMES = {
     'program': 'Program',
+    'elective': "Elective",
     'course_requisite': "Course",
     'custom_text_req': "Custom (Text)"
 };
