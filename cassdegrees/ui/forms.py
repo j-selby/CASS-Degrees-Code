@@ -306,13 +306,14 @@ class EditCourseFormSnippet(ModelForm):
             'offeredYears': forms.Select(choices=offered_years_choices)
         }
         labels = {
+            'offeredYears': "Years Offered",
             'offeredSem1': "Offered in Semester 1",
             'offeredSem2': "Offered in Semester 2",
             'offeredSummer': "Offered in Summer",
             'offeredAutumn': "Offered in Autumn",
             'offeredWinter': "Offered in Winter",
             'offeredSpring': "Offered in Spring",
-            'otherOffering': "Other Offering",
+            'otherOffering': "Other/Unknown Offering",
             'currentlyActive': "Currently Active Course",
         }
         error_messages = {
