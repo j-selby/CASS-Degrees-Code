@@ -210,34 +210,44 @@ function subplanSelect(element, year){
     inputField.value = element.attributes['name'].value;
 
     // Set the box values
-    var code = inputField.value.split(' ', 1);
     var request = new XMLHttpRequest();
     request.addEventListener("load", function() {
         var rule = JSON.parse(request.response)[0]["rules"];
-        console.log(rule);
+        // Set the card to be the first 'div' block below the subplan entry field
         var card = inputField.parentNode.nextSibling;
         while (card.tagName !== 'DIV')
             card = card.nextSibling;
+        // Iterate over each course list rule (e.g. [18 units from X, 6 units from Y])
         for (var i=0; i<rule.length; i++){
+            // If the number of courses matches the unit count and an exact number of units needs to be completed
             if (rule[i]["codes"].length*6 === parseInt(rule[i]["unit_count"]) && rule[i]["list_type"] === "exact"){
+                // For every compulsory course code, add that course to the next card
                 for (var j=0; j<rule[i]["codes"].length; j++){
                     var course = rule[i]["codes"][j];
                     card.childNodes[0].setAttribute("data-course-code", course);
                     card.getElementsByClassName("course-code")[0].innerText = course;
-                    card = card.nextSibling;
-                    while (card.tagName !== 'DIV')
-                        card = card.nextSibling;
+
+                    do {
+                        card = card.nextSibling
+                    } while (card.tagName !== 'DIV');
                 }
             }
-            else{}
         }
+        // Clear all remaining cards in the subplan
         while(card.nextSibling) {
             if (card.tagName === 'DIV')
                 clearCourse(card.childNodes[0]);
             card = card.nextSibling;
         }
     });
-    request.open("GET", "/api/search/?select=code,year,rules&from=subplan&year="+year+"&code="+code);
+
+    // Function to sanitise course code
+    function parseCode(course){
+        return course.substring(0, 4)+parseInt(course.substring(4))
+    }
+
+    var code = inputField.value.split(' ', 1);
+    request.open("GET", "/api/search/?select=code,year,rules&from=subplan&year="+parseInt(year)+"&code="+parseCode(code));
     request.send();
 }
 
