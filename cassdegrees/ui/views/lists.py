@@ -40,7 +40,7 @@ def create_list(request):
         # todo: implement list view on admin view page then change url
         if form.is_valid():
             form.save()
-            return redirect(list_course_url + '&msg=Successfully Added List!')
+            return redirect(list_course_group_url + '&msg=Successfully Added List!')
 
     else:
         if duplicate:
