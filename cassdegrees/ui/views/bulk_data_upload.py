@@ -79,7 +79,18 @@ def bulk_data_upload(request):
                 end_year = int()
 
                 # Add columns that are matching the custom format designed in this script, detailed in line 10 - 26.
-                uploaded_file.append(["code", "year", "name", "units", "offeredSem1", "offeredSem2"])
+                uploaded_file.append([
+                    "code",
+                    "name",
+                    "units",
+                    "offeredYears",
+                    "offeredSem1",
+                    "offeredSem2",
+                    "offeredSummer",
+                    "offeredAutumn",
+                    "offeredWinter",
+                    "offeredSpring"
+                ])
                 for row in sheet.iter_rows():
 
                     sem_offer_value = ""
