@@ -48,6 +48,7 @@ class ProgramRecord(generics.RetrieveUpdateDestroyAPIView):
     queryset = ProgramModel.objects.all()
     serializer_class = ProgramSerializer
 
+
 def search(request):
     """ Queries the database based on the URL parameters
 

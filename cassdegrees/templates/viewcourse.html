@@ -21,6 +21,19 @@
             </div>
 
             <div class="right">
+                <h4>Course Status:</h4>
+                {% if data.currentlyActive %}
+                    Currently Active
+                {% else %}
+                    Currently Inactive
+                {% endif %}
+            </div>
+
+            <br />
+            <br />
+            <br />
+
+            <div class="left">
                 <h4>Years Offered:</h4>
                 {% if data.offeredYears == "ALL" %}
                     <li>
@@ -36,6 +49,13 @@
                     </li>
                 {% else %}
                     Other/Unknown
+                {% endif %}
+            </div>
+
+            <div class="right">
+                {% if data.otherOffering %}
+                    NOTE: This course <br />
+                    has other offerings
                 {% endif %}
             </div>
 
@@ -60,11 +80,7 @@
             {% endif %}
 
             {% if data.offeredSummer or data.offeredAutumn or data.offeredWinter or data.offeredSpring %}
-                {% if data.offeredSem1 or data.offeredSem2 %}
-                <div class="right">
-                {% else %}
-                <div class="left">
-                {% endif %}
+                <div class="{% if data.offeredSem1 or data.offeredSem2 %}right{% else %}left{% endif %}">
                     <h4>Sessions:</h4>
                     {% if data.offeredSummer %}
                         <li>
@@ -89,22 +105,6 @@
                 </div>
             {% endif %}
 
-            <br />
-            <br />
-            <br />
-
-            <div class="left">
-                <h4>Course Status:</h4>
-                {% if data.currentlyActive %}
-                    Currently Active
-                {% else %}
-                    Currently Inactive
-                {% endif %}
-
-                {% if data.otherOffering %}
-                    + Other offerings
-                {% endif %}
-            </div>
         </div>
     </div>
 
