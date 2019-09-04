@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 
-from api.models import ProgramModel, SubplanModel, CourseModel
+from api.models import ProgramModel, SubplanModel, CourseModel, ListModel
 from django.db.models import Q
 from django.shortcuts import render
 
@@ -22,7 +22,8 @@ def data_dict_as_displayable(data):
     desired_columns = {
         'Program': ['id', 'code', 'year', 'name', 'units', 'lastUpdated'],
         'Subplan': ['id', 'code', 'year', 'name', 'planType', 'lastUpdated'],
-        'Course': ['id', 'code', 'name', 'units', 'lastUpdated']
+        'Course': ['id', 'code', 'name', 'units', 'lastUpdated'],
+        'List': ['id', 'name', 'year', 'lastUpdated']
     }
 
     for key, value in data.items():
@@ -67,7 +68,8 @@ def data_list(request):
                               {
                                   'Program': ProgramModel.objects.values(),
                                   'Subplan': SubplanModel.objects.values(),
-                                  'Course': CourseModel.objects.values()
+                                  'Course': CourseModel.objects.values(),
+                                  'List': ListModel.objects.values()
                               }
                           ),
                           'render': render_properties})
@@ -80,7 +82,7 @@ def data_list(request):
 
         # Create blank queries for text and dates (Allows AND relationship between dates and text)
         # The AND/OR representations are there to give higher priority to results that contain all keywords
-        new_query = {x: {'AND': Q(), 'OR': Q(), 'date': Q()} for x in ['Course', 'Subplan', 'Program']}
+        new_query = {x: {'AND': Q(), 'OR': Q(), 'date': Q()} for x in ['Course', 'Subplan', 'Program', 'List']}
 
         # Function that takes an input dict and a sub-query, and appends the sub-query based on the appropriate logic
         def build_query(target, q):
@@ -104,7 +106,7 @@ def data_list(request):
                 # BUG: This implementation will not return a course with a year in the name unless it matches all
                 #      other keywords e.g. CHIN2019 will not show up in a search for `COMP 2019`, but it will appear
                 #      in a search for `COMP CHIN`
-                new_query['Course']['date'] | Q(name__icontains=term) | Q(code__icontains=term)
+                new_query['Course']['date'] |= Q(name__icontains=term) | Q(code__icontains=term)
                 new_query['Subplan']['date'] |= Q(year=int(term)) | Q(name__icontains=term) | Q(code__icontains=term)
                 new_query['Program']['date'] |= Q(year=int(term)) | Q(name__icontains=term) | Q(code__icontains=term)
             # If the search term has no obvious structure, search for it in the code and name fields
