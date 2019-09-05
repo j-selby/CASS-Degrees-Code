@@ -11,8 +11,8 @@ from django.shortcuts import render
 # Note that column order does not matter, as long as data corresponds to the order of the first row.
 
 # Courses:
-# code%year%name%units%offeredSem1%offeredSem2
-# ARTS1001%2019%Introduction to Arts%6%True%False
+# code%name%units%offeredYears%offeredSem1%offeredSem2%offeredSummer%offeredAutumn%offeredWinter%offeredSpring%otherOffering
+# ARTS1001%Introduction to Arts%6%ALL%True%False%True%True%True%True%False
 # ...
 
 # Subplans:
@@ -89,7 +89,8 @@ def bulk_data_upload(request):
                     "offeredSummer",
                     "offeredAutumn",
                     "offeredWinter",
-                    "offeredSpring"
+                    "offeredSpring",
+                    "otherOffering"
                 ])
                 for row in sheet.iter_rows():
 
@@ -198,17 +199,30 @@ def bulk_data_upload(request):
             if first_row_checked:
                 if content_type == 'Courses':
                     # If number of columns from file doesn't match the model, return error to user.
-                    if len(row) != 6:
+                    if len(row) != 11:
                         any_error = True
                         break
 
                     course_instance = CourseModel()
                     course_instance.code = row[map['code']]
-                    course_instance.year = int(row[map['year']])
                     course_instance.name = row[map['name']]
                     course_instance.units = int(row[map['units']])
-                    course_instance.offeredSem1 = bool(row[map['offeredSem1']])
-                    course_instance.offeredSem2 = bool(row[map['offeredSem2']])
+
+                    course_instance.offeredYears = row[map['offeredYears']].upper()
+
+                    course_instance.offeredSem1 = row[map['offeredSem1']].upper() == "TRUE"
+                    course_instance.offeredSem2 = row[map['offeredSem2']].upper() == "TRUE"
+
+                    course_instance.offeredSummer = row[map['offeredSummer']].upper() == "TRUE"
+                    course_instance.offeredAutumn = row[map['offeredAutumn']].upper() == "TRUE"
+                    course_instance.offeredWinter = row[map['offeredWinter']].upper() == "TRUE"
+                    course_instance.offeredSpring = row[map['offeredSpring']].upper() == "TRUE"
+
+                    course_instance.otherOffering = row[map['otherOffering']].upper() == "TRUE"
+
+                    # It is assumed that all courses that are added are active.
+                    course_instance.currentlyActive = True
+
                     course_str = course_instance.code + " - " + course_instance.name
 
                     # Save the course instance
