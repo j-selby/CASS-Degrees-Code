@@ -10,7 +10,7 @@ import json
 
 from django_weasyprint import WeasyTemplateResponse
 
-from ui.views.view_ import pretty_print_reqs, pretty_print_rules
+from ui.views.staff.view import pretty_print_reqs, pretty_print_rules
 
 
 def compress(dct):
@@ -80,7 +80,7 @@ def student_index(request):
             except ProgramModel.DoesNotExist:
                 continue
 
-    return render(request, 'student_index.html', context={'plans': plans, 'render': render_settings})
+    return render(request, 'student/index.html', context={'plans': plans, 'render': render_settings})
 
 
 # Delete the requested plan
@@ -133,7 +133,7 @@ def student_create(request):
             redirect(student_index)
     # Render the creation homepage if an ID is not specified
     else:
-        return render(request, 'student_create.html', context={'programs': ProgramModel.objects.filter(publish=True)})
+        return render(request, 'student/create.html', context={'programs': ProgramModel.objects.filter(publish=True)})
 
 
 # Main edit page. Sends program metadata for specific course chosen.
@@ -175,7 +175,7 @@ def student_edit(request):
                 except ProgramModel.DoesNotExist:
                     render_settings['error'] = 'This program plan is not valid. Please create a new Program Plan'
                     instance = {}
-                return render(request, 'student_edit.html', context={'plan': new_plan,
+                return render(request, 'student/edit.html', context={'plan': new_plan,
                                                                      'program': instance,
                                                                      'courses': courses,
                                                                      'subplans': subplans,
@@ -224,7 +224,7 @@ def student_edit(request):
                 render_settings['error'] = 'This program plan is not valid. Please create a new Program Plan'
                 instance = {}
 
-            return render(request, 'student_edit.html', context={'plan': plan,
+            return render(request, 'student/edit.html', context={'plan': plan,
                                                                  'program': instance,
                                                                  'courses': courses,
                                                                  'subplans': subplans,
@@ -244,14 +244,11 @@ def new_plan_from_request(request_post):
             if len(key.split('.')) > 1:
                 key_list = key.split('.')
                 key_name = key_list[0]
-                key_index = int(key_list[1])
+                key_index = key_list[1]
 
-                if key_index == 0:
-                    list = []
-                else:
-                    list = plan[key_name]
-                list.append(request_post[key])
-                plan[key_name] = list
+                if not plan.get(key_name, None):
+                    plan[key_name] = {}
+                plan[key_name][key_index] = request_post[key]
             else:
                 plan[key] = request_post[key]
     return plan
