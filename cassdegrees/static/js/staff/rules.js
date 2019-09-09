@@ -417,7 +417,7 @@ Vue.component('rule_course', {
             validator: function (value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("codes")) {
-                    value.codes = [""];
+                    value.codes = [];
                 }
 
                 if (!value.hasOwnProperty("list_type")) {
@@ -427,16 +427,23 @@ Vue.component('rule_course', {
 
                 return true;
             }
-        }
+        },
     },
+
+    // subcomponent of the selector must be declared and included in rulescripts.html
+    components: {
+        Multiselect: window.VueMultiselect.default
+    },
+
     data: function() {
         return {
             "courses": [],
             "list_types": [],
+            "optionsProxy": [],
+            "showLoadingSpinner": false,
 
             // Display related warnings if true
             "non_unique_options": false,
-
             "invalid_units": false,
             "invalid_units_step": false,
             "is_blank": false,
@@ -463,53 +470,63 @@ Vue.component('rule_course', {
         });
         request.open("GET", "/api/search/?select=code,name&from=course");
         request.send();
+
     },
     methods: {
-        add_course: function() {
-            // Mutable modification - redraw needed
-            this.details.codes.push(-1);
+         // The label that will be displayed on the list item
+        customLabel(option) {
+            return `${option.code} - ${option.name}`
+        },
+
+        // Update an array of selected values and remove the selected item from the list of available options
+        updateSelected(value) {
+            value.forEach((resource) => {
+                // Adds selected resources to array and prevents duplicates
+                if (!this.details.codes.some(element => element.code === resource.code)){
+                    this.details.codes.push(resource)
+                    this.details.codes.sort((a, b) => (a.code > b.code) ? 1 : -1)
+                }
+
+                // remove the selected course from the list of available courses to add
+                // todo: initialise so that already selected courses are not brought in from API call
+                resourceID = this.courses.indexOf(resource)
+                this.courses.splice(resourceID, 1)
+            })
+
+            // Clear options proxy to avoid selection tags from being displayed
+            this.optionsProxy = []
+        },
+
+        // remove the item from the display list and the elements field when x is clicked
+        // index is the index from the details.codes array
+        removeDependency(index) {
+            this.details.codes.splice(index, 1).forEach((element) => {
+                this.courses.push(element)
+            })
+
             this.check_options();
             this.do_redraw();
         },
-        remove_course: function(index) {
-            // Mutable modification - redraw needed
-            this.details.codes.splice(index, 1);
-            this.check_options();
-            this.do_redraw();
-        },
+
         check_options: function() {
             // Ensure all data has been filled in
             this.is_blank = this.details.unit_count == null;
-            for (var index in this.details.codes) {
-                var value = this.details.codes[index];
-                if (value === -1 || value === "") {
-                    this.is_blank = true;
-                    break;
-                }
-            }
+            this.is_blank = this.details.codes.length === 0;
             this.is_blank = this.is_blank || this.details.list_type === "";
 
-            // Check for duplicates
-            this.non_unique_options = false;
-            var found = [];
-
-            for (var index in this.details.codes) {
-                var value = this.details.codes[index];
-                if (found.includes(value)) {
-                    this.non_unique_options = true;
-                    break;
-                }
-                found.push(value);
-            }
+            // Duplicates should be prevented by condition on updateSelected()
 
             // Ensure Unit Count is valid:
             if (this.details.unit_count != null) {
                 this.invalid_units = this.details.unit_count <= 0;
                 this.invalid_units_step = this.details.unit_count % 6 !== 0;
             }
-
-            return !this.non_unique_options && !this.invalid_units && !this.invalid_units_step && !this.is_blank;
+            console.log("invalid units: " + this.invalid_units)
+            console.log("invalid units step: " + this.invalid_units_step)
+            console.log("is_blank: " + this.is_blank)
+            return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
         },
+
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
             this.redraw = true;
@@ -519,7 +536,7 @@ Vue.component('rule_course', {
             });
         }
     },
-    template: '#courseRequirementTemplate'
+    template: '#course-list-template'
 });
 
 Vue.component('rule_course_requisite', {

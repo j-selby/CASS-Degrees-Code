@@ -1,5 +1,46 @@
 {% load static %}
 
+{# Recurring template for the selector #}
+<script type="text/x-template" id="course-list-template">
+    <div>
+        <p>My template is being rendered</p>
+        <multiselect
+                :options="myoptions"
+                :value="optionsProxy"
+                @input="updateSelected"
+                :show-labels="true"
+                :multiple="true"
+                :searchable="true"
+                :close-on-select="false"
+                placeholder="Search courses, press esc or tab to close when done"
+                :custom-label="customLabel"
+                track-by="name"
+                :max-height="300"
+                :open-direction="'top'"
+                :loading="showLoadingSpinner"
+                ref="multiselectref"
+        >
+        </multiselect>
+
+        <ul class="resources-list">
+            <template v-for="(resource, index) in selectedResources">
+                <li class="resource-item" :data-index="index">
+                    <div class="resource-info">
+                        <div class="resource-title" :id="index">
+                            <span>[[ resource.code ]] - [[ resource.name ]]</span>
+                        </div>
+                    </div>
+                    <div class="delete-controls" v-on:click.prevent="removeDependency(index)">
+                        <i class="fa fa-times fa-fw"></i>
+                    </div>
+                </li>
+            </template>
+        </ul>
+    </div>
+
+</script>
+
+
 {# Usage: Must pass in a string app_name that is id of the particular widget the app is to be bound to#}
 {# Must include imports below once in the relevant template prior to insertion of a widget #}
 {% comment %}    <script src="{% static "js/vendor/vue.js" %}"></script>
@@ -17,57 +58,21 @@
 
 <h4>Course listing</h4>
 <div id={{ app_name }}>
-    <multiselect
-            :options="options"
-            :value="optionsProxy"
-            @input="updateSelected"
-            :show-labels="true"
-            :multiple="true"
-            :searchable="true"
-            :close-on-select="false"
-            placeholder="Search courses, press esc or tab to close when done"
-            :custom-label="customLabel"
-            track-by="name"
-            :max-height="300"
-            :open-direction="'top'"
-            :loading="showLoadingSpinner"
-            ref="multiselectref"
-            >
-    </multiselect>
-
-    <ul class="resources-list">
-        <template v-for="(resource, index) in selectedResources">
-            <li class="resource-item" :data-index="index">
-                <div class="resource-info">
-                    <div class="resource-title" :id="index">
-                        <span>[[ resource.code ]] - [[ resource.name ]] - [[resource.id]]</span>
-                    </div>
-                </div>
-                <div class="delete-controls" v-on:click.prevent="removeDependency(index)">
-                    <i class="fa fa-times fa-fw"></i>
-                </div>
-            </li>
-        </template>
-    </ul>
+    <courselistwidget
+        v-for="list in lists"
+        :myoptions='masterOptions'
+    ></courselistwidget>
+    <button @click="addCourseSelector()">Add Course List</button>
 
 </div>
 
 <script type="application/javascript">
 
-    API_MODEL_URL = 'api/model/course/'
-
-    new Vue({
-        // modify delimiters to prevent conflict with Django Template Console
-        delimiters: ["[[", "]]"],
-
-        el: '#{{ app_name }}',
-
-        components: {
-            Multiselect: window.VueMultiselect.default
-        },
-
-        data(){
-            return{
+    Vue.component('courselistwidget', {
+        template: '#course-list-template',
+        props:['myoptions'],
+        data() {
+            return {
                 options: [],
                 optionsProxy: [],
                 selectedResources: [],
@@ -75,34 +80,15 @@
             }
         },
 
-        // http element used for constructing API call in courseRequest
-        http: {
-            // Todo: check compatibility against server
-            root: 'http://localhost:8000'
-        },
-
-        // Todo: check whether this is required
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
+        components: {
+            Multiselect: window.VueMultiselect.default
         },
 
         methods: {
-
-            resetHeight(){
-              this.dynamicHeight = 0
-            },
-
-            // Todo check what this is doing
             // The label that will be displayed on the list item
             customLabel(option) {
                 return `${option.code} - ${option.name}`
             },
-
-
-            // todo: check for ways to conceal dropdown until user enters input rather than open above
-
 
             // Update an array of selected values and remove the selected item from the list of available options
             updateSelected(value) {
@@ -130,17 +116,64 @@
 
             },
 
+            // remove the item from the display list and the elements field when x is clicked
+            removeDependency(index) {
+                // when an element is removed from the list, add it back to the options
+                this.selectedResources.splice(index, 1).forEach((element) => {
+                    this.options.push(element)
+                })
+                document.getElementById("id_elements").value = JSON.stringify(this.selectedResources)
+            },
+        },
+        created() {
+            {#console.log("Widget has been created")#}
+            {#this.options = this.myoptions#}
+        },
+    })
+
+    API_MODEL_URL = 'api/model/course/'
+
+    new Vue({
+        // modify delimiters to prevent conflict with Django Template Console
+        delimiters: ["[[", "]]"],
+
+        el: '#{{ app_name }}',
+
+        data(){
+            return {
+                masterOptions: [],
+                optionsProxy: [],
+                selectedResources: [],
+                showLoadingSpinner: false,
+                lists: [],
+            }
+        },
+
+        // http element used for constructing API call in courseRequest
+        http: {
+            // Todo: check compatibility against server
+            root: 'http://localhost:8000'
+        },
+
+        // Todo: check whether this is required
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+
+        methods: {
             courseRequest(value) {
                 this.$http.get(API_MODEL_URL).then((response) => {
 
                     // get all element data
-                    this.options = []
+                    this.masterOptions = []
                     this.selectedResources = []
                     response.body.forEach((object) => {
-                        this.options.push(object)
+                        this.masterOptions.push(object)
                     });
 
-                    this.options.sort(((a, b) => (a.code > b.code) ? 1 : -1))
+                    this.masterOptions.sort(((a, b) => (a.code > b.code) ? 1 : -1))
 
                     this.showLoadingSpinner = false
 
@@ -155,14 +188,12 @@
                 })
             },
 
-            // remove the item from the display list and the elements field when x is clicked
-            removeDependency(index) {
-                // when an element is removed from the list, add it back to the options
-                this.selectedResources.splice(index, 1).forEach((element) => {
-                    this.options.push(element)
+            addCourseSelector() {
+                this.lists.push({
+                    options: this.masterOptions
                 })
-                document.getElementById("id_elements").value = JSON.stringify(this.selectedResources)
             },
+
         },
 
         created() {
