@@ -1,0 +1,112 @@
+{% load static %}
+<div id="createCoursePopup" class="modal" hidden >
+    <div class="modal-background"></div>
+    <div class="wide-modal-card card">
+        <header class="box-header">
+            Create New Course
+        </header>
+        {# Start of form content #}
+        <div class="box-solid box-has-footer">
+            <form id="createCourse" class="anuform" action="/staff/create/course/" method="POST" autocomplete="off">
+                {% csrf_token %}
+                <p id="createCourseForm" class="form-group"></p>
+                <p id="createCourseFormMore" class="form-group" hidden></p>
+                <input name="rules" value="{}" hidden />
+            </form>
+        </div>
+        {# End of form content #}
+        <footer class="box-solid text-right">
+            <input onclick="toggleCourseCreationPopup()" type="button" class="left btn-uni-grad btn-small" value="Close" />
+            <input onclick="toggleCourseCreationMore()" id="createCourseBtnMore" type="button" class="btn-uni-grad btn-small" value="Show More" />
+            <input id="createCourseBtn" type="submit" class="btn-uni-grad btn-small" value="Create Course" />
+        </footer>
+    </div>
+</div>
+
+<script src="{% static 'js/vendor/jquery-3.4.1.js' %}" type="application/javascript"></script>
+
+<script type="application/javascript">
+    // Takes a html string representing the course model
+    function makeForm(formData) {
+        // Creates a dummy element that can be searched as regular html can
+        var data = document.createElement('html');
+        data.innerHTML = formData;
+
+        // If there are no input tags (the input was not a form), print the success message and render a blank form
+        if (data.getElementsByTagName("input").length === 0){
+            // Ask the course page for the blank form
+            $.get("/staff/create/course/?type=no_ui", function (data) {
+                makeForm(data);
+
+                // Add the received message at the beginning of the form
+                var courseForm = document.getElementById('createCourseForm');
+                courseForm.innerHTML = "<div class='msg-success'>" + formData + "</div>" + courseForm.innerHTML;
+
+                // Re-render any vue components (Assumes there are vue components)
+                redrawVueComponents();
+            });
+        }
+        else {
+            // Define the html text that should appear in the regular form and more form sections
+            var newForm = "";
+            var moreForm = "";
+
+            // If a errorlist appears outside a field, render it at the beginning
+            if (data.getElementsByClassName("errorlist nonfield").length > 0)
+                newForm += "<div class='msg-error'>" + data.getElementsByClassName("errorlist nonfield")[0].innerHTML + "</div>";
+
+            // Render all input and select elements
+            for (var elm of data.querySelectorAll("input,select")) {
+                // Get the input's name attribute and html text
+                var name = elm.getAttribute("name");
+                var input = elm.outerHTML;
+
+                // Get the input's label and any errors it contains
+                var errors = "";
+                var label;
+                while (elm.tagName !== "LABEL") {
+                    elm = elm.previousSibling;
+                    if (elm.className === "errorlist")
+                        errors = "<div class='msg-error inline-error'>" + elm.childNodes[0].innerHTML + "</div>";
+                }
+                label = elm.outerHTML;
+
+                // Prioritise the code, name, units, and offeredYears fields
+                if (["code", "name", "units", "offeredYears"].includes(name))
+                    newForm += "<p class='form-group'>" + label + input + "</p>" + errors;
+                // If the input isn't the rules input, add it to the 'more' section
+                else if (name !== "rules")
+                    moreForm += "<p class='form-group'>" + label + input + "</p>" + errors;
+            }
+
+            // Set both sections in the original form
+            document.getElementById('createCourseForm').innerHTML = newForm;
+            document.getElementById('createCourseFormMore').innerHTML = moreForm;
+        }
+    }
+
+    // Toggle the presence of the course creation popup
+    function toggleCourseCreationPopup() {
+        var toggle = document.getElementById("createCoursePopup");
+        toggle.hidden = !toggle.hidden;
+    }
+
+    // Toggle the more button to see "more" or "less"
+    function toggleCourseCreationMore() {
+        var toggle = document.getElementById("createCourseFormMore");
+        toggle.hidden = !toggle.hidden;
+
+        if (toggle.hidden)
+            document.getElementById("createCourseBtnMore").value = "Show More";
+        else
+            document.getElementById("createCourseBtnMore").value = "Show Less";
+    }
+
+    // Set the submit button to send a (non-refreshing) post request and make the form out of the response
+    $("#createCourseBtn").click(function(){
+        $.post("/staff/create/course/?type=no_ui", $('#createCourse').serialize(), makeForm);
+    });
+
+    // Initialise a blank form for the user
+    $.get("/staff/create/course/?type=no_ui", function (data) { makeForm(data); });
+</script>

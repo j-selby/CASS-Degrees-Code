@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from api.models import CourseModel, SubplanModel, ProgramModel
 from api.views import search
 
-from django.http import HttpResponseNotFound, HttpRequest
+from django.http import HttpResponseNotFound, HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 
 from ui.forms import EditCourseFormSnippet
@@ -18,11 +18,24 @@ list_course_url = staff_url_prefix + "list/?view=Course"
 
 @login_required
 def create_course(request):
-    duplicate = request.GET.get('duplicate', 'false')
-    if duplicate == 'true':
-        duplicate = True
-    elif duplicate == 'false':
-        duplicate = False
+    duplicate = request.GET.get('duplicate') == 'true'
+
+    # If the user is requesting a form without the GUI, simply give the raw django form model as html
+    if request.GET.get('type') == 'no_ui':
+        # Render the error/success messages given by the form when submitting
+        if request.method == 'POST':
+            form = EditCourseFormSnippet(request.POST)
+
+            if form.is_valid():
+                form.save()
+                return HttpResponse(str('Successfully Added a New Course: ' + form['code'].value() + '!'))
+            else:
+                return HttpResponse(str(form))
+        # Render a blank form
+        else:
+            form = EditCourseFormSnippet()
+            return HttpResponse(str(form))
+
 
     # Initialise instance with an empty string so that we don't get a "may be referenced before assignment" error below
     instance = ""
