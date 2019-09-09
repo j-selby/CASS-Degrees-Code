@@ -6,16 +6,21 @@
 // (Global requirement) inner container: Dynamic field inside a container containing options depending
 //                                       on what rule type was selected.
 
-// Handler for different Vue components, redirecting to the right component
-var min_max = {
+Vue.component('global_requirement_general', {
     props: {
         "details": {
             type: Object,
 
             validator: function (value) {
                 // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("minmax")) {
+                    value.minmax = "min";
+                }
                 if (!value.hasOwnProperty("unit_count")) {
                     value.unit_count = 0;
+                }
+                if (!value.hasOwnProperty("subject_area")) {
+                    value.subject_area = 'any';
                 }
                 if (!value.hasOwnProperty("courses1000Level")) {
                     value.courses1000Level = false;
@@ -52,23 +57,43 @@ var min_max = {
     data: function() {
         return {
             "invalid_units": false,
-            "invalid_units_step": false
+            "invalid_units_step": false,
+            "subject_areas": []
         }
     },
     created: function() {
-        this.check_options();
+        var rule = this;
+
+        var request = new XMLHttpRequest();
+
+        request.addEventListener("load", function() {
+            rule.subject_areas = JSON.parse(request.response);
+            var subject_areas = [];
+            for (var index in rule.subject_areas) {
+                let subject_area = rule.subject_areas[index]["code"].slice(0,4);
+                // creates a unique list of subject_areas
+                if (subject_areas.indexOf(subject_area) === -1) subject_areas.push(subject_area);
+            }
+            rule.subject_areas = subject_areas;
+            rule.subject_areas.sort(
+                function(a, b){
+                    return a.localeCompare(b)
+                }
+            );
+            rule.check_options();
+        });
+        request.open("GET", "/api/search/?select=code&from=course");
+        request.send();
     },
     methods: {
         check_options: function() {
             this.invalid_units = this.details.unit_count <= 0;
             this.invalid_units_step = this.details.unit_count % 6 !== 0;
+            this.is_blank = this.details.unit_count === "";
         }
     },
-    template: '#minMaxUnitsTemplate'
-};
-
-Vue.component('global_requirement_min', min_max);
-Vue.component('global_requirement_max', min_max);
+    template: '#generalGlobalRequirementTemplate'
+});
 
 Vue.component('global_requirement', {
     props: {
@@ -113,7 +138,7 @@ Vue.component('global_requirement_container', {
         add_global_requirement: function() {
             this.show_add_a_global_requirement_modal = false;
             this.global_requirements.push({
-                type: this.add_a_global_requirement_modal_option,
+                type: "general",
             });
             this.do_redraw();
         },
@@ -145,18 +170,14 @@ function handleProgram() {
 
 // Translation table between internal names for components and human readable ones.
 const GLOBAL_REQUIREMENT_NAMES = {
-    'min': "Minimum Units from Year(s)",
-    'max': "Maximum Units from Year(s)",
+    'general': "Global Requirement"
 };
 
 const GLOBAL_REQUIREMENT_HELP = {
-    'min': "Enforces for an entire degree that a minimum amount of units *must* come from a particular " +
-           "set of course levels - e.g. a minimum of 6 units of 1000-level courses over an entire program, " +
-           "and 12 from 2000-level. Multiple of these global requirements may exist (e.g. if different unit counts " +
-           "are needed).",
-    'max': "Enforces for an entire degree that a maximum amount of units from a particular set of course levels " +
-           "will exist - e.g. a maximum of 6 units of 1000-level courses over an entire program, and 12 from " +
-           "2000-level. Multiple of these global requirements may exist (e.g. if different unit counts are needed).",
+    'general': "Enforces for an entire degree that a maximum or minimum amount of units must come from a particular " +
+            "set of course levels or from particular subject areas - e.g. a minimum of 60 units must come from " +
+            "completion of 3000 and 4000 level courses from the ARTV subject area. Multiple of these global " +
+            "requirements may exist (e.g. if different unit counts are needed).",
 };
 
 var globalRequirementsApp = new Vue({
