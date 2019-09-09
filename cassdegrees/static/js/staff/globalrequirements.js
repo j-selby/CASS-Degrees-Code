@@ -89,7 +89,12 @@ Vue.component('global_requirement_general', {
         check_options: function() {
             this.invalid_units = this.details.unit_count <= 0;
             this.invalid_units_step = this.details.unit_count % 6 !== 0;
-            this.is_blank = this.details.unit_count === "";
+            this.units_is_blank = this.details.unit_count === "";
+
+            this.is_blank = !this.details.courses1000Level && !this.details.courses2000Level && !this.details.courses3000Level
+                && !this.details.courses4000Level && !this.details.courses5000Level && !this.details.courses6000Level
+                && !this.details.courses7000Level && !this.details.courses8000Level && !this.details.courses9000Level
+                && this.details.subject_area === "any";
         }
     },
     template: '#generalGlobalRequirementTemplate'
