@@ -53,7 +53,7 @@ input.btn-uni-grad:hover {
 /* Make textarea look interactive by default, increase font-size */
 .anuform textarea {
     background: #FFF;
-    font-size: 120%;
+    font-size: 16px;
     border: 1px solid #7C7C7C;
 }
 
