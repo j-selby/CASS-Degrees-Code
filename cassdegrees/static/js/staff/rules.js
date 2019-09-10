@@ -467,13 +467,29 @@ Vue.component('rule_course', {
 
             rule.list_types = LIST_TYPES;
             rule.check_options();
+
+            // if there are already selected courses in details.codes when the component is loaded load,
+            // remove them from the options - must be done after courses response received
+            if (!(rule.details.codes.length === 0)) {
+                for (let i = 0; i < rule.details.codes.length; i++){
+                    for (let x = 0; x < rule.courses.length; x++){
+                        if (rule.courses[x].code === rule.details.codes[i].code) {
+                            rule.courses.splice(x, 1)
+                            break;
+                        }
+                    }
+                }
+            }
         });
+
         request.open("GET", "/api/search/?select=code,name&from=course");
         request.send();
 
     },
+
     methods: {
-         // The label that will be displayed on the list item
+        // The label that will be displayed on the list item
+        // Trim the label if it exceeds 70 chars
         customLabel(option) {
             return `${option.code} - ${option.name}`
         },
@@ -488,8 +504,7 @@ Vue.component('rule_course', {
                 }
 
                 // remove the selected course from the list of available courses to add
-                // todo: initialise so that already selected courses are not brought in from API call
-                resourceID = this.courses.indexOf(resource)
+                let resourceID = this.courses.indexOf(resource)
                 this.courses.splice(resourceID, 1)
             })
 
@@ -521,9 +536,7 @@ Vue.component('rule_course', {
                 this.invalid_units = this.details.unit_count <= 0;
                 this.invalid_units_step = this.details.unit_count % 6 !== 0;
             }
-            console.log("invalid units: " + this.invalid_units)
-            console.log("invalid units step: " + this.invalid_units_step)
-            console.log("is_blank: " + this.is_blank)
+
             return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
         },
 
