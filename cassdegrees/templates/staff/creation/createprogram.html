@@ -104,6 +104,11 @@
     {% include "widgets/staff/coursecreatepopup.html" %}
 
     <script>
+        function submit_course_form(){
+            handleRules();
+            document.getElementById('mainForm').submit();
+        }
+
         function submit_form(form_action, redirect) {
             if (handleProgram() && handleRules()) {
                 document.getElementById('mainForm').action.value = form_action;

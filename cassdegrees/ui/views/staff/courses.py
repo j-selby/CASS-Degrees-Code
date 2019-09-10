@@ -16,6 +16,21 @@ staff_url_prefix = "/staff/"
 list_course_url = staff_url_prefix + "list/?view=Course"
 
 
+def handle_course_subform(form_str=None):
+    if not form_str:
+        return {"form": EditCourseFormSnippet(), "hidden": True, "message": ""}
+    else:
+        form = EditCourseFormSnippet(json.loads(form_str))
+
+        if form.is_valid():
+            form.save()
+            return {"form": EditCourseFormSnippet(),
+                    "hidden": False,
+                    "message": 'Successfully Added a New Course: ' + form['code'].value() + '!'}
+        else:
+            return {"form": form, "hidden": False, "message": ""}
+
+
 @login_required
 def create_course(request):
     duplicate = request.GET.get('duplicate') == 'true'
