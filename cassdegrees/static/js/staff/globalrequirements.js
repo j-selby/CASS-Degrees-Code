@@ -100,6 +100,8 @@ Vue.component('global_requirement_general', {
                 && !this.details.courses4000Level && !this.details.courses5000Level && !this.details.courses6000Level
                 && !this.details.courses7000Level && !this.details.courses8000Level && !this.details.courses9000Level
                 && this.details.subject_area === "any";
+
+            return !this.is_invalid && !this.invalid_units && !this.invalid_units_step && !this.units_is_blank;
         }
     },
     template: '#generalGlobalRequirementTemplate'
@@ -172,10 +174,15 @@ Vue.component('global_requirement_container', {
  * Submits the program form.
  */
 function handleProgram() {
+    var valid = true;
+    for (var index in globalRequirementsApp.$children[0].$children){
+        valid = valid && globalRequirementsApp.$children[0].$children[index].$children[0].check_options();
+    }
+
     // Serialize list structures - this doesn't translate well over POST requests normally.
     document.getElementById("globalRequirements").value = JSON.stringify(globalRequirementsApp.global_requirements);
 
-    return true;
+    return valid;
 }
 
 // Translation table between internal names for components and human readable ones.
