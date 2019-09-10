@@ -15,7 +15,7 @@
             <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
             <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
             <div class="msg-error" v-if="units_is_blank">Unit count must be filled in!</div>
-            <div class="msg-error" v-if="is_blank">Subject area cannot be "Any" while no year levels are selected!</div>
+            <div class="msg-error" v-if="is_invalid">Subject area cannot be "Any" while no year levels are selected!</div>
 
             <p>
                 Students must complete a
@@ -99,6 +99,11 @@
                     </tr>
                 </tbody>
             </table>
+
+            <p>
+                Additional custom requirements (Optional):
+                <textarea v-model="details.customRequirements" v-on:change="check_options" style="width: 100%" placeholder="Example: Courses may also come from any majors listed in the Bachelor of Music." aria-required="true"></textarea>
+            </p>
         </fieldset>
     </div>
 </script>

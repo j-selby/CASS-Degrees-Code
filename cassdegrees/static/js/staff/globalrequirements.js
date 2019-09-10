@@ -49,6 +49,9 @@ Vue.component('global_requirement_general', {
                 if (!value.hasOwnProperty("courses9000Level")) {
                     value.courses9000Level = false;
                 }
+                if (!value.hasOwnProperty("customRequirements")) {
+                    value.customRequirements = "";
+                }
 
                 return true;
             }
@@ -58,6 +61,8 @@ Vue.component('global_requirement_general', {
         return {
             "invalid_units": false,
             "invalid_units_step": false,
+            "units_is_blank": false,
+            "is_invalid": false,
             "subject_areas": []
         }
     },
@@ -91,7 +96,7 @@ Vue.component('global_requirement_general', {
             this.invalid_units_step = this.details.unit_count % 6 !== 0;
             this.units_is_blank = this.details.unit_count === "";
 
-            this.is_blank = !this.details.courses1000Level && !this.details.courses2000Level && !this.details.courses3000Level
+            this.is_invalid = !this.details.courses1000Level && !this.details.courses2000Level && !this.details.courses3000Level
                 && !this.details.courses4000Level && !this.details.courses5000Level && !this.details.courses6000Level
                 && !this.details.courses7000Level && !this.details.courses8000Level && !this.details.courses9000Level
                 && this.details.subject_area === "any";

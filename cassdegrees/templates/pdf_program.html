@@ -48,6 +48,10 @@
                         {% elif rule.minmax == "max" %}
                             <b>maximum</b>)
                         {% endif %}
+                        {% if rule.customRequirements != "" %}
+                            <br>
+                            {{ rule.customRequirements }}
+                        {% endif %}
                     </p>
                 {% else %}
                     ERROR: Unknown global requirement type "{{ rule.type }}"!

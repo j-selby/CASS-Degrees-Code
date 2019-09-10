@@ -69,6 +69,9 @@
                     {% else %}
                         courses from the subject area {{ rule.subject_area }}.
                     {% endif %}
+                    {% if rule.customRequirements != "" %}
+                        {{ rule.customRequirements }}
+                    {% endif %}
                 </p>
             {% endif %}
         {% endfor %}
