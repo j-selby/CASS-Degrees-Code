@@ -468,3 +468,8 @@ select.text{
 .custom-checkbox {
     margin-left: 0 !important;
 }
+
+/* Fix scrollbar with icon checkboxes on Chrome */
+.pretty .state label {
+    overflow: hidden;
+}
