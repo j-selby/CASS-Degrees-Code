@@ -874,6 +874,8 @@ Vue.component('rule', {
         var siblings = app.$children[0].$children;
         var last = siblings[siblings.length-1];
 
+        // If this is the last element in the group and something hasn't been removed (i.e something has been added)
+        // then turn show off and on to trigger a fade-in effect and scroll to the element.
         if (this===last && !this.$parent.removed){
             this.show=false;
             this.$nextTick(function() {

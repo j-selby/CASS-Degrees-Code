@@ -125,12 +125,14 @@ Vue.component('global_requirement', {
         var siblings = globalRequirementsApp.$children[0].$children;
         var last = siblings[siblings.length-1];
 
+        // If this is the last element in the group and something hasn't been removed (i.e something has been added)
+        // then turn show off and on to trigger a fade-in effect and scroll to the element.
         if (this===last && !this.$parent.removed){
             this.show=false;
             this.$nextTick(function() {
                this.show=true;
             });
-            last.$el.scrollIntoView({behavior: "smooth"})
+            last.$el.scrollIntoView({behavior: "smooth"}) // DELETE THIS LINE TO TEST WITHOUT SCROLL
         }
     },
     template: '#globalRequirementTemplate'
