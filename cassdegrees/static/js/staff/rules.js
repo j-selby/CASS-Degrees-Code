@@ -866,7 +866,20 @@ Vue.component('rule', {
         return {
             component_names: ALL_COMPONENT_NAMES,
             component_help: ALL_COMPONENT_HELP,
-            show_help: false
+            show_help: false,
+            show: true,
+        }
+    },
+    mounted: function() {
+        var siblings = app.$children[0].$children;
+        var last = siblings[siblings.length-1];
+
+        if (this===last && !this.$parent.removed){
+            this.show=false;
+            this.$nextTick(function() {
+               this.show=true;
+            });
+            last.$el.scrollIntoView({behavior: "smooth"})
         }
     },
     methods:{
@@ -903,7 +916,10 @@ Vue.component('rule_container', {
             component_names: null,
 
             // Forces the element to re-render, if mutable events occurred
-            redraw: false
+            redraw: false,
+
+            // A flag that says whether an item has just been removed
+            removed: false
         }
     },
     methods: {
@@ -917,6 +933,13 @@ Vue.component('rule_container', {
         remove: function(index) {
             this.rules.splice(index, 1);
             this.do_redraw();
+
+            this.removed = true;
+            this.$nextTick(() => {
+                this.$nextTick(() => {
+                    this.removed = false;
+                });
+            });
         },
         check_options: function() {
             var valid = true;

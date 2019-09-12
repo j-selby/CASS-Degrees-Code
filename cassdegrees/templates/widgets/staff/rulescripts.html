@@ -193,7 +193,8 @@
 </script>
 
 <script type="text/x-template" id="ruleTemplate">
-    <div class="card">
+    <transition name="fade">
+    <div class="card" v-if="show">
         <header class="box-header">
             <p class="card-header-title">
                 {{ component_names[details.type] }}
@@ -223,5 +224,6 @@
             </div>
         </div>
     </div>
+    </transition>
 </script>
 {% endverbatim %}
