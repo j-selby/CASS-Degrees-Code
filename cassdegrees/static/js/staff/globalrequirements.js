@@ -117,7 +117,20 @@ Vue.component('global_requirement', {
         return {
             component_names: GLOBAL_REQUIREMENT_NAMES,
             component_help: GLOBAL_REQUIREMENT_HELP,
-            show_help: false
+            show_help: false,
+            show: true,
+        }
+    },
+    mounted: function() {
+        var siblings = globalRequirementsApp.$children[0].$children;
+        var last = siblings[siblings.length-1];
+
+        if (this===last && !this.$parent.removed){
+            this.show=false;
+            this.$nextTick(function() {
+               this.show=true;
+            });
+            last.$el.scrollIntoView({behavior: "smooth"})
         }
     },
     template: '#globalRequirementTemplate'
@@ -143,7 +156,10 @@ Vue.component('global_requirement_container', {
             component_names: GLOBAL_REQUIREMENT_NAMES,
 
             // Forces the element to re-render, if mutable events occurred
-            redraw: false
+            redraw: false,
+
+            // A flag that says whether an item has just been removed
+            removed: false
         }
     },
     methods: {
@@ -157,6 +173,13 @@ Vue.component('global_requirement_container', {
         remove: function(index) {
             this.global_requirements.splice(index, 1);
             this.do_redraw();
+
+            this.removed = true;
+            this.$nextTick(() => {
+                this.$nextTick(() => {
+                    this.removed = false;
+                });
+            });
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
