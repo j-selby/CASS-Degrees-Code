@@ -15,3 +15,8 @@
     transition: opacity 1s;
     opacity: 0;
 }
+.active-rule{
+    border-left: 2px solid green;
+    margin: 0 0 0 -6px;
+    padding: 0 0 0 4px;
+}
