@@ -1,12 +1,16 @@
+/* Credit: https://medium.com/@msanathkumar/understanding-transitions-and-animations-in-vuejs-115a0f5c6fbc */
 .fade-enter{
     opacity: 0;
 }
+
 .fade-enter-active{
     transition: opacity 1s;
 }
+
 .fade-leave{
     /* opacity: 1; */
 }
+
 .fade-leave-active{
     transition: opacity 1s;
     opacity: 0;
