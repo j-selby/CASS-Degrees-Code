@@ -831,8 +831,18 @@ Vue.component('rule_either_or', {
             this.details.either_or[group].splice(index, 1);
             this.do_redraw();
         },
+        duplicate_rule: function(index, group) {
+            // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
+            this.details.either_or[group].splice(index, 0, JSON.parse(JSON.stringify(this.details.either_or[group][index])));
+            this.do_redraw();
+        },
         remove_group: function(group) {
             this.details.either_or.splice(group, 1);
+            this.do_redraw();
+        },
+        duplicate_group: function(group) {
+            // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
+            this.details.either_or.splice(group, 0, JSON.parse(JSON.stringify(this.details.either_or[group])));
             this.do_redraw();
         },
         check_options: function() {
@@ -916,6 +926,11 @@ Vue.component('rule_container', {
         },
         remove: function(index) {
             this.rules.splice(index, 1);
+            this.do_redraw();
+        },
+        duplicate_rule: function(index) {
+            // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
+            this.rules.splice(index, 0, JSON.parse(JSON.stringify(this.rules[index])));
             this.do_redraw();
         },
         check_options: function() {
