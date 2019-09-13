@@ -72,7 +72,6 @@
 
             <input type="button" v-on:click="add_subplan()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
         </div>
-
         <div v-else>
             <p>
                 There are currently no Subplans added to the system. Please create Subplans
@@ -117,7 +116,6 @@
 
             <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
         </div>
-
         <div v-else>
             <p>
                 There are currently no courses added to the system. Please create courses
@@ -133,21 +131,34 @@
 
 <script type="text/x-template" id="courseRequisiteTemplate">
     <fieldset v-if="!redraw">
-        <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
-        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
 
-        <p>
-            Students must have completed the following courses:
-        </p>
+        <div v-if="courses.length != 0">
+            <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+            <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
 
-        <div v-for="(code, index) in details.codes">
-            <select v-model="details.codes[index]" v-on:change="check_options" required>
-                <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
-            </select>
-            <input v-if="details.codes.length > 1" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            <p>
+                Students must have completed the following courses:
+            </p>
+
+            <div v-for="(code, index) in details.codes">
+                <select v-model="details.codes[index]" v-on:change="check_options" required>
+                    <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
+                </select>
+                <input v-if="details.codes.length > 1" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            </div>
+
+            <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
+        </div>
+        <div v-else>
+            <p>
+                There are currently no courses added to the system. Please create courses
+                <a href="#">here</a>
+                or bulk upload courses
+                <a href="#">here</a>
+                first before creating this rule.
+            </p>
         </div>
 
-        <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
     </fieldset>
 </script>
 
