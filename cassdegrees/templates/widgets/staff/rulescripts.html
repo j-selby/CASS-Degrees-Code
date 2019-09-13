@@ -19,15 +19,7 @@
 
             <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
          </div>
-         <div v-else>
-             <p>
-                This Requisite requires Courses in the system. Please create Courses
-                <a href="/staff/create/course/">here</a>
-                or bulk upload Courses
-                <a href="/staff/bulk_upload/">here</a>
-                first before creating this Requisite.
-            </p>
-         </div>
+         <div v-else v-html="info_msg"></div>
 
     </fieldset>
 </script>
@@ -49,13 +41,7 @@
                 </select>
             </div>
         </div>
-        <div v-else>
-            <p>
-                This Requisite requires Programs in the system. Please create Programs
-                <a href="/staff/create/program/">here</a>
-                first before creating this Requisite.
-            </p>
-        </div>
+        <div v-else v-html="info_msg"></div>
 
     </fieldset>
 </script>
@@ -91,13 +77,7 @@
 
             <input type="button" v-on:click="add_subplan()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
         </div>
-        <div v-else>
-            <p>
-                This Requisite requires Subplans in the system. Please create Subplans
-                <a href="/staff/create/subplan/">here</a>
-                first before creating this Requisite.
-            </p>
-        </div>
+        <div v-else v-html="info_msg"></div>
 
     </fieldset>
 </script>
@@ -135,15 +115,7 @@
 
             <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
         </div>
-        <div v-else>
-            <p>
-                This Requisite requires Courses in the system. Please create Courses
-                <a href="/staff/create/course/">here</a>
-                or bulk upload Courses
-                <a href="/staff/bulk_upload/">here</a>
-                first before creating this Requisite.
-            </p>
-        </div>
+        <div v-else v-html="info_msg"></div>
 
     </fieldset>
 </script>
@@ -168,15 +140,7 @@
 
             <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
         </div>
-        <div v-else>
-            <p>
-                This Requisite requires Courses in the system. Please create Courses
-                <a href="/staff/create/course/">here</a>
-                or bulk upload Courses
-                <a href="/staff/bulk_upload/">here</a>
-                first before creating this Requisite.
-            </p>
-        </div>
+        <div v-else v-html="info_msg"></div>
 
     </fieldset>
 </script>
@@ -204,15 +168,7 @@
                 subject area.
             </p>
         </div>
-        <div v-else>
-            <p>
-                This Requisite requires Courses in the system. Please create Courses
-                <a href="/staff/create/course/">here</a>
-                or bulk upload Courses
-                <a href="/staff/bulk_upload/">here</a>
-                first before creating this Requisite.
-            </p>
-        </div>
+        <div v-else v-html="info_msg"></div>
 
     </fieldset>
 </script>
