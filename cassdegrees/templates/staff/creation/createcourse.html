@@ -28,8 +28,8 @@
     {% if edit %}
         <form method="post">
             {% csrf_token %}
-            <input type="hidden" id="id" name="id" value="{{ request.GET.id }}">
-            <div class="full">
+            <input type="hidden" name="id" value="{{ request.GET.id }}">
+            <div class="fullwidth auto-overflow">
                 <input class="btn-uni-grad btn-small right" type ="submit" formaction="/staff/delete/courses/" value="Delete&#128465">
             </div>
         </form>
