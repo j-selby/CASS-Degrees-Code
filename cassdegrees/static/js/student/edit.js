@@ -55,6 +55,7 @@ function setupPopup() {
         return;
     }
 
+    // Plan link implies these:
     var copy = document.getElementById("copy_to_clipboard");
     var close = document.getElementById("close_modal");
 
