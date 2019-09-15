@@ -24,6 +24,16 @@
     {% for error in form.non_field_errors %}
          <p class="msg-error">{{ error }}</p>
     {% endfor %}
+    {% if edit %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
+            <input type="hidden" id="id" name="id" value="{{ request.GET.id }}">
+            <div class="full">
+                <input class="btn-uni-grad btn-small right" type ="submit" formaction="/staff/delete/courses/" value="Delete&#128465">
+            </div>
+        </form>
+    {% endif %}
 
     <form class="anuform" id="mainForm" action="" method="post" onsubmit="return false;" autocomplete="off">
         {% csrf_token %}
