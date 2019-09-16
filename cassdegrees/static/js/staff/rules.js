@@ -452,11 +452,13 @@ Vue.component('rule_course', {
 
     data: function() {
         return {
-            "courses": [],
+            "courses": [],          // used to store available options for display - details.codes is used for database storage of selected course codes
             "list_types": [],
-            "optionsProxy": [],
-            "lists": [],
-            "tempStore": [],
+            "selected_courses": [],
+            "coursename_dict": {},  // used to store and find course names so background database not affected by selections
+            "optionsProxy": [],     // required prop, default behaviour to display selection tags
+            "lists": [],            // stores database lists for display if required
+            "tempStore": [],        // holds course options when list selection is in use
             "showLoadingSpinner": false,
             "info_msg": INFO_MSGS['course'],
 
@@ -473,11 +475,11 @@ Vue.component('rule_course', {
         }
     },
     created: function() {
-        // Javascript has the best indirection...
         var rule = this;
 
         var request = new XMLHttpRequest();
 
+        // add available courses
         request.addEventListener("load", function() {
             rule.courses = JSON.parse(request.response);
             rule.courses.sort(
@@ -485,6 +487,11 @@ Vue.component('rule_course', {
                     return a['code'].localeCompare(b['code'])
                 }
             );
+
+            // populate a name dictionary to reconcile selected codes with names without an additional API call
+            rule.courses.forEach((courseObj) => {
+                rule.coursename_dict[courseObj.code] = courseObj.name
+            });
 
             rule.list_types = LIST_TYPES;
             rule.check_options();
@@ -494,8 +501,11 @@ Vue.component('rule_course', {
             if (!(rule.details.codes.length === 0)) {
                 for (let i = 0; i < rule.details.codes.length; i++){
                     for (let x = 0; x < rule.courses.length; x++){
-                        if (rule.courses[x].code === rule.details.codes[i].code) {
-                            rule.courses.splice(x, 1)
+                        if (rule.courses[x].code === rule.details.codes[i]) {
+                            rule.courses.splice(x, 1).forEach(course => {
+                                rule.selected_courses.push(course)
+                            });
+                            // rule.selected_courses.push(rule.courses.splice(x, 1))
                             break;
                         }
                     }
@@ -509,7 +519,7 @@ Vue.component('rule_course', {
     },
 
     methods: {
-        // The label that will be displayed on the list item
+        // Returns label for multiselect drop down, label for dynamic list beneath generated separately
         // Trim the label if it exceeds 70 chars
         customLabel(option) {
             if (this.is_list_search) {
@@ -526,9 +536,8 @@ Vue.component('rule_course', {
             // preserve the list of course options
             this.tempStore = this.courses;
 
-            // Javascript has the best indirection...
+            // get available lists from database
             var rule = this;
-
             var request = new XMLHttpRequest();
 
             request.addEventListener("load", function () {
@@ -552,12 +561,14 @@ Vue.component('rule_course', {
             if (this.is_list_search) {
                 value.forEach((list) => {
                     list.elements.forEach((course) => {
-                        this.details.codes.push(course)
+                        this.details.codes.push(course.code)
 
                         // if a course is added through a list, remove it from the temporary store of courses
                         for (let i = 0; i < this.tempStore.length; i++) {
                             if (this.tempStore[i].code === course.code) {
-                                this.tempStore.splice(i, 1);
+                                this.tempStore.splice(i, 1).forEach(option => {
+                                    this.selected_courses.push(option);
+                                });
                                 break;
                             }
                         }
@@ -574,11 +585,13 @@ Vue.component('rule_course', {
             } else {
                 value.forEach((resource) => {
                     // Adds selected resources to array and prevents duplicates
-                    if (!this.details.codes.some(element => element.code === resource.code)) {
-                        this.details.codes.push(resource)
+                    if (!this.details.codes.some(code => code === resource.code)) {
+                        this.selected_courses.push(resource)
+                        this.details.codes.push(resource.code)
+                        this.selected_courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
                         this.details.codes.sort((a, b) => (a.code > b.code) ? 1 : -1)
                     }
-
+                    // todo check what's happening here it could be dodge
                     // remove the selected course from the list of available courses to add
                     let resourceID = this.courses.indexOf(resource)
                     this.courses.splice(resourceID, 1)
@@ -591,10 +604,20 @@ Vue.component('rule_course', {
 
         // remove the item from the display list and the elements field when x is clicked
         // index is the index from the details.codes array
+        // remove code details.codes
         removeDependency(index) {
-            this.details.codes.splice(index, 1).forEach((element) => {
-                this.courses.push(element)
-            })
+            this.selected_courses.splice(index, 1).forEach((course) => {
+                console.log("attempting to delete: " + course)
+                this.courses.push(course)
+
+                // find and remove code from details.codes
+                for (let i = 0; i < this.details.codes.length; i++){
+                    if (course.code === this.details.codes[i]){
+                        this.details.codes.splice(i, 1);
+                        break;
+                    }
+                }
+            });
 
             this.check_options();
             this.do_redraw();
