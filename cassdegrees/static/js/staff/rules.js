@@ -409,6 +409,8 @@ Vue.component('rule_subplan', {
     template: '#subplanRuleTemplate'
 });
 
+// ------------------------------------------------------------------------------------------------------------------//
+
 Vue.component('rule_course', {
     props: {
         "details": {
@@ -440,6 +442,8 @@ Vue.component('rule_course', {
             "courses": [],
             "list_types": [],
             "optionsProxy": [],
+            "lists": [],
+            "tempStore": [],
             "showLoadingSpinner": false,
 
             // Display related warnings if true
@@ -447,6 +451,9 @@ Vue.component('rule_course', {
             "invalid_units": false,
             "invalid_units_step": false,
             "is_blank": false,
+
+            // Track adding list
+            "is_list_search": false,
 
             "redraw": false
         }
@@ -491,22 +498,78 @@ Vue.component('rule_course', {
         // The label that will be displayed on the list item
         // Trim the label if it exceeds 70 chars
         customLabel(option) {
-            return `${option.code} - ${option.name}`
+            if (this.is_list_search) {
+                return `${option.name} - ${option.year}`
+            } else {
+                return `${option.code} - ${option.name}`
+            }
+        },
+
+        addList() {
+            // track that the input has changed to list mode
+            this.is_list_search = true;
+
+            // preserve the list of course options
+            this.tempStore = this.courses;
+
+            // Javascript has the best indirection...
+            var rule = this;
+
+            var request = new XMLHttpRequest();
+
+            request.addEventListener("load", function () {
+                rule.lists = JSON.parse(request.response);
+                rule.lists.sort(
+                    function (a, b) {
+                        return a['name'].localeCompare(b['name'])
+                    }
+                );
+                rule.courses = rule.lists
+            });
+
+            request.open("GET", "/api/search/?select=name,year,elements&from=list");
+            request.send();
+
         },
 
         // Update an array of selected values and remove the selected item from the list of available options
+        // Will distinguish between adding an existing list and adding a course
         updateSelected(value) {
-            value.forEach((resource) => {
-                // Adds selected resources to array and prevents duplicates
-                if (!this.details.codes.some(element => element.code === resource.code)){
-                    this.details.codes.push(resource)
-                    this.details.codes.sort((a, b) => (a.code > b.code) ? 1 : -1)
-                }
+            if (this.is_list_search) {
+                value.forEach((list) => {
+                    list.elements.forEach((course) => {
+                        this.details.codes.push(course)
 
-                // remove the selected course from the list of available courses to add
-                let resourceID = this.courses.indexOf(resource)
-                this.courses.splice(resourceID, 1)
-            })
+                        // if a course is added through a list, remove it from the temporary store of courses
+                        for (let i = 0; i < this.tempStore.length; i++) {
+                            if (this.tempStore[i].code === course.code) {
+                                this.tempStore.splice(i, 1);
+                                break;
+                            }
+                        }
+                    })
+                });
+
+                // switch off list mode
+                this.is_list_search = false;
+
+                // reset search box to courses and clear tempStore
+                this.courses = this.tempStore;
+                this.tempStore = []
+
+            } else {
+                value.forEach((resource) => {
+                    // Adds selected resources to array and prevents duplicates
+                    if (!this.details.codes.some(element => element.code === resource.code)) {
+                        this.details.codes.push(resource)
+                        this.details.codes.sort((a, b) => (a.code > b.code) ? 1 : -1)
+                    }
+
+                    // remove the selected course from the list of available courses to add
+                    let resourceID = this.courses.indexOf(resource)
+                    this.courses.splice(resourceID, 1)
+                })
+            }
 
             // Clear options proxy to avoid selection tags from being displayed
             this.optionsProxy = []
@@ -551,6 +614,8 @@ Vue.component('rule_course', {
     },
     template: '#course-list-template'
 });
+
+// -------------------------------------------------------------------------------------------------------------------//
 
 Vue.component('rule_course_requisite', {
     props: {

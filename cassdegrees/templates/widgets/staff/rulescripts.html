@@ -229,6 +229,9 @@
 
 <script type="text/x-template" id="course-list-template">
     <fieldset v-if="!redraw">
+        <input class="btn-uni-grad btn-large" type="button" value="Add Courses from Existing List"
+               v-on:click="addList()">
+
         <p class="form-group">
             <label>
                 Students must select...
