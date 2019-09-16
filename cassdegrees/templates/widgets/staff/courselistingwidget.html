@@ -55,7 +55,7 @@
 
     API_MODEL_URL = 'api/search/?select=code,name&from=course'
 
-    new Vue({
+    var app = new Vue({
         // modify delimiters to prevent conflict with Django Template Console
         delimiters: ["[[", "]]"],
 
@@ -163,5 +163,10 @@
         },
 
     }).$mount('#{{ app_name }}')
+
+    // Updates the list of courses
+    function redrawVueComponents(){
+        app.courseRequest(null)
+    }
 
 </script>

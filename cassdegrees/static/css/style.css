@@ -156,6 +156,13 @@ select.text{
     top: 35%;
 }
 
+.wide-modal-card {
+    position: absolute;
+    left: 10%;
+    width: 80%;
+    top: 10%;
+}
+
 .box-has-footer {
     margin-bottom: 0;
 }
@@ -449,4 +456,20 @@ select.text{
 .resources-list li .delete-controls:hover,
 .resources-list li .delete-controls:focus {
   color: red;
+}
+
+/* Sets an element to be a eighth of the width of the parent, with a minimum applied */
+.eighth-width {
+    min-width: 100px;
+    width: 12.5%;
+}
+
+/* Ensure that custom checkboxes ignore ANU styling */
+.custom-checkbox {
+    margin-left: 0 !important;
+}
+
+/* Fix scrollbar with icon checkboxes on Chrome */
+.pretty .state label {
+    overflow: hidden;
 }

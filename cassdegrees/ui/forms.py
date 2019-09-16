@@ -119,11 +119,11 @@ class EditProgramFormSnippet(ModelForm):
                   'staffNotes', 'studentNotes')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. BARTS"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull",
+            'year': forms.NumberInput(attrs={'class': "text eighth-width",
                                              'onkeydown': "javascript: return checkKeys(event)",
                                              'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Bachelor of Arts"}),
-            'units': forms.NumberInput(attrs={'class': "text tfull",
+            'units': forms.NumberInput(attrs={'class': "text eighth-width",
                                               'onkeydown': "javascript: return checkKeys(event)",
                                               'step': 6, 'max': 512}),
             'publish': forms.CheckboxInput(),
@@ -155,7 +155,7 @@ class EditProgramFormSnippet(ModelForm):
     def clean_year(self):
         data = self.cleaned_data['year']
         if data < 2000 or data > 3000:
-            raise forms.ValidationError("This should be between 2000-3000!")
+            raise forms.ValidationError("This should be between 2000 and 3000!")
         return data
 
     def clean_name(self):
@@ -191,7 +191,7 @@ class EditSubplanFormSnippet(ModelForm):
         fields = ('code', 'year', 'name', 'units', 'planType', 'rules', 'publish')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH-MIN"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull",
+            'year': forms.NumberInput(attrs={'class': "text eighth-width",
                                              'onkeydown': "javascript: return checkKeys(event)",
                                              'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Art History"}),
@@ -278,7 +278,7 @@ class EditListFormSnippet(ModelForm):
         fields = ('name', 'year', 'elements')
         widgets = {
             'name': forms.TextInput(attrs={'class': "text tfull"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull",
+            'year': forms.NumberInput(attrs={'class': "text eighth-width",
                                              'onkeydown': "javascript: return checkKeys(event)",
                                              'type': "number"}),
             # elements is hidden field as it will be populated in the background by the multiselect widget
@@ -316,10 +316,10 @@ class EditCourseFormSnippet(ModelForm):
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006, ARTH1100"}),
             'name': forms.TextInput(attrs={'class': "text tfull",
                                            'placeholder': "e.g. Art and Design Histories: Form and Space"}),
-            'units': forms.NumberInput(attrs={'class': "text tfull",
+            'units': forms.NumberInput(attrs={'class': "text eighth-width",
                                               'onkeydown': "javascript: return checkKeys(event)",
                                               'type': "number"}),
-            'offeredYears': forms.Select(choices=offered_years_choices)
+            'offeredYears': forms.Select(choices=offered_years_choices, attrs={'class': "eighth-width"})
         }
         labels = {
             'offeredYears': "Years Offered",

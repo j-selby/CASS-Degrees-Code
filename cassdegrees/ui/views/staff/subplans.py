@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from ui.forms import EditSubplanFormSnippet
 
 from api.models import SubplanModel
+from ui.views.staff.courses import handle_course_subform
 from api.views import search
 import json
 from django.utils import timezone
@@ -38,7 +39,9 @@ def create_subplan(request):
     if request.method == 'POST':
         form = EditSubplanFormSnippet(request.POST)
 
-        if form.is_valid():
+        if request.POST.get("newCourse"):
+            course_creation_form = handle_course_subform(request.POST['newCourse'])
+        elif form.is_valid():
             form.save()
 
             # If there is cached 'program' data, redirect to that page instead
@@ -47,15 +50,19 @@ def create_subplan(request):
             else:
                 return redirect(list_subplan_url + '&msg=Successfully Added a New Subplan: '
                                                    '{} ({})!'.format(form['name'].value(), form['code'].value()))
+        else:
+            course_creation_form = handle_course_subform()
 
     else:
+        course_creation_form = handle_course_subform()
         if duplicate:
             form = EditSubplanFormSnippet(instance=instance)
         else:
             form = EditSubplanFormSnippet()
 
     return render(request, 'staff/creation/createsubplan.html', context={
-        "form": form
+        "form": form,
+        "course_creation": course_creation_form
     })
 
 
@@ -136,7 +143,9 @@ def edit_subplan(request):
     if request.method == 'POST':
         form = EditSubplanFormSnippet(request.POST, instance=instance)
 
-        if form.is_valid():
+        if request.POST.get("newCourse"):
+            course_creation_form = handle_course_subform(request.POST['newCourse'])
+        elif form.is_valid():
             instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
             instance.save(update_fields=['lastUpdated'])
             form.save()
@@ -147,14 +156,19 @@ def edit_subplan(request):
                 return redirect(list_subplan_url + '&msg=Successfully Edited the Subplan: {} ({})!'
                                 .format(form['name'].value(), form['code'].value()))
             else:
+                course_creation_form = handle_course_subform()
                 message = 'Successfully Edited The Subplan: {} ({})!'\
                     .format(form['name'].value(), form['code'].value())
+        else:
+            course_creation_form = handle_course_subform()
 
     else:
         form = EditSubplanFormSnippet(instance=instance)
+        course_creation_form = handle_course_subform()
 
     return render(request, 'staff/creation/createsubplan.html', context={
         'render': {'msg': message},
         "edit": True,
-        "form": form
+        "form": form,
+        "course_creation": course_creation_form
     })
