@@ -118,7 +118,6 @@ Vue.component('global_requirement', {
             component_names: GLOBAL_REQUIREMENT_NAMES,
             component_help: GLOBAL_REQUIREMENT_HELP,
             show_help: false,
-            show: true,
         }
     },
     mounted: function() {
@@ -126,17 +125,6 @@ Vue.component('global_requirement', {
         var last = siblings[siblings.length-1];
 
         last.$el.style = "border-left: 2px solid green; margin: 0 0 0 -6px; padding: 0 0 0 4px;";
-        console.log(last.$el);
-
-        // If this is the last element in the group and something hasn't been removed (i.e something has been added)
-        // then turn show off and on to trigger a fade-in effect and scroll to the element.
-        if (this===last && !this.$parent.removed){
-            //this.show=false;
-            this.$nextTick(function() {
-               //this.show=true;
-            });
-            last.$el.scrollIntoView({behavior: "smooth"}); // DELETE THIS LINE TO TEST WITHOUT SCROLL
-        }
     },
     template: '#globalRequirementTemplate'
 });
@@ -162,9 +150,6 @@ Vue.component('global_requirement_container', {
 
             // Forces the element to re-render, if mutable events occurred
             redraw: false,
-
-            // A flag that says whether an item has just been removed
-            removed: false
         }
     },
     methods: {
@@ -178,13 +163,6 @@ Vue.component('global_requirement_container', {
         remove: function(index) {
             this.global_requirements.splice(index, 1);
             this.do_redraw();
-
-            this.removed = true;
-            this.$nextTick(() => {
-                this.$nextTick(() => {
-                    this.removed = false;
-                });
-            });
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {

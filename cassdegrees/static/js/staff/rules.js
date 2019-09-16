@@ -827,7 +827,9 @@ Vue.component('rule_either_or', {
             component_names: EITHER_OR_COMPONENT_NAMES,
 
             // Forces the element to re-render, if mutable events occurred
-            redraw: false
+            redraw: false,
+
+            is_eitheror: true
         }
     },
     methods: {
@@ -883,21 +885,22 @@ Vue.component('rule', {
             component_names: ALL_COMPONENT_NAMES,
             component_help: ALL_COMPONENT_HELP,
             show_help: false,
-            show: true,
         }
     },
     mounted: function() {
         var siblings = app.$children[0].$children;
         var last = siblings[siblings.length-1];
 
-        // If this is the last element in the group and something hasn't been removed (i.e something has been added)
-        // then turn show off and on to trigger a fade-in effect and scroll to the element.
-        if (this===last && !this.$parent.removed){
-            this.show=false;
-            this.$nextTick(function() {
-               this.show=true;
-            });
-            last.$el.scrollIntoView({behavior: "smooth"})
+        if (!last.$children[0].is_eitheror) {
+            last.$el.style = "border-left: 2px solid green; margin: 0 0 0 -6px; padding: 0 0 0 4px;";
+        }
+        else {
+            var siblings = last.$children[0].$children;
+            if (siblings.length > 0) {
+                last.$el.style = "";
+                var last = siblings[siblings.length - 1];
+            }
+            last.$el.style = "border-left: 2px solid green; margin: 0 0 0 -6px; padding: 0 0 0 4px;";
         }
     },
     methods:{
@@ -935,9 +938,6 @@ Vue.component('rule_container', {
 
             // Forces the element to re-render, if mutable events occurred
             redraw: false,
-
-            // A flag that says whether an item has just been removed
-            removed: false
         }
     },
     methods: {
@@ -951,13 +951,6 @@ Vue.component('rule_container', {
         remove: function(index) {
             this.rules.splice(index, 1);
             this.do_redraw();
-
-            this.removed = true;
-            this.$nextTick(() => {
-                this.$nextTick(() => {
-                    this.removed = false;
-                });
-            });
         },
         check_options: function() {
             var valid = true;
