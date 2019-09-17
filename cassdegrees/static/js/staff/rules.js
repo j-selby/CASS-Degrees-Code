@@ -452,9 +452,9 @@ Vue.component('rule_course', {
 
     data: function() {
         return {
-            "courses": [],          // used to store available options for display - details.codes is used for database storage of selected course codes
+            "courses": [],          // used to store options for display - details.codes is used for database storage of selected course codes
             "list_types": [],
-            "selected_courses": [],
+            "selected_courses": [], // used to store the code and name version of the course when selected
             "coursename_dict": {},  // used to store and find course names so background database not affected by selections
             "optionsProxy": [],     // required prop, default behaviour to display selection tags
             "lists": [],            // stores database lists for display if required
@@ -468,7 +468,7 @@ Vue.component('rule_course', {
             "invalid_units_step": false,
             "is_blank": false,
 
-            // Track adding list
+            // Track whether adding list
             "is_list_search": false,
 
             "redraw": false
@@ -476,7 +476,6 @@ Vue.component('rule_course', {
     },
     created: function() {
         var rule = this;
-
         var request = new XMLHttpRequest();
 
         // add available courses
@@ -505,7 +504,6 @@ Vue.component('rule_course', {
                             rule.courses.splice(x, 1).forEach(course => {
                                 rule.selected_courses.push(course)
                             });
-                            // rule.selected_courses.push(rule.courses.splice(x, 1))
                             break;
                         }
                     }
@@ -516,6 +514,12 @@ Vue.component('rule_course', {
         request.open("GET", "/api/search/?select=code,name&from=course");
         request.send();
 
+    },
+
+    computed: {
+        placeholderText(){
+            return this.is_list_search ? "Search lists..." : "Search courses, press esc or tab to close when done"
+        }
     },
 
     methods: {
@@ -529,6 +533,7 @@ Vue.component('rule_course', {
             }
         },
 
+        // todo prevent double clicking on add list
         addList() {
             // track that the input has changed to list mode
             this.is_list_search = true;
@@ -561,7 +566,10 @@ Vue.component('rule_course', {
             if (this.is_list_search) {
                 value.forEach((list) => {
                     list.elements.forEach((course) => {
-                        this.details.codes.push(course.code)
+                        // add course code to details.codes if not already present
+                        if (!this.details.codes.some(code => code === course.code)) {
+                            this.details.codes.push(course.code)
+                        }
 
                         // if a course is added through a list, remove it from the temporary store of courses
                         for (let i = 0; i < this.tempStore.length; i++) {
@@ -591,7 +599,6 @@ Vue.component('rule_course', {
                         this.selected_courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
                         this.details.codes.sort((a, b) => (a.code > b.code) ? 1 : -1)
                     }
-                    // todo check what's happening here it could be dodge
                     // remove the selected course from the list of available courses to add
                     let resourceID = this.courses.indexOf(resource)
                     this.courses.splice(resourceID, 1)
@@ -607,7 +614,7 @@ Vue.component('rule_course', {
         // remove code details.codes
         removeDependency(index) {
             this.selected_courses.splice(index, 1).forEach((course) => {
-                console.log("attempting to delete: " + course)
+                // add deleted course back to options
                 this.courses.push(course)
 
                 // find and remove code from details.codes

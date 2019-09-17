@@ -251,8 +251,6 @@
 
 <script type="text/x-template" id="course-list-template">
     <fieldset v-if="!redraw">
-        <input class="btn-uni-grad btn-large" type="button" value="Add Courses from Existing List"
-               v-on:click="addList()">
 
         <p class="form-group">
             <label>
@@ -265,7 +263,8 @@
         </select>
 
         <!-- {#       instyle css only temporary #} -->
-        <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" required> units
+        <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
+               v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" required> units
 
         <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
         <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
@@ -286,7 +285,7 @@
                 :multiple="true"
                 :searchable="true"
                 :close-on-select="false"
-                placeholder="Search courses, press esc or tab to close when done"
+                :placeholder="placeholderText"
                 :custom-label="customLabel"
                 track-by="name"
                 :max-height="200"
@@ -310,6 +309,10 @@
                 </li>
             </template>
         </ul>
+
+        <input style="margin-left: 0; float: right;" class="btn-uni-grad btn-large" type="button"
+               value="Add Courses from Existing List"
+               v-on:click="addList()">
     </fieldset>
 </script>
 {% endverbatim %}
