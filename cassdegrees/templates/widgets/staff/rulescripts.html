@@ -296,7 +296,7 @@
         </multiselect>
 
         <ul class="resources-list">
-            <template v-for="(resource, index) in selected_courses">
+            <template v-for="(resource, index) in sortedSelectedList">
                 <li class="resource-item" :data-index="index">
                     <div class="resource-info">
                         <div class="resource-title" :id="index">

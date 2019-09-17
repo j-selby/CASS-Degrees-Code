@@ -481,11 +481,7 @@ Vue.component('rule_course', {
         // add available courses
         request.addEventListener("load", function() {
             rule.courses = JSON.parse(request.response);
-            rule.courses.sort(
-                function(a, b){
-                    return a['code'].localeCompare(b['code'])
-                }
-            );
+            rule.sortCourseOptions();
 
             // populate a name dictionary to reconcile selected codes with names without an additional API call
             rule.courses.forEach((courseObj) => {
@@ -517,9 +513,21 @@ Vue.component('rule_course', {
     },
 
     computed: {
+        // generates the appropriate placeholder text for the tool depending on list or course mode
         placeholderText(){
             return this.is_list_search ? "Search lists..." : "Search courses, press esc or tab to close when done"
-        }
+        },
+
+        // used to compute appropriate ordering for template ul element
+        sortedSelectedList(){
+            return this.selected_courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
+        },
+
+        // used to compute appropriate ordering for dropdown list
+        sortedCourseList(){
+            return this.courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
+        },
+
     },
 
     methods: {
@@ -533,31 +541,37 @@ Vue.component('rule_course', {
             }
         },
 
+        // force sort of multiselect options list on refresh
+        sortCourseOptions(){
+            this.courses = this.sortedCourseList
+        },
+
         // todo prevent double clicking on add list
         addList() {
-            // track that the input has changed to list mode
-            this.is_list_search = true;
+            if (!this.is_list_search) {
+                // track that the input has changed to list mode
+                this.is_list_search = true;
 
-            // preserve the list of course options
-            this.tempStore = this.courses;
+                // preserve the list of course options
+                this.tempStore = this.courses;
 
-            // get available lists from database
-            var rule = this;
-            var request = new XMLHttpRequest();
+                // get available lists from database
+                var rule = this;
+                var request = new XMLHttpRequest();
 
-            request.addEventListener("load", function () {
-                rule.lists = JSON.parse(request.response);
-                rule.lists.sort(
-                    function (a, b) {
-                        return a['name'].localeCompare(b['name'])
-                    }
-                );
-                rule.courses = rule.lists
-            });
+                request.addEventListener("load", function () {
+                    rule.lists = JSON.parse(request.response);
+                    rule.lists.sort(
+                        function (a, b) {
+                            return a['name'].localeCompare(b['name'])
+                        }
+                    );
+                    rule.courses = rule.lists
+                });
 
-            request.open("GET", "/api/search/?select=name,year,elements&from=list");
-            request.send();
-
+                request.open("GET", "/api/search/?select=name,year,elements&from=list");
+                request.send();
+            }
         },
 
         // Update an array of selected values and remove the selected item from the list of available options
@@ -596,8 +610,6 @@ Vue.component('rule_course', {
                     if (!this.details.codes.some(code => code === resource.code)) {
                         this.selected_courses.push(resource)
                         this.details.codes.push(resource.code)
-                        this.selected_courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
-                        this.details.codes.sort((a, b) => (a.code > b.code) ? 1 : -1)
                     }
                     // remove the selected course from the list of available courses to add
                     let resourceID = this.courses.indexOf(resource)
@@ -610,12 +622,13 @@ Vue.component('rule_course', {
         },
 
         // remove the item from the display list and the elements field when x is clicked
-        // index is the index from the details.codes array
+        // index is the index from the selected_courses array
         // remove code details.codes
         removeDependency(index) {
             this.selected_courses.splice(index, 1).forEach((course) => {
                 // add deleted course back to options
                 this.courses.push(course)
+                this.sortCourseOptions()
 
                 // find and remove code from details.codes
                 for (let i = 0; i < this.details.codes.length; i++){
@@ -636,7 +649,7 @@ Vue.component('rule_course', {
             this.is_blank = this.details.codes.length === 0;
             this.is_blank = this.is_blank || this.details.list_type === "";
 
-            // Duplicates should be prevented by condition on updateSelected()
+            // Duplicates are prevented by condition on updateSelected()
 
             // Ensure Unit Count is valid:
             if (this.details.unit_count != null) {
