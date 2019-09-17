@@ -139,7 +139,7 @@ def search(request):
     )
 
     # Ensure only authenticated users can access secret plans
-    if request.user.is_authenticated and hasattr(model, "publish"):
+    if not request.user.is_authenticated and hasattr(model, "publish"):
         include["publish"] = True
 
     query = Q(**include)
