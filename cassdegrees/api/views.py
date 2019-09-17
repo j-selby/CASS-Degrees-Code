@@ -140,7 +140,7 @@ def search(request):
 
     # Ensure only authenticated users can access secret plans
     # Request.user will not exist if this is an internal request - thats perfectly fine, however!
-    if request.user and not request.user.is_authenticated and hasattr(model, "publish"):
+    if hasattr(request, "user") and not request.user.is_authenticated and hasattr(model, "publish"):
         include["publish"] = True
 
     query = Q(**include)
