@@ -295,6 +295,9 @@
                 >
         </multiselect>
 
+        <div class="msg-warn" v-if="is_list_search">Searching in list mode,
+            <a href="javascript:void(0);" @click="toggleListMode()">return to course mode</a></div>
+
         <ul class="resources-list">
             <template v-for="(resource, index) in sortedSelectedList">
                 <li class="resource-item" :data-index="index">
@@ -312,7 +315,7 @@
 
         <input style="margin-left: 0; float: right;" class="btn-uni-grad btn-large" type="button"
                value="Add Courses from Existing List"
-               v-on:click="addList()">
+               v-on:click="toggleListMode()">
     </fieldset>
 </script>
 {% endverbatim %}

@@ -532,7 +532,6 @@ Vue.component('rule_course', {
 
     methods: {
         // Returns label for multiselect drop down, label for dynamic list beneath generated separately
-        // Trim the label if it exceeds 70 chars
         customLabel(option) {
             if (this.is_list_search) {
                 return `${option.name} - ${option.year}`
@@ -546,9 +545,12 @@ Vue.component('rule_course', {
             this.courses = this.sortedCourseList
         },
 
-        // todo prevent double clicking on add list
-        addList() {
-            if (!this.is_list_search) {
+        toggleListMode(){
+            if (this.is_list_search) {
+                this.is_list_search = false;
+                this.courses = this.tempStore;
+                this.tempStore = []
+            } else {
                 // track that the input has changed to list mode
                 this.is_list_search = true;
 
@@ -598,11 +600,7 @@ Vue.component('rule_course', {
                 });
 
                 // switch off list mode
-                this.is_list_search = false;
-
-                // reset search box to courses and clear tempStore
-                this.courses = this.tempStore;
-                this.tempStore = []
+                this.toggleListMode()
 
             } else {
                 value.forEach((resource) => {
