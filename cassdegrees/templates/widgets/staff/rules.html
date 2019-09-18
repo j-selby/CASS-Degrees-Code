@@ -11,7 +11,7 @@
 {% include "widgets/staff/rulescripts.html" %}
 {% verbatim %}
 <script type="text/x-template" id="eitherOrTemplate">
-    <div v-if="!redraw">
+    <div :key="redraw">
         <div class="box bdr-solid bdr-uni" v-for="(item, i) in details.either_or" :key="i">
             <fieldset id="orRulesContainer">
                 <legend>Group {{ i + 1 }}</legend>

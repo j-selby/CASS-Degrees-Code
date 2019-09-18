@@ -815,7 +815,7 @@ Vue.component('rule_either_or', {
         "separator": {
             type: String,
             default: ""
-        }
+        },
     },
     data: function() {
         return {
@@ -827,9 +827,9 @@ Vue.component('rule_either_or', {
             component_names: EITHER_OR_COMPONENT_NAMES,
 
             // Forces the element to re-render, if mutable events occurred
-            redraw: false,
+            redraw: 0,
 
-            is_eitheror: true
+            is_eitheror: true,
         }
     },
     methods: {
@@ -843,9 +843,10 @@ Vue.component('rule_either_or', {
             this.details.either_or[this.which_or].push({
                 type: this.add_a_rule_modal_option,
             });
-            this.do_redraw();
+            //this.do_redraw();
         },
         remove: function(index, group) {
+            console.log(this.details.either_or[group]);
             this.details.either_or[group].splice(index, 1);
             this.do_redraw();
         },
@@ -863,10 +864,10 @@ Vue.component('rule_either_or', {
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
-            this.redraw = true;
-
+            //this.redraw = true;
+            this.redraw += 1;
             this.$nextTick(() => {
-                this.redraw = false;
+                //this.redraw = false;
             });
         }
     },
@@ -891,6 +892,39 @@ Vue.component('rule', {
         var siblings = app.$children[0].$children;
         var last = siblings[siblings.length-1];
 
+        console.log(siblings);
+
+        var max = 0;
+        var rule_creation_ranks = {};
+        siblings.forEach(function(sib){
+            if (!sib.$children[0].is_eitheror) {
+                rule_creation_ranks[sib._uid] = sib;
+                sib.$el.style = "border-left: none;";
+                max = (sib._uid > max) ? sib._uid : max;
+            }
+            else {
+                var either_or_rules = sib.$children[0].$children;
+                sib.$el.style = "border-left: none;";
+                if (either_or_rules.length > 0) {
+                    either_or_rules.forEach(function(rule) {
+                        rule_creation_ranks[rule._uid] = rule;
+                        rule.$el.style = "border-left: none;";
+                        max = (rule._uid > max) ? rule._uid : max;
+                    })
+                }
+                else {
+                    rule_creation_ranks[sib._uid] = sib;
+                    max = (sib._uid > max) ? sib._uid : max;
+                }
+            }
+        });
+        console.log(rule_creation_ranks);
+        console.log(max);
+        var recent_rule = rule_creation_ranks[max];
+
+        recent_rule.$el.style = "border-left: 2px solid green; margin: 0 0 0 -6px; padding: 0 0 0 4px;";
+
+        /*
         if (!last.$children[0].is_eitheror) {
             last.$el.style = "border-left: 2px solid green; margin: 0 0 0 -6px; padding: 0 0 0 4px;";
         }
@@ -901,7 +935,7 @@ Vue.component('rule', {
                 var last = siblings[siblings.length - 1];
             }
             last.$el.style = "border-left: 2px solid green; margin: 0 0 0 -6px; padding: 0 0 0 4px;";
-        }
+        }*/
     },
     methods:{
         check_options: function() {
@@ -946,11 +980,11 @@ Vue.component('rule_container', {
             this.rules.push({
                 type: this.add_a_rule_modal_option,
             });
-            this.do_redraw();
+            //this.do_redraw();
         },
         remove: function(index) {
             this.rules.splice(index, 1);
-            this.do_redraw();
+            //this.do_redraw();
         },
         check_options: function() {
             var valid = true;
