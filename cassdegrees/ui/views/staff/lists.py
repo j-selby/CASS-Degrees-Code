@@ -112,7 +112,6 @@ def edit_list(request):
             # POST Requests only carry boolean values over as string
             # Only redirect the user to the list page if the user presses "Save and Exit".
             # Otherwise, simply display a success message on the same page.
-            # todo: implement list view for admin page then change url
             if request.POST.get('redirect') == 'true':
                 return redirect(list_course_group_url + '&msg=Successfully Edited List!')
             else:
