@@ -23,6 +23,7 @@ from .views.staff.programs import *
 from .views.staff.subplans import *
 from .views.staff.view import *
 from .views.staff.lists import *
+from .views.staff.report import *
 from .views.pdf import *
 from .views.student import *
 
@@ -52,5 +53,6 @@ urlpatterns = [
     path(staff_url_prefix + 'view/program/', view_section),
     path(staff_url_prefix + 'view/subplan/', view_section),
     path(staff_url_prefix + 'view/course/', view_section),
+    path(staff_url_prefix + 'report/course/', report_section),
     path(staff_url_prefix + 'pdf/program/', view_program_pdf),
 ]

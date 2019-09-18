@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}Course Report{% endblock %}
+
+{% block subtitle %}Course Report{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb '/staff/' 'Staff Home'%}
+    {% breadcrumb '/staff/list/?view=Course' 'Programs/Subplans/Courses' %}
+    {% finalcrumb 'Course Report' %}
+{% endblock %}
+
+{% block content %}
+    <div>
+
+    </div>
+{% endblock %}
