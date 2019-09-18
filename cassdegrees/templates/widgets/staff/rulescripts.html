@@ -1,3 +1,5 @@
+{% load static %}
+
 {% verbatim %}
 <script type="text/x-template" id="incompatibilityRuleTemplate">
      <fieldset v-if="!redraw">
@@ -97,7 +99,7 @@
             </select>
 
 <!-- {#       instyle css only temporary #} -->
-            <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" required> units
+            <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="update_units" v-model="details.unit_count" min="0" step="6" max="1000" required> units
 
             <div class="msg-error" v-if="invalid_units">Unit count must be greater than 0!</div>
             <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
@@ -160,7 +162,7 @@
             <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
             <p>
                 Students must complete
-                <input style="margin-left: 0;" class="text" v-on:change="check_options" onkeydown="javascript: return checkKeys(event)" type="number" min="0" step="6" max="1000" v-model="details.unit_count" aria-required="true" required>
+                <input style="margin-left: 0;" class="text" v-on:change="update_units" onkeydown="javascript: return checkKeys(event)" type="number" min="0" step="6" max="1000" v-model="details.unit_count" aria-required="true" required>
                 units from
                 <select v-model="details.year_level" required>
                     <option value="all" selected>All</option>
@@ -193,7 +195,7 @@
 
         <p class="form-group">
             <label>Unit value for this item:</label>
-            <input class="text" v-on:change="check_options" onkeydown="javascript: return checkKeys(event)" type="number" min="0" max="1000" v-model="details.units" aria-required="true" required>
+            <input class="text" v-on:change="update_units" onkeydown="javascript: return checkKeys(event)" type="number" min="0" max="1000" v-model="details.unit_count" aria-required="true" required>
         </p>
 
         <div class="msg-error" v-if="not_divisible">Units must be divisible by 6!</div>
@@ -229,6 +231,7 @@
             <img src="//style.anu.edu.au/_anu/images/icons/web/question.png" class="btn-snall no-left-margin vertical-middle clickable"
                  alt="Help button" v-on:click="show_help = true" />
             <input type="button" v-on:click="$emit('remove')" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            <input type="button" v-on:click="$emit('duplicate_rule')" class="btn-uni-grad btn-snall no-left-margin" value="Duplicate" />
         </header>
         <div class="box-solid">
             <div class="card-content" v-bind:is="'rule_' + details.type" v-bind:details="details"></div>
@@ -252,4 +255,78 @@
         </div>
     </div>
 </script>
+
+<script type="text/x-template" id="course-list-template">
+    <fieldset v-if="!redraw">
+
+        <p class="form-group">
+            <label>
+                Students must select...
+            </label>
+        </p>
+
+        <select v-model="details.list_type" v-on:change="check_options" required>
+            <option v-for="(msg, type) in list_types" v-bind:value="type">{{ msg }}</option>
+        </select>
+
+        <!-- {#       instyle css only temporary #} -->
+        <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
+               v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" required> units
+
+        <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
+        <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
+        <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+
+        <p>
+            from the following courses:
+        </p>
+
+        <br>
+
+        <multiselect
+                :options="courses"
+                :value="optionsProxy"
+                @input="updateSelected"
+                :show-labels="true"
+                :multiple="true"
+                :searchable="true"
+                :close-on-select="false"
+                :placeholder="placeholderText"
+                :custom-label="customLabel"
+                track-by="name"
+                :max-height="200"
+                :open-direction="'top'"
+                :loading="showLoadingSpinner"
+                ref="multiselectref"
+                >
+        </multiselect>
+
+        <div class="msg-warn" v-if="is_list_search">Searching in list mode,
+            <a href="javascript:void(0);" @click="toggleListMode()">return to course mode</a></div>
+
+        <ul class="resources-list">
+            <template v-for="(resource, index) in sortedSelectedList">
+                <li class="resource-item" :data-index="index">
+                    <div class="resource-info">
+                        <div class="resource-title" :id="index">
+                            <span>{{ resource.code }} - {{ resource.name }} </span>
+                        </div>
+                    </div>
+                    <div class="delete-controls" v-on:click.prevent="removeDependency(index)">
+                        <i class="fa fa-times fa-fw"></i>
+                    </div>
+                </li>
+            </template>
+        </ul>
+
+        <input style="margin-left: 0; float: right;" class="btn-uni-grad btn-large" type="button"
+               value="Add Courses from Existing List"
+               v-on:click="toggleListMode()">
+    </fieldset>
+</script>
 {% endverbatim %}
+    <script src="{% static "js/vendor/vue.js" %}"></script>
+    <script src="{% static "js/vendor/vue-multiselect.js" %}"></script>
+    <script src="{% static "js/vendor/vue-resource.js" %}"></script>
+    <link rel="stylesheet" href="{% static "css/vue-multiselect.css" %}">
