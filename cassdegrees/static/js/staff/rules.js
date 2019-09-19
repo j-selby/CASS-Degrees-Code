@@ -1103,6 +1103,8 @@ Vue.component('rule', {
     mounted: function() {
         var siblings = app.$children[0].$children;
 
+        // Determine whether this rule is the most recent rule by finding which sibling
+        // has the highest _uid assigned by Vue.
         var max = 0;
         var rule_creation_ranks = {};
         siblings.forEach(function(sib){
@@ -1112,8 +1114,10 @@ Vue.component('rule', {
                 max = (sib._uid > max) ? sib._uid : max;
             }
             else {
+                // If nested or rules get implemented, this section may need to be made recursive
                 var either_or_rules = sib.$children[0].$children;
                 sib.$el.classList.remove("rule_active_visual");
+
                 if (either_or_rules.length > 0) {
                     either_or_rules.forEach(function(rule) {
                         rule_creation_ranks[rule._uid] = rule;
@@ -1129,6 +1133,7 @@ Vue.component('rule', {
         });
         var recent_rule = rule_creation_ranks[max];
 
+        // Add a visual cue and scroll to the most recent rule
         recent_rule.$el.classList.add("rule_active_visual");
         recent_rule.$el.scrollIntoView({behavior: "smooth"})
     },

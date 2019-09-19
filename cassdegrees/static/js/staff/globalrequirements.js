@@ -122,8 +122,9 @@ Vue.component('global_requirement', {
     },
     mounted: function() {
         var siblings = globalRequirementsApp.$children[0].$children;
-        var last = siblings[siblings.length-1];
 
+        // Determine whether this rule is the most recent rule by finding which sibling
+        // has the highest _uid assigned by Vue.
         var max = 0;
         var rule_creation_ranks = {};
         siblings.forEach(function(sib){
@@ -133,6 +134,7 @@ Vue.component('global_requirement', {
         });
         var recent_rule = rule_creation_ranks[max];
 
+        // Add a visual cue and scroll to the most recent rule
         recent_rule.$el.classList.add("rule_active_visual");
         recent_rule.$el.scrollIntoView({behavior: "smooth"})
     },
