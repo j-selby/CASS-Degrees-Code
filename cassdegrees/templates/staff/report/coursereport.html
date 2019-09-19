@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load breadcrumbs %}
+{% load report %}
 
 {% block page-title %}Course Report{% endblock %}
 
@@ -22,8 +23,12 @@
                 <tr>
                     <th>Code</th>
                     <th>Name</th>
+                    <th>Units</th>
                     <th>Years Offered</th>
                     <th>Offerings</th>
+                    <th>Subplan Dependencies</th>
+                    <th>Program Dependencies</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             {# Add rows containing the contents of each json data instance #}
@@ -32,8 +37,34 @@
                 <tr>
                     <td>{{ course.code }}</td>
                     <td>{{ course.name }}</td>
+                    <td>{{ course.units }}</td>
                     <td>{{ course.offeredYears }}</td>
-                    <td>{% if course.offeredSem1 %}Sem 1{% endif %}{% if course.offeredSem2 %}, Sem 2{% endif %}</td>
+                    <td>
+                        {% if course.offeredSem1 %}Sem1 {% endif %}
+                        {% if course.offeredSem2 %}Sem2 {% endif %}
+                        {% if course.offeredSummer %}Summer {% endif %}
+                        {% if course.offeredAutumn %}Autumn {% endif %}
+                        {% if course.offeredWinter %}Winter {% endif %}
+                        {% if course.offeredSpring %}Spring {% endif %}
+                        {% if course.otherOffering %}Other {% endif %}
+                    </td>
+                    <td>
+                        {% for subplan in dependencies|get_item:course.code|get_item:"subplans" %}
+                            {{ subplan.code }}<br />
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for program in dependencies|get_item:course.code|get_item:"programs" %}
+                            {{ program.code }}<br />
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% if course.currentlyActive %}
+                            Active
+                        {% else %}
+                            Inactive
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
 

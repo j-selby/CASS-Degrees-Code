@@ -9,6 +9,7 @@ import json
 
 
 def report_section(request):
+    # Retrieve all courses and store them in a list.
     all_courses = CourseModel.objects.all()
     all_courses_list = list()
 
@@ -19,6 +20,9 @@ def report_section(request):
     # Convert all QuerySet results to Python dictionaries.
     for course in all_courses:
         all_courses_list.append(model_to_dict(course))
+
+    # Sort all courses by order of course codes.
+    all_courses_list = sorted(all_courses_list, key=lambda i: i['code'])
 
     # Generate an internal request to search api made by Jack
     gen_request = HttpRequest()
@@ -31,20 +35,10 @@ def report_section(request):
         gen_request.GET = {'select': 'code,year,name,rules', 'from': 'program', 'rules': course['code']}
         # programs which depend on course where its code is equal to course['code']
         programs = json.loads(search(gen_request).content.decode())
-
-        if len(subplans) > 0 and len(programs) > 0:
-            all_dependencies[course['code']] = {
-                'subplans': subplans,
-                'programs': programs
-            }
-        elif len(subplans) > 0 and len(programs) == 0:
-            all_dependencies[course['code']] = {
-                'subplans': subplans
-            }
-        elif len(subplans) == 0 and len(programs) > 0:
-            all_dependencies[course['code']] = {
-                'programs': programs
-            }
+        all_dependencies[course['code']] = {
+            'subplans': subplans,
+            'programs': programs
+        }
 
     return render(request, 'staff/report/coursereport.html',
                   context={
