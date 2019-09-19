@@ -1032,7 +1032,7 @@ Vue.component('rule_either_or', {
         },
         duplicate_rule: function(index, group) {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
-            this.details.either_or[group].splice(index, 0, JSON.parse(JSON.stringify(this.details.either_or[group][index])));
+            this.details.either_or[group].push(JSON.parse(JSON.stringify(this.details.either_or[group][index])));
             this.do_redraw();
         },
         remove_group: function(group) {
@@ -1104,8 +1104,6 @@ Vue.component('rule', {
         var siblings = app.$children[0].$children;
         var last = siblings[siblings.length-1];
 
-        console.log(siblings);
-
         var max = 0;
         var rule_creation_ranks = {};
         siblings.forEach(function(sib){
@@ -1130,11 +1128,10 @@ Vue.component('rule', {
                 }
             }
         });
-        console.log(rule_creation_ranks);
-        console.log(max);
         var recent_rule = rule_creation_ranks[max];
 
         recent_rule.$el.classList.add("rule_active_visual");
+        recent_rule.$el.scrollIntoView({behavior: "smooth"})
     },
     methods:{
         check_options: function() {
@@ -1191,16 +1188,13 @@ Vue.component('rule_container', {
             this.rules.push({
                 type: this.add_a_rule_modal_option,
             });
-            //this.do_redraw();
         },
         remove: function(index) {
             this.rules.splice(index, 1);
-            //this.do_redraw();
         },
         duplicate_rule: function(index) {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
-            this.rules.splice(index, 0, JSON.parse(JSON.stringify(this.rules[index])));
-            this.do_redraw();
+            this.rules.push(JSON.parse(JSON.stringify(this.rules[index])));
         },
         check_options: function() {
             var valid = true;

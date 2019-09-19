@@ -125,6 +125,7 @@ Vue.component('global_requirement', {
         var last = siblings[siblings.length-1];
 
         last.$el.style = "border-left: 2px solid green; margin: 0 0 0 -6px; padding: 0 0 0 4px;";
+        last.$el.scrollIntoView({behavior: "smooth"})
     },
     template: '#globalRequirementTemplate'
 });
