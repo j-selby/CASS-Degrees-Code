@@ -351,7 +351,7 @@ Vue.component('rule_subplan', {
         Multiselect: window.VueMultiselect.default
     },
 
-    // todo: check validation functions
+    // todo: check validation functions and check why placeholder is not updating
 
     methods: {
         // Returns label for multiselect drop down, label for dynamic list beneath generated separately
