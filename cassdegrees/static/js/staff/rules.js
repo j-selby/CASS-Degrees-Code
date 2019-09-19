@@ -1113,6 +1113,7 @@ Vue.component('rule', {
                 sib.$el.classList.remove("rule_active_visual");
                 max = (sib._uid > max) ? sib._uid : max;
             }
+            // Else we need to get the children of the either or rule
             else {
                 // If nested or rules get implemented, this section may need to be made recursive
                 var either_or_rules = sib.$children[0].$children;
