@@ -14,6 +14,30 @@
 
 {% block content %}
     <div>
+        <h3>All Courses and their Dependencies</h3>
 
+        <table class="fullwidth tbl-cell-bdr">
+            {# Add title row based on what was in the dictionary #}
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Years Offered</th>
+                    <th>Offerings</th>
+                </tr>
+            </thead>
+            {# Add rows containing the contents of each json data instance #}
+            <tbody class="list">
+            {% for course in courses %}
+                <tr>
+                    <td>{{ course.code }}</td>
+                    <td>{{ course.name }}</td>
+                    <td>{{ course.offeredYears }}</td>
+                    <td>{% if course.offeredSem1 %}Sem 1{% endif %}{% if course.offeredSem2 %}, Sem 2{% endif %}</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
     </div>
 {% endblock %}
