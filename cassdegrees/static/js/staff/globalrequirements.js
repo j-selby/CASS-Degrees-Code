@@ -124,8 +124,17 @@ Vue.component('global_requirement', {
         var siblings = globalRequirementsApp.$children[0].$children;
         var last = siblings[siblings.length-1];
 
-        last.$el.style = "border-left: 2px solid green; margin: 0 0 0 -6px; padding: 0 0 0 4px;";
-        last.$el.scrollIntoView({behavior: "smooth"})
+        var max = 0;
+        var rule_creation_ranks = {};
+        siblings.forEach(function(sib){
+            rule_creation_ranks[sib._uid] = sib;
+            sib.$el.classList.remove("rule_active_visual");
+            max = (sib._uid > max) ? sib._uid : max;
+        });
+        var recent_rule = rule_creation_ranks[max];
+
+        recent_rule.$el.classList.add("rule_active_visual");
+        recent_rule.$el.scrollIntoView({behavior: "smooth"})
     },
     template: '#globalRequirementTemplate'
 });
@@ -159,11 +168,9 @@ Vue.component('global_requirement_container', {
             this.global_requirements.push({
                 type: "general",
             });
-            this.do_redraw();
         },
         remove: function(index) {
             this.global_requirements.splice(index, 1);
-            this.do_redraw();
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {

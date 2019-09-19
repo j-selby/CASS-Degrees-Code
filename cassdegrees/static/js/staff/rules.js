@@ -1102,7 +1102,6 @@ Vue.component('rule', {
     },
     mounted: function() {
         var siblings = app.$children[0].$children;
-        var last = siblings[siblings.length-1];
 
         var max = 0;
         var rule_creation_ranks = {};
