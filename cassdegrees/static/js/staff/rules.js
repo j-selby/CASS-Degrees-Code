@@ -249,6 +249,8 @@ Vue.component('rule_program', {
     template: '#programRuleTemplate'
 });
 
+// -------------------------------- SUBPLAN RULE ----------------------------------------------------------------------
+
 Vue.component('rule_subplan', {
     props: {
         "details": {
@@ -279,6 +281,9 @@ Vue.component('rule_subplan', {
             "program_year": "",
             "subplan_types": [],
             "info_msg": INFO_MSGS['subplan'],
+            "optionsProxy": [],                 // required prop, default behaviour to display selection tags
+            "selected_subplans": [],             // used to store the code and name version of the course when selected
+            "showLoadingSpinner": false,
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -290,9 +295,7 @@ Vue.component('rule_subplan', {
         }
     },
     created: function() {
-        // Javascript has the best indirection...
         var rule = this;
-
         var request = new XMLHttpRequest();
 
         request.addEventListener("load", function() {
@@ -314,7 +317,89 @@ Vue.component('rule_subplan', {
         // Keep a copy of the OR Rule's "count_units" function (Or a blank function if unavailable)
         this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
     },
+
+
+    computed: {
+        // generates the appropriate placeholder text for the tool depending on list or course mode
+        placeholderText() {
+            plantype = this.details.subplan_type;
+            if (plantype === "MIN") {
+                return "Search minors, press esc or tab to close"
+            } else if (plantype === "MAJ") {
+                return "Search majors, press esc or tab to close"
+            } else if (plantype === "SPEC") {
+                return "Search specialisations, press esc or tab to close"
+            } else {
+                return "Select a subplan type above to proceed."
+            }
+        },
+
+        // used to compute appropriate ordering for template ul element
+        // sortedSelectedList() {
+        //     return this.selected_courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
+        // },
+
+        // used to compute appropriate ordering for dropdown list
+        sortedSubplanList() {
+            return this.filtered_subplans.sort((a, b) => (a.code > b.code) ? 1 : -1)
+        },
+
+    },
+
+    // subcomponent of the selector must be declared and included in rulescripts.html
+    components: {
+        Multiselect: window.VueMultiselect.default
+    },
+
+    // todo: check validation functions
+
     methods: {
+        // Returns label for multiselect drop down, label for dynamic list beneath generated separately
+        customLabel(option) {
+            return `${option.code} - ${option.name} ${option.year}`
+        },
+
+        // Update an array of selected values and remove the selected item from the list of available options
+        // Will distinguish between adding an existing list and adding a course
+        updateSelected(value) {
+            value.forEach((resource) => {
+                // Adds selected resources to array and prevents duplicates
+                if (!this.details.ids.some(id => id === resource.id)) {
+                    this.selected_subplans.push(resource)
+                    this.details.ids.push(resource.id)
+                }
+                // remove the selected course from the list of available courses to add
+                let resourceID = this.filtered_subplans.indexOf(resource)
+                this.filtered_subplans.splice(resourceID, 1)
+            })
+
+            // Clear options proxy to avoid selection tags from being displayed
+            this.optionsProxy = []
+        },
+
+        // remove the item from the display list and the elements field when x is clicked
+        // index is the index from the selected_courses array
+        // remove code details.codes
+        remove_subplan(index) {
+            console.log("attempting to delete " + index + " " + this.selected_subplans[index])
+            this.selected_subplans.splice(index, 1).forEach((subplan) => {
+                // add deleted subplans back to options
+                this.filtered_subplans.push(subplan)
+                this.sortSubplanOptions()
+
+                // find and remove code from details.ids
+                for (let i = 0; i < this.details.ids.length; i++) {
+                    if (subplan.id === this.details.ids[i]) {
+                        this.details.ids.splice(i, 1);
+                        break;
+                    }
+                }
+            });
+
+            this.check_options();
+            this.do_redraw();
+        },
+
         apply_subplan_filter: function(){
             // Create a new array containing the filtered items for vue to read off
             var rule = this;
@@ -328,6 +413,7 @@ Vue.component('rule_subplan', {
             }
             else
                 rule.filtered_subplans = [];
+            this.do_redraw();
         },
         change_filter: function(){
             // Clear the current list and re-apply the filter
@@ -343,12 +429,12 @@ Vue.component('rule_subplan', {
             this.check_options();
             this.do_redraw();
         },
-        remove_subplan: function(index) {
-            // Mutable modification - redraw needed
-            this.details.ids.splice(index, 1);
-            this.check_options();
-            this.do_redraw();
-        },
+        // remove_subplan: function(index) {
+        //     // Mutable modification - redraw needed
+        //     this.details.ids.splice(index, 1);
+        //     this.check_options();
+        //     this.do_redraw();
+        // },
         check_options: function() {
             // Ensure all data has been filled in
             this.is_blank = this.details.kind === "";
@@ -412,6 +498,12 @@ Vue.component('rule_subplan', {
 
             return !this.wrong_year_selected && !this.non_unique_options && !this.inconsistent_units &&  !this.is_blank;
         },
+
+        // force sort of multiselect options list on refresh
+        sortSubplanOptions() {
+            this.filtered_subplans = this.sortedSubplanList
+        },
+
         update_units: function() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_count_units_fn();
@@ -419,6 +511,7 @@ Vue.component('rule_subplan', {
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
+            console.log("redraw called")
             this.program_year = document.getElementById('id_year').value;
             this.redraw = true;
 
@@ -427,8 +520,10 @@ Vue.component('rule_subplan', {
             });
         }
     },
-    template: '#subplanRuleTemplate'
+    template: '#subplanRuleMultiselectTemplate'
 });
+
+// -------------------------------- END SUBPLAN RULE ----------------------------------------------------------------------
 
 Vue.component('rule_course', {
     props: {
