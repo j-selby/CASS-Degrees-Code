@@ -100,4 +100,3 @@ def view_section(request):
         cList = model_to_dict(ListModel.objects.get(id=int(id_to_edit)))
 
         return render(request, 'staff/view/viewlist.html', context={'data': cList})
-
