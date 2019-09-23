@@ -269,9 +269,20 @@
             <option v-for="(msg, type) in list_types" v-bind:value="type">{{ msg }}</option>
         </select>
 
-        <!-- {#       instyle css only temporary #} -->
-        <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
-               v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" required> units
+        <p v-if="details.list_type == 'min_max'">
+            A minimum of
+            <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
+               v-on:change="check_options" v-model="details.min_unit_count" min="0" step="6" max="1000" required> units
+            and a maximum of
+            <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
+               v-on:change="check_options" v-model="details.max_unit_count" min="0" step="6" max="1000" required> units
+        </p>
+
+        <span v-if="details.list_type !='min_max'">
+            <!-- {#       instyle css only temporary #} -->
+            <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
+                   v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" required> units
+        </span>
 
         <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
         <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
