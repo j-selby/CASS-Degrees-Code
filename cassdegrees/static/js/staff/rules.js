@@ -277,6 +277,7 @@ Vue.component('rule_subplan', {
     data: function() {
         return {
             "subplans": [],
+            "active_filter": "",
             "filtered_subplans": [],
             "program_year": "",
             "subplan_types": [],
@@ -318,17 +319,16 @@ Vue.component('rule_subplan', {
         this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
     },
 
-
     computed: {
         // generates the appropriate placeholder text for the tool depending on list or course mode
         placeholderText() {
-            plantype = this.details.subplan_type;
-            if (plantype === "MIN") {
-                return "Search minors, press esc or tab to close"
-            } else if (plantype === "MAJ") {
-                return "Search majors, press esc or tab to close"
-            } else if (plantype === "SPEC") {
-                return "Search specialisations, press esc or tab to close"
+            year = this.program_year
+            if (this.active_filter === "MIN") {
+                return "Search minors for " + year + ", press esc or tab to close"
+            } else if (this.active_filter === "MAJ") {
+                return "Search majors for " + year + ", press esc or tab to close"
+            } else if (this.active_filter === "SPEC") {
+                return "Search specialisations for " + year + ", press esc or tab to close"
             } else {
                 return "Select a subplan type above to proceed."
             }
@@ -374,6 +374,7 @@ Vue.component('rule_subplan', {
             })
 
             // Clear options proxy to avoid selection tags from being displayed
+            this.check_options()
             this.optionsProxy = []
         },
 
@@ -417,6 +418,7 @@ Vue.component('rule_subplan', {
         },
         change_filter: function(){
             // Clear the current list and re-apply the filter
+            this.active_filter = this.details.subplan_type
             for(var i in this.details.ids)
                 this.details.ids[i] = -1;
             this.apply_subplan_filter();
@@ -429,12 +431,7 @@ Vue.component('rule_subplan', {
             this.check_options();
             this.do_redraw();
         },
-        // remove_subplan: function(index) {
-        //     // Mutable modification - redraw needed
-        //     this.details.ids.splice(index, 1);
-        //     this.check_options();
-        //     this.do_redraw();
-        // },
+
         check_options: function() {
             // Ensure all data has been filled in
             this.is_blank = this.details.kind === "";
