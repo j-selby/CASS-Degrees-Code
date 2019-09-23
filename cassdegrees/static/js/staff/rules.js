@@ -635,6 +635,7 @@ Vue.component('rule_course', {
 
             // Clear options proxy to avoid selection tags from being displayed
             this.optionsProxy = []
+            this.check_options();
         },
 
         // remove the item from the display list and the elements field when x is clicked
@@ -656,12 +657,11 @@ Vue.component('rule_course', {
             });
 
             this.check_options();
-            this.do_redraw();
         },
 
         check_options: function() {
             // Ensure all data has been filled in
-            this.is_blank = this.details.unit_count == null;
+            this.is_blank = false;
             this.is_blank = this.details.codes.length === 0;
             this.is_blank = this.is_blank || this.details.list_type === "";
 
@@ -673,17 +673,19 @@ Vue.component('rule_course', {
                     this.invalid_units = this.details.unit_count <= 0;
                     this.invalid_units_step = this.details.unit_count % 6 !== 0;
                 }
+                else
+                    this.is_blank = true;
             }
             else {
                 if (this.details.min_unit_count != null && this.details.max_unit_count != null) {
                     this.invalid_units = this.details.min_unit_count <= 0 || this.details.max_unit_count <= 0;
                     this.invalid_units_step = this.details.min_unit_count %6 !== 0 || this.details.max_unit_count %6 !== 0;
                 }
-                else {
+                else
                     this.is_blank = true;
-                }
             }
 
+            this.do_redraw();
             return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
         },
 
