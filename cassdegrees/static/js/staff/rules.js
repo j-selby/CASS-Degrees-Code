@@ -661,19 +661,17 @@ Vue.component('rule_course', {
 
         check_options: function() {
             // Ensure all data has been filled in
+            this.is_blank = this.details.unit_count == null;
             this.is_blank = this.details.codes.length === 0;
             this.is_blank = this.is_blank || this.details.list_type === "";
 
             // Duplicates are prevented by condition on updateSelected()
 
             // Ensure Unit Count is valid:
-            if (this.details.list_type != 'min_max') {
+            if (this.details.list_type !== 'min_max') {
                 if (this.details.unit_count != null) {
                     this.invalid_units = this.details.unit_count <= 0;
                     this.invalid_units_step = this.details.unit_count % 6 !== 0;
-                }
-                else {
-                    this.is_blank = true;
                 }
             }
             else {
