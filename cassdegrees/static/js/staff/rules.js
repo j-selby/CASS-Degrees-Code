@@ -506,7 +506,7 @@ Vue.component('rule_course', {
             if (!(rule.details.codes.length === 0)) {
                 for (let i = 0; i < rule.details.codes.length; i++){
                     for (let x = 0; x < rule.courses.length; x++){
-                        if (rule.courses[x].code === rule.details.codes[i]) {
+                        if (rule.courses[x].code === rule.details.codes[i]['code']) {
                             rule.courses.splice(x, 1).forEach(course => {
                                 rule.selected_courses.push(course)
                             });
@@ -597,7 +597,7 @@ Vue.component('rule_course', {
                     list.elements.forEach((course) => {
                         // add course code to details.codes if not already present
                         if (!this.details.codes.some(code => code === course.code)) {
-                            this.details.codes.push(course.code)
+                            this.details.codes.push({'code': resource.code, 'name': resource.name})
                         }
 
                         // if a course is added through a list, remove it from the temporary store of courses
@@ -620,12 +620,12 @@ Vue.component('rule_course', {
                     // Adds selected resources to array and prevents duplicates
                     if (!this.details.codes.some(code => code === resource.code)) {
                         this.selected_courses.push(resource)
-                        this.details.codes.push(resource.code)
+                        this.details.codes.push({'code': resource.code, 'name': resource.name});
                     }
                     // remove the selected course from the list of available courses to add
                     let resourceID = this.courses.indexOf(resource)
                     this.courses.splice(resourceID, 1)
-                })
+                });
             }
 
             // Clear options proxy to avoid selection tags from being displayed
@@ -643,7 +643,7 @@ Vue.component('rule_course', {
 
                 // find and remove code from details.codes
                 for (let i = 0; i < this.details.codes.length; i++){
-                    if (course.code === this.details.codes[i]){
+                    if (course.code === this.details.codes[i]['code']){
                         this.details.codes.splice(i, 1);
                         break;
                     }
@@ -989,6 +989,12 @@ Vue.component('rule_either_or', {
         "separator": {
             type: String,
             default: ""
+        },
+        // Refresh is used to redraw the sub rules without nuking everything.
+        // The prop is bound when the either_or is defined, and upon updating
+        // a prop, the rules will be updated without deleting them first.
+        "refresh": {
+            type: Array,
         }
     },
     data: function() {
@@ -1003,8 +1009,7 @@ Vue.component('rule_either_or', {
             component_groups: { 'rules': EITHER_OR_COMPONENT_NAMES, 'requisites': REQUISITE_EITHER_OR_COMPONENT_NAMES},
             component_names: EITHER_OR_COMPONENT_NAMES,
 
-            // Forces the element to re-render, if mutable events occurred
-            redraw: false
+            is_eitheror: true,
         }
     },
     methods: {
@@ -1018,16 +1023,16 @@ Vue.component('rule_either_or', {
             this.details.either_or[this.which_or].push({
                 type: this.add_a_rule_modal_option,
             });
-            this.do_redraw();
         },
         remove: function(index, group) {
+            console.log(this.details.either_or[group]);
             this.details.either_or[group].splice(index, 1);
             this.count_units();
             this.do_redraw();
         },
         duplicate_rule: function(index, group) {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
-            this.details.either_or[group].splice(index, 0, JSON.parse(JSON.stringify(this.details.either_or[group][index])));
+            this.details.either_or[group].push(JSON.parse(JSON.stringify(this.details.either_or[group][index])));
             this.do_redraw();
         },
         remove_group: function(group) {
@@ -1074,11 +1079,7 @@ Vue.component('rule_either_or', {
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
-            this.redraw = true;
-
-            this.$nextTick(() => {
-                this.redraw = false;
-            });
+            this.refresh.push("");
         }
     },
     template: '#eitherOrTemplate'
@@ -1095,8 +1096,47 @@ Vue.component('rule', {
         return {
             component_names: ALL_COMPONENT_NAMES,
             component_help: ALL_COMPONENT_HELP,
-            show_help: false
+            show_help: false,
+            refresh: [],
         }
+    },
+    mounted: function() {
+        var siblings = app.$children[0].$children;
+
+        // Determine whether this rule is the most recent rule by finding which sibling
+        // has the highest _uid assigned by Vue.
+        var max = 0;
+        var rule_creation_ranks = {};
+        siblings.forEach(function(sib){
+            if (!sib.$children[0].is_eitheror) {
+                rule_creation_ranks[sib._uid] = sib;
+                sib.$el.classList.remove("rule_active_visual");
+                max = (sib._uid > max) ? sib._uid : max;
+            }
+            // Else we need to get the children of the either or rule
+            else {
+                // If nested or rules get implemented, this section may need to be made recursive
+                var either_or_rules = sib.$children[0].$children;
+                sib.$el.classList.remove("rule_active_visual");
+
+                if (either_or_rules.length > 0) {
+                    either_or_rules.forEach(function(rule) {
+                        rule_creation_ranks[rule._uid] = rule;
+                        rule.$el.classList.remove("rule_active_visual");
+                        max = (rule._uid > max) ? rule._uid : max;
+                    })
+                }
+                else {
+                    rule_creation_ranks[sib._uid] = sib;
+                    max = (sib._uid > max) ? sib._uid : max;
+                }
+            }
+        });
+        var recent_rule = rule_creation_ranks[max];
+
+        // Add a visual cue and scroll to the most recent rule
+        recent_rule.$el.classList.add("rule_active_visual");
+        recent_rule.$el.scrollIntoView({behavior: "smooth"})
     },
     methods:{
         check_options: function() {
@@ -1144,7 +1184,7 @@ Vue.component('rule_container', {
             component_names: null,
 
             // Forces the element to re-render, if mutable events occurred
-            redraw: false
+            redraw: false,
         }
     },
     methods: {
@@ -1153,16 +1193,13 @@ Vue.component('rule_container', {
             this.rules.push({
                 type: this.add_a_rule_modal_option,
             });
-            this.do_redraw();
         },
         remove: function(index) {
             this.rules.splice(index, 1);
-            this.do_redraw();
         },
         duplicate_rule: function(index) {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
-            this.rules.splice(index, 0, JSON.parse(JSON.stringify(this.rules[index])));
-            this.do_redraw();
+            this.rules.push(JSON.parse(JSON.stringify(this.rules[index])));
         },
         check_options: function() {
             var valid = true;

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.forms.models import model_to_dict
 from django.http import HttpRequest
 
-from api.models import CourseModel, ProgramModel, SubplanModel
+from api.models import CourseModel, ProgramModel, SubplanModel, ListModel
 from api.views import search
 import json
 
@@ -46,9 +46,12 @@ def pretty_print_rules(program):
                     gen_request = HttpRequest()
                     gen_request.GET = {'select': 'code,name,units', 'from': 'course'}
                     rule['courses'] = []
-                    for code in rule['codes']:
+                    for course in rule['codes']:
+                        code = course['code']
+                        name = course['name']
                         # Add a new field containing the courses that match the given code
                         gen_request.GET['code_exact'] = code
+                        gen_request.GET['name_exact'] = name
                         courses = json.loads(search(gen_request).content.decode())
                         rule['courses'] += courses
 
@@ -79,8 +82,11 @@ def view_section(request):
         for rule in subplan['rules']:
             # Add a new field containing the courses that match the given code
             rule['courses'] = []
-            for code in rule['codes']:
+            for course in rule['codes']:
+                code = course['code']
+                name = course['name']
                 gen_request.GET['code_exact'] = code
+                gen_request.GET['name_exact'] = name
                 courses = json.loads(search(gen_request).content.decode())
                 rule['courses'] += courses
 
@@ -93,3 +99,10 @@ def view_section(request):
         pretty_print_rules(program)
 
         return render(request, 'staff/view/viewprogram.html', context={'data': program})
+
+    # ListModel(id, name, year, elements, lastupdated)
+    elif "list" in url:
+        # ListModel.elements already contains the code and name of each unit in the list
+        cList = model_to_dict(ListModel.objects.get(id=int(id_to_edit)))
+
+        return render(request, 'staff/view/viewlist.html', context={'data': cList})

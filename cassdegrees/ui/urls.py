@@ -44,6 +44,7 @@ urlpatterns = [
     path(staff_url_prefix + 'delete/courses/', delete_course),
     path(staff_url_prefix + 'delete/programs/', delete_program),
     path(staff_url_prefix + 'delete/subplans/', delete_subplan),
+    path(staff_url_prefix + 'delete/lists/', delete_list),
     path(staff_url_prefix + 'edit/course/', edit_course, name='edit_course'),
     path(staff_url_prefix + 'edit/program/', edit_program, name='edit_program'),
     path(staff_url_prefix + 'edit/subplan/', edit_subplan, name='edit_subplan'),
@@ -53,6 +54,7 @@ urlpatterns = [
     path(staff_url_prefix + 'view/program/', view_section),
     path(staff_url_prefix + 'view/subplan/', view_section),
     path(staff_url_prefix + 'view/course/', view_section),
+    path(staff_url_prefix + 'view/list/', view_section),
     path(staff_url_prefix + 'report/course/', report_section),
     path(staff_url_prefix + 'pdf/program/', view_program_pdf),
 ]
