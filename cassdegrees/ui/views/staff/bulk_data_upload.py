@@ -45,7 +45,7 @@ def bulk_data_upload(request):
         file_type = os.path.splitext(str(raw_uploaded_file))[1]
 
         # Put the supported file extensions in this list
-        supported_file_types = {"xlsx", "xls", "csv"}
+        supported_file_types = [".xlsx", ".xls", ".csv"]
 
         if file_type not in supported_file_types:
             context['user_msg'] = "Failed to upload file... " \
