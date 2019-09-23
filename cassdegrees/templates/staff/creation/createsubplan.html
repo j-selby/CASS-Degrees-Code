@@ -94,6 +94,25 @@
                         "to students or be selectable as a requirement elsewhere. Are you sure you want to continue?")) {
                     return false;
                 }
+                // If the user has chosen to publish a subplan but the unit count is inconsistent, verify with the user
+                if (document.getElementById("id_publish").checked) {
+                    var planType = document.getElementById("id_planType").value;
+                    if (planType === "MAJ" && !isValidUnitCount(48) &&
+                        !confirm("You have created a major that does not contain 48 units.\n\n" +
+                            "Are you sure you want to continue? (Not Recommended)")){
+                        return false;
+                    }
+                    if (planType === "MIN" && !isValidUnitCount(24) &&
+                        !confirm("You have created a minor that does not contain 24 units.\n\n" +
+                            "Are you sure you want to continue? (Not Recommended)")){
+                        return false;
+                    }
+                    if (planType === "SPEC" && !isValidUnitCount(24) &&
+                        !confirm("You have created a specialisation that does not contain 24 units.\n\n" +
+                            "Are you sure you want to continue? (Not Recommended)")){
+                        return false;
+                    }
+                }
 
                 document.getElementById('redirect').value = redirect;
                 document.getElementById('mainForm').submit();
