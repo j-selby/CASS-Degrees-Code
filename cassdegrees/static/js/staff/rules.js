@@ -152,7 +152,7 @@ Vue.component('rule_incompatibility', {
             this.check_options();
             this.do_redraw();
         },
-        check_options: function() {
+        check_options: function(is_submission) {
             // Check for duplicates
             this.non_unique_options = false;
             var found = [];
@@ -231,7 +231,7 @@ Vue.component('rule_program', {
         request.send();
     },
     methods: {
-        check_options: function() {
+        check_options: function(is_submission) {
             // Ensure all data has been filled in
             this.is_blank = this.details.program === "";
 
@@ -251,6 +251,8 @@ Vue.component('rule_program', {
 
 // -------------------------------- SUBPLAN RULE ----------------------------------------------------------------------
 
+// with implementation of the multiselect, there is no longer a need for -1 placeholders for unselected components.
+
 Vue.component('rule_subplan', {
     props: {
         "details": {
@@ -259,7 +261,7 @@ Vue.component('rule_subplan', {
             validator: function (value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("ids")) {
-                    value.ids = [-1];
+                    value.ids = [];
                 }
 
                 if (!value.hasOwnProperty("kind")) {
@@ -277,12 +279,12 @@ Vue.component('rule_subplan', {
     data: function() {
         return {
             "subplans": [],
-            "active_filter": "",
+            "active_filter": "",                // local data used to monitor value of subplan_type for dynamic label
             "filtered_subplans": [],
             "program_year": "",
             "subplan_types": [],
             "info_msg": INFO_MSGS['subplan'],
-            "optionsProxy": [],                 // required prop, default behaviour to display selection tags
+            "optionsProxy": [],                  // required prop, default behaviour to display selection tags
             "selected_subplans": [],             // used to store the code and name version of the course when selected
             "showLoadingSpinner": false,
 
@@ -298,11 +300,25 @@ Vue.component('rule_subplan', {
     created: function() {
         var rule = this;
         var request = new XMLHttpRequest();
+        this.selected_subplans = []
 
         request.addEventListener("load", function() {
             rule.subplans = JSON.parse(request.response);
 
-            rule.check_options();
+            // if there are already plans selected on load, load their details from subplans to selected_subplans
+            if (rule.details.ids.length > 0) {
+                for (var i = 0; i < rule.details.ids.length; i++) {
+                    let existingID = rule.details.ids[i];
+                    for (var x = 0; x < rule.subplans.length; x++) {
+                        if (existingID === rule.subplans[x].id) {
+                            rule.selected_subplans.push(rule.subplans[x])
+                            break;
+                        }
+                    }
+                }
+            }
+
+            rule.check_options(false);
             rule.apply_subplan_filter();
         });
         request.open("GET", "/api/search/?select=id,code,name,units,year,publish,planType&from=subplan&publish=true");
@@ -314,6 +330,12 @@ Vue.component('rule_subplan', {
         rule.program_year = document.getElementById('id_year').value;
         // Modifies the original 'id_year' element by telling it to refresh all components on all keystrokes
         document.getElementById('id_year').setAttribute("oninput", "redrawVueComponents()");
+
+        // Check on load whether a filter already exists
+        console.log("Type: " + this.details.subplan_type)
+        if (rule.details.subplan_type !== "") {
+            this.active_filter = this.details.subplan_type;
+        }
 
         // Keep a copy of the OR Rule's "count_units" function (Or a blank function if unavailable)
         this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
@@ -335,9 +357,9 @@ Vue.component('rule_subplan', {
         },
 
         // used to compute appropriate ordering for template ul element
-        // sortedSelectedList() {
-        //     return this.selected_courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
-        // },
+        sortedSelectedList() {
+            return this.selected_subplans.sort((a, b) => (a.code > b.code) ? 1 : -1)
+        },
 
         // used to compute appropriate ordering for dropdown list
         sortedSubplanList() {
@@ -350,8 +372,6 @@ Vue.component('rule_subplan', {
     components: {
         Multiselect: window.VueMultiselect.default
     },
-
-    // todo: check validation functions and check why placeholder is not updating
 
     methods: {
         // Returns label for multiselect drop down, label for dynamic list beneath generated separately
@@ -374,7 +394,7 @@ Vue.component('rule_subplan', {
             })
 
             // Clear options proxy to avoid selection tags from being displayed
-            this.check_options()
+            this.check_options(false)
             this.optionsProxy = []
         },
 
@@ -397,7 +417,7 @@ Vue.component('rule_subplan', {
                 }
             });
 
-            this.check_options();
+            this.check_options(false);
             this.do_redraw();
         },
 
@@ -411,35 +431,47 @@ Vue.component('rule_subplan', {
                         return item.planType === rule.details.subplan_type && parseInt(rule.program_year) === item.year;
                     }
                 );
+                // If there are already selected plans when the filter is applied, remove subplans from list
+                if (rule.selected_subplans.length > 0) {
+                    rule.selected_subplans.forEach(element => {
+                        for (var i = 0; i < rule.filtered_subplans.length; i++){
+                            if (element.id === rule.filtered_subplans[i].id) {
+                                rule.filtered_subplans.splice(i, 1);
+                                break;
+                            }
+                        }
+                    })
+                }
             }
             else
                 rule.filtered_subplans = [];
             this.do_redraw();
         },
+
         change_filter: function(){
             // Clear the current list and re-apply the filter
             this.active_filter = this.details.subplan_type
-            for(var i in this.details.ids)
-                this.details.ids[i] = -1;
+
+            // reset selected ids
+            this.details.ids = [];
+            this.selected_subplans = [];
             this.apply_subplan_filter();
             this.update_units();
             this.do_redraw();
         },
-        add_subplan: function() {
-            // Mutable modification - redraw needed
-            this.details.ids.push(-1);
-            this.check_options();
-            this.do_redraw();
-        },
 
-        check_options: function() {
-            // Ensure all data has been filled in
-            this.is_blank = this.details.kind === "";
-            for (var index in this.details.ids) {
-                var value = this.details.ids[index];
-                if (value === -1 || value === "") {
-                    this.is_blank = true;
-                    break;
+        check_options: function(is_submission) {
+            // Ensure all data has been filled in if final submission
+            // options are blank if kind is blank or details.ids.length < 1
+            console.log("is_submission: " + is_submission)
+
+            // only display error if the user has attempted to submit the form
+            if (is_submission) {
+                this.is_blank = this.details.kind === "" || this.details.ids.length < 1;
+            } else {
+                // remove error if user corrects prior to submission
+                if (this.details.kind !=="" && this.details.ids.length > 0) {
+                    this.is_blank = false;
                 }
             }
 
@@ -501,14 +533,18 @@ Vue.component('rule_subplan', {
             this.filtered_subplans = this.sortedSubplanList
         },
 
+        // force sort of the selected options used to display the ul component
+        sortSelectedList() {
+            this.selected_subplans = this.sortedSelectedList
+        },
+
         update_units: function() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_count_units_fn();
-            this.check_options();
+            this.check_options(false);
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
-            console.log("redraw called")
             this.program_year = document.getElementById('id_year').value;
             this.redraw = true;
 
@@ -591,7 +627,7 @@ Vue.component('rule_course', {
             });
 
             rule.list_types = LIST_TYPES;
-            rule.check_options();
+            rule.check_options(false);
 
             // if there are already selected courses in details.codes when the component is loaded load,
             // remove them from the options - must be done after courses response received
@@ -722,6 +758,7 @@ Vue.component('rule_course', {
 
             // Clear options proxy to avoid selection tags from being displayed
             this.optionsProxy = []
+            this.check_options(false)
         },
 
         // remove the item from the display list and the elements field when x is clicked
@@ -742,15 +779,28 @@ Vue.component('rule_course', {
                 }
             });
 
-            this.check_options();
+            this.check_options(false);
             this.do_redraw();
         },
 
-        check_options: function() {
-            // Ensure all data has been filled in
-            this.is_blank = this.details.unit_count == null;
-            this.is_blank = this.details.codes.length === 0;
-            this.is_blank = this.is_blank || this.details.list_type === "";
+        check_options: function (is_submission) {
+            // If final submission ensure all data has been filled in
+            let blank_count = this.details.unit_count == null;
+            let blank_codes = this.details.codes.length === 0;
+            let blank_listtype = this.details.list_type ==="";
+
+            if (is_submission) {
+                this.is_blank = blank_count || blank_codes || blank_listtype;
+                // this.is_blank = this.details.unit_count == null;
+                // this.is_blank = this.details.codes.length === 0;
+                // this.is_blank = this.is_blank || this.details.list_type === "";
+            } else {
+                // remove error if user corrects prior to resubmission
+                if (!blank_listtype && !blank_codes && !blank_count) {
+                    this.is_blank = false;
+                }
+            }
+
 
             // Duplicates are prevented by condition on updateSelected()
 
@@ -766,7 +816,7 @@ Vue.component('rule_course', {
         update_units: function() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_count_units_fn();
-            this.check_options();
+            this.check_options(false);
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
@@ -839,7 +889,7 @@ Vue.component('rule_course_requisite', {
             this.check_options();
             this.do_redraw();
         },
-        check_options: function() {
+        check_options: function(is_submission) {
             // Ensure all data has been filled in
             this.is_blank = false;
             for (var index in this.details.codes) {
@@ -942,7 +992,7 @@ Vue.component('rule_elective', {
         this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
     },
     methods: {
-        check_options: function() {
+        check_options: function(is_submission) {
             // Ensure all data has been filled in
             this.is_blank = this.details.unit_count === "";
 
@@ -1010,7 +1060,7 @@ Vue.component('rule_custom_text', {
         this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
     },
     methods: {
-        check_options: function() {
+        check_options: function(is_submission) {
             this.is_blank = this.details.text === "";
 
             this.not_divisible = this.details.unit_count % 6 !== 0;
@@ -1050,7 +1100,7 @@ Vue.component('rule_custom_text_req', {
         this.check_options();
     },
     methods: {
-        check_options: function() {
+        check_options: function(is_submission) {
             this.is_blank = this.details.text === "";
 
             return !this.is_blank;
@@ -1137,10 +1187,10 @@ Vue.component('rule_either_or', {
             this.details.either_or.splice(group, 0, JSON.parse(JSON.stringify(this.details.either_or[group])));
             this.do_redraw();
         },
-        check_options: function() {
+        check_options: function(is_submission) {
             var valid = true;
             for (var index in this.$children){
-                valid = valid && this.$children[index].check_options();
+                valid = valid && this.$children[index].check_options(is_submission);
             }
 
             return valid;
@@ -1231,10 +1281,10 @@ Vue.component('rule', {
         recent_rule.$el.scrollIntoView({behavior: "smooth"})
     },
     methods:{
-        check_options: function() {
+        check_options: function(is_submission) {
             var valid = true;
             for (var index in this.$children){
-                valid = valid && this.$children[index].check_options();
+                valid = valid && this.$children[index].check_options(is_submission);
             }
 
             return valid;
@@ -1293,10 +1343,10 @@ Vue.component('rule_container', {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.rules.push(JSON.parse(JSON.stringify(this.rules[index])));
         },
-        check_options: function() {
+        check_options: function(is_submission) {
             var valid = true;
             for (var index in this.$children){
-                valid = valid && this.$children[index].check_options();
+                valid = valid && this.$children[index].check_options(is_submission);
             }
 
             return valid;
@@ -1318,8 +1368,9 @@ Vue.component('rule_container', {
  */
 function handleRules() {
     var valid = true;
+    console.log("handleRules called")
     for (var index in app.$children){
-        valid = valid && app.$children[index].check_options();
+        valid = valid && app.$children[index].check_options(true);
     }
 
     // Serialize list structures - this doesn't translate well over POST requests normally.
