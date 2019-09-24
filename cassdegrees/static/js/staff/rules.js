@@ -1083,18 +1083,11 @@ Vue.component('rule_either_or', {
                             case "SPEC": units += 24; break;
                         }
                     }
-                    else if (rule.hasOwnProperty("list_type")) {
-                        if (rule.list_type == 'min_max'){
-                            units += parseInt(rule.min_unit_count)
-                        }
-                        else {
-                            units += parseInt(rule.unit_count);
-                        }
-                    }
                     else if (rule.hasOwnProperty("unit_count")) {
                         units += parseInt(rule.unit_count);
                     }
                 }
+
                 if (units > 48) {
                     this.large_unit_count = true;
                     return;
