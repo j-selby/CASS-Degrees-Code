@@ -115,7 +115,7 @@
 
     <script>
         function submit_form(form_action, redirect) {
-            if (handleProgram() && handleRules()) {
+            if (handleProgram() && app.exportRules()) {
                 // Ensure that the course has been agreed to to being non public on submission.
                 if (!document.getElementById("id_publish").checked &&
                     !confirm("You haven't marked this program as public - this means this won't appear " +
@@ -133,7 +133,7 @@
         }
 
         function force_submit_form(form_action, redirect) {
-            handleRules();
+            app.exportRules();
             handleProgram();
 
             document.getElementById('mainForm').action.value = form_action;

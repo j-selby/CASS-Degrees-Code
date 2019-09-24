@@ -60,7 +60,9 @@ Vue.component('rule_subplan', {
         rule.program_year = document.getElementById('id_year').value;
 
         // Modifies the original 'id_year' element by telling it to refresh all components on all keystrokes
-        document.getElementById('id_year').addEventListener("input", redrawVueComponents);
+        document.getElementById('id_year').addEventListener("input", function() {
+            app.redraw();
+        });
 
         // Keep a copy of the OR Rule's "count_units" function (Or a blank function if unavailable)
         this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
