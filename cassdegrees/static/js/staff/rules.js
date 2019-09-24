@@ -343,13 +343,11 @@ Vue.component('rule_subplan', {
 
         // Keep a copy of the OR Rule's "update_units" function (Or a blank function if unavailable)
         this.parent_update_units_fn = this.$parent.get_or_rule_update_units_fn();
+
         // Check on load whether a filter already exists
         if (rule.details.subplan_type !== "") {
             this.active_filter = this.details.subplan_type;
         }
-
-        // Keep a copy of the OR Rule's "count_units" function (Or a blank function if unavailable)
-        this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
 
         this.updateSubplanTypeLabel()
         this.updateStudentDescriptionLabel()
@@ -560,7 +558,7 @@ Vue.component('rule_subplan', {
         },
         update_units: function() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
-            this.parent_count_units_fn();
+            this.parent_update_units_fn();
             this.check_options(false);
         },
 
@@ -1414,6 +1412,7 @@ Vue.component('rule', {
 
             return valid;
         },
+
         count_units: function() {
             var units = {"exact": 0, "max": 0, "min": 0};
             for (var child of this.$children){
@@ -1423,17 +1422,19 @@ Vue.component('rule', {
             }
             return units;
         },
-        get_or_rule_update_units_fn: function() {
+
+        get_or_rule_update_units_fn: function () {
             // Looks through the parent nodes until it finds the OR rule, returning its "count_units" function
             // If no OR rule is found, an empty function is returned
             var parent_or = this.$parent;
-            while(parent_or !== undefined){
-                if (parent_or.constructor.options.name === 'rule_either_or'){
+            while (parent_or !== undefined) {
+                if (parent_or.constructor.options.name === 'rule_either_or') {
                     return parent_or.update_units;
                 }
                 parent_or = parent_or.$parent;
             }
-            return function() {};
+            return function () {
+            };
         }
     },
     template: '#ruleTemplate'
