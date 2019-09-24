@@ -8,9 +8,6 @@
     <rule_container v-bind:rules="rules" />
 </fieldset>
 
-{# must come prior to use or uncaught reference error will occur #}
-{% include "widgets/rules/resources.html" %}
-
 {% include "widgets/rules/course_selection.html" %}
 
 {% include "widgets/rules/rule.html" %}
