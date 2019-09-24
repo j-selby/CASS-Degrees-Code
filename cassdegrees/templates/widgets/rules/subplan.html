@@ -1,0 +1,69 @@
+{% load static %}
+
+{% verbatim %}
+<script type="text/x-template" id="subplanRuleTemplate">
+    <fieldset v-if="!redraw">
+
+        <div v-if="subplans.length != 0">
+            <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+            <div class="msg-error" v-if="inconsistent_units">Options have different unit values!</div>
+            <div class="msg-error" v-if="wrong_year_selected">Selected subplans must have same year as program!</div>
+            <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+
+            <p>
+                Students must pick
+                <input class="text" v-model="details.kind" v-on:change="check_options" aria-required="true"
+                       placeholder="e.g. 'one Arts Major' or 'one Minor'"
+                       style="margin-left: 0; width: 400px" required>
+                <img src="//style.anu.edu.au/_anu/images/icons/web/question.png" class="btn-snall no-left-margin vertical-middle clickable"
+                     alt="Help button" v-on:click="show_help = true" />
+                from the following list
+                <select v-model="details.subplan_type" v-on:change="change_filter" required>
+                    <option v-for="(msg, type) in subplan_types" v-bind:value="type">{{ msg }}</option>
+                </select>:
+            </p>
+
+            <p></p>
+
+            <div v-for="(id, index) in details.ids">
+                <select v-model="details.ids[index]" v-on:change="check_options" required>
+                    <option v-for="subplan in filtered_subplans" v-bind:value="subplan.id">{{ subplan.name }} ({{ subplan.code }})</option>
+                </select>
+                <input v-if="details.ids.length > 1" type="button" v-on:click="remove_subplan(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            </div>
+
+            <input type="button" v-on:click="add_subplan()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
+        </div>
+        <div v-else v-html="info_msg"></div>
+
+        <div class="modal" v-if="show_help">
+            <div class="modal-background" v-on:click="show_help = false"></div>
+            <div class="modal-card">
+                <div class="card">
+                    <header class="box-header">
+                        Help for Subplan Description Field
+                    </header>
+                    <div class="box-solid box-has-footer">
+                        <p>
+                            This description field can be used to add more context to a subplan requirement. For example,
+                            you may simply wish to specify that students must pick "one Arts Major", or you could add
+                            additional criteria by saying students must pick "one Arts Major which has a different
+                            name to their chosen Minor".
+                            <br>
+                            <br>
+                            This description will be shown to students on exported PDFs and on the CASS Program Planner
+                            site as instructions when picking their subplan.
+                        </p>
+                    </div>
+                    <footer class="box-solid">
+                        <button class="button" v-on:click="show_help = false">OK</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+
+    </fieldset>
+</script>
+{% endverbatim %}
+
+<script type="text/javascript" src="{% static "js/staff/rules/subplan.js" %}"></script>
