@@ -70,7 +70,8 @@ Vue.component('rule', {
                 }
                 parent_or = parent_or.$parent;
             }
-            return () => {};
+            return () => {
+            };
         }
     },
     template: '#ruleTemplate'
