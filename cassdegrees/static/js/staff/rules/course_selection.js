@@ -13,7 +13,7 @@ Vue.component('rule_course_list', {
                 }
             },
 
-            validator: function (value) {
+            validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("codes")) {
                     value.codes = [];
@@ -73,7 +73,7 @@ Vue.component('rule_course_list', {
             "redraw": false
         }
     },
-    created: function() {
+    created: function () {
         var rule = this;
         var request = new XMLHttpRequest();
         rule.list_types = LIST_TYPES;
@@ -119,17 +119,17 @@ Vue.component('rule_course_list', {
 
     computed: {
         // generates the appropriate placeholder text for the tool depending on list or course mode
-        placeholderText(){
+        placeholderText() {
             return this.is_list_search ? "Search lists..." : "Search courses, press esc or tab to close when done"
         },
 
         // used to compute appropriate ordering for template ul element
-        sortedSelectedList(){
+        sortedSelectedList() {
             return this.selected_courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
         },
 
         // used to compute appropriate ordering for dropdown list
-        sortedCourseList(){
+        sortedCourseList() {
             return this.courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
         },
     },
@@ -145,11 +145,11 @@ Vue.component('rule_course_list', {
         },
 
         // force sort of multiselect options list on refresh
-        sortCourseOptions(){
+        sortCourseOptions() {
             this.courses = this.sortedCourseList
         },
 
-        toggleListMode(){
+        toggleListMode() {
             if (this.is_list_search) {
                 this.is_list_search = false;
                 this.courses = this.tempStore;
@@ -230,8 +230,8 @@ Vue.component('rule_course_list', {
         removeDependency(index) {
             this.selected_courses.splice(index, 1).forEach((course) => {
                 // add deleted course back to options
-                this.courses.push(course)
-                this.sortCourseOptions()
+                this.courses.push(course);
+                this.sortCourseOptions();
 
                 // find and remove code from details.codes
                 for (let i = 0; i < this.details.codes.length; i++) {
@@ -256,7 +256,7 @@ Vue.component('rule_course_list', {
             }
         },
 
-        check_options: function (is_submission) {
+        check_options(is_submission) {
             // If final submission ensure all data has been filled in
             let blank_count = this.details.unit_count == null;
             let blank_codes = this.details.codes.length === 0;
@@ -307,14 +307,14 @@ Vue.component('rule_course_list', {
             }
         },
 
-        update_units: function () {
+        update_units() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_update_units_fn();
             this.check_options(false);
         },
 
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw() {
             this.redraw = true;
 
             this.$nextTick(() => {

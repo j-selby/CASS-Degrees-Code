@@ -3,7 +3,7 @@ Vue.component('rule_custom_text', {
         "details": {
             type: Object,
 
-            validator: function (value) {
+            validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("text")) {
                     value.text = "";
@@ -21,29 +21,29 @@ Vue.component('rule_custom_text', {
             }
         }
     },
-    data: function() {
+    data() {
         return {
             "not_divisible": false,
             "is_blank": false
         }
     },
-    created: function() {
+    created() {
         this.check_options();
         // Keep a copy of the Or Rule's "update_units" function (Or a blank function if unavailable)
         this.parent_update_units_fn = this.$parent.get_or_rule_update_units_fn();
     },
     methods: {
-        check_options: function (is_submission) {
+        check_options(is_submission) {
             this.is_blank = this.details.text === "";
 
             this.not_divisible = this.details.unit_count % 6 !== 0;
 
             return !this.not_divisible && !this.is_blank;
         },
-        count_units: function() {
+        count_units() {
             return {"exact": parseInt(this.details.unit_count), "max": 0, "min": 0};
         },
-        update_units: function () {
+        update_units() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_update_units_fn();
             this.check_options();

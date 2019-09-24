@@ -80,8 +80,8 @@ const LIST_TYPES = {
 };
 
 const SUBPLAN_TYPES = {
-    'MAJ':  'Majors',
-    'MIN':  'Minors',
+    'MAJ': 'Majors',
+    'MIN': 'Minors',
     'SPEC': 'Specialisations'
 };
 
@@ -107,7 +107,7 @@ const app = new Vue({
         rules: []
     },
     methods: {
-        redraw: function () {
+        redraw() {
             this.$children.forEach((child) => {
                 child.do_redraw();
             });
@@ -115,7 +115,7 @@ const app = new Vue({
         /**
          * Submits Vue components into the form.
          */
-        exportRules: function () {
+        exportRules() {
             // Todo: remove existing success message if present prior to validation
             let valid = true;
 
@@ -129,7 +129,7 @@ const app = new Vue({
             return valid;
         }
     },
-    mounted: function () {
+    mounted() {
         const reqs = document.getElementById("rules").value.trim();
         if (reqs.length > 0) {
             const parsed = JSON.parse(reqs);

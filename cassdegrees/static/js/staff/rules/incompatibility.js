@@ -3,7 +3,7 @@ Vue.component('rule_incompatibility', {
         "details": {
             type: Object,
 
-            validator: function (value) {
+            validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("incompatible_courses")) {
                     value.incompatible_courses = [""];
@@ -13,7 +13,7 @@ Vue.component('rule_incompatibility', {
             }
         }
     },
-    data: function() {
+    data() {
         return {
             "courses": [],
             "info_msg": INFO_MSGS['course'],
@@ -25,16 +25,16 @@ Vue.component('rule_incompatibility', {
             "redraw": false
         }
     },
-    created: function() {
+    created() {
         // Javascript has the best indirection...
-        var rule = this;
+        const rule = this;
 
-        var request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
 
-        request.addEventListener("load", function() {
+        request.addEventListener("load", function () {
             rule.courses = JSON.parse(request.response);
             rule.courses.sort(
-                function(a, b){
+                function (a, b) {
                     return a['code'].localeCompare(b['code'])
                 }
             );
@@ -45,25 +45,25 @@ Vue.component('rule_incompatibility', {
         request.send();
     },
     methods: {
-        add_course: function() {
+        add_course() {
             // Mutable modification - redraw needed
             this.details.incompatible_courses.push(-1);
             this.check_options();
             this.do_redraw();
         },
-        remove_course: function(index) {
+        remove_course(index) {
             // Mutable modification - redraw needed
             this.details.incompatible_courses.splice(index, 1);
             this.check_options();
             this.do_redraw();
         },
-        check_options: function (is_submission) {
+        check_options(is_submission) {
             // Check for duplicates
             this.non_unique_options = false;
             var found = [];
 
-            for (var index in this.details.incompatible_courses) {
-                var value = this.details.incompatible_courses[index];
+            for (const index in this.details.incompatible_courses) {
+                const value = this.details.incompatible_courses[index];
                 if (found.includes(value)) {
                     this.non_unique_options = true;
                     break;
@@ -73,8 +73,8 @@ Vue.component('rule_incompatibility', {
 
             // Ensure all data has been filled in
             this.is_blank = false;
-            for (var index in this.details.incompatible_courses) {
-                var value = this.details.incompatible_courses[index];
+            for (const index in this.details.incompatible_courses) {
+                const value = this.details.incompatible_courses[index];
                 if (value === -1 || value === "") {
                     this.is_blank = true;
                     break;
@@ -84,7 +84,7 @@ Vue.component('rule_incompatibility', {
             return !this.non_unique_options && !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw() {
             this.redraw = true;
 
             this.$nextTick(() => {

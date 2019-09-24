@@ -2,7 +2,7 @@ Vue.component('rule_either_or', {
     props: {
         "details": {
             type: Object,
-            validator: function (value) {
+            validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("either_or")) {
                     value.either_or = [];
@@ -23,7 +23,7 @@ Vue.component('rule_either_or', {
             type: Array,
         }
     },
-    data: function() {
+    data: function () {
         return {
             show_add_a_rule_modal: false,
             which_or: 0,
@@ -40,38 +40,38 @@ Vue.component('rule_either_or', {
         }
     },
     methods: {
-        add_or: function() {
+        add_or() {
             this.details.either_or.push([]);
             this.do_redraw();
         },
-        add_rule: function() {
+        add_rule() {
             this.show_add_a_rule_modal = false;
             // Add chosen rule to the right or group (based on the button clicked).
             this.details.either_or[this.which_or].push({
                 type: this.add_a_rule_modal_option,
             });
         },
-        remove: function (index, group) {
+        remove(index, group) {
             this.details.either_or[group].splice(index, 1);
             this.update_units();
             this.do_redraw();
         },
-        duplicate_rule: function (index, group) {
+        duplicate_rule(index, group) {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.details.either_or[group].push(JSON.parse(JSON.stringify(this.details.either_or[group][index])));
             this.do_redraw();
         },
-        remove_group: function(group) {
+        remove_group(group) {
             this.details.either_or.splice(group, 1);
             this.update_units();
             this.do_redraw();
         },
-        duplicate_group: function(group) {
+        duplicate_group(group) {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.details.either_or.splice(group, 0, JSON.parse(JSON.stringify(this.details.either_or[group])));
             this.do_redraw();
         },
-        check_options: function (is_submission) {
+        check_options(is_submission) {
             var valid = true;
             for (var child of this.$children){
                 valid = valid && child.check_options(is_submission);
@@ -119,7 +119,7 @@ Vue.component('rule_either_or', {
 
             return valid;
         },
-        count_units: function() {
+        count_units() {
             // Get the unit count of the entire OR rule as the unit count of the first group
             var units = {"exact": 0, "max": 0, "min": 0};
             if (this.details.either_or.length !== 0){
@@ -161,7 +161,7 @@ Vue.component('rule_either_or', {
             this.large_unit_count = false;
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw() {
             this.refresh.push("");
         }
     },

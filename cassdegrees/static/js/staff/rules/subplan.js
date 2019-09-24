@@ -3,7 +3,7 @@ Vue.component('rule_subplan', {
         "details": {
             type: Object,
 
-            validator: function (value) {
+            validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("ids")) {
                     value.ids = [];
@@ -26,7 +26,7 @@ Vue.component('rule_subplan', {
             }
         }
     },
-    data: function() {
+    data() {
         return {
             "subplans": [],
             "active_filter": "",                // local data used to monitor value of subplan_type for dynamic label
@@ -50,10 +50,10 @@ Vue.component('rule_subplan', {
             "redraw": false
         }
     },
-    created: function() {
+    created() {
         // Javascript has the best indirection...
-        var rule = this;
-        var request = new XMLHttpRequest();
+        const rule = this;
+        const request = new XMLHttpRequest();
         this.selected_subplans = []
         rule.subplan_types = SUBPLAN_TYPES;
 
@@ -82,7 +82,7 @@ Vue.component('rule_subplan', {
         // Sets the program year to be the value of the id_year field in the original component
         rule.program_year = document.getElementById('id_year').value;
         // Modifies the original 'id_year' element by telling it to refresh all components on all keystrokes
-        document.getElementById('id_year').addEventListener("input", function() {
+        document.getElementById('id_year').addEventListener("input", function () {
             app.redraw();
         });
 
@@ -135,9 +135,9 @@ Vue.component('rule_subplan', {
     },
 
     methods: {
-        // Returns label for multiselect drop down, label for dynamic list beneath generated separately
+// Returns label for multiselect drop down, label for dynamic list beneath generated separately
         customLabel(option) {
-            return `${option.code} - ${option.name} ${option.year}`
+            return `${option.code} - ${option.name} ${option.year}`;
         },
 
         // Update an array of selected values and remove the selected item from the list of available options
@@ -146,17 +146,17 @@ Vue.component('rule_subplan', {
             value.forEach((resource) => {
                 // Adds selected resources to array and prevents duplicates
                 if (!this.details.ids.some(id => id === resource.id)) {
-                    this.selected_subplans.push(resource)
-                    this.details.ids.push(resource.id)
+                    this.selected_subplans.push(resource);
+                    this.details.ids.push(resource.id);
                 }
                 // remove the selected course from the list of available courses to add
-                let resourceID = this.filtered_subplans.indexOf(resource)
-                this.filtered_subplans.splice(resourceID, 1)
-            })
+                let resourceID = this.filtered_subplans.indexOf(resource);
+                this.filtered_subplans.splice(resourceID, 1);
+            });
 
             // Clear options proxy to avoid selection tags from being displayed
-            this.check_options(false)
-            this.optionsProxy = []
+            this.check_options(false);
+            this.optionsProxy = [];
         },
 
         // remove the item from the display list and the elements field when x is clicked
@@ -165,8 +165,8 @@ Vue.component('rule_subplan', {
         remove_subplan(index) {
             this.selected_subplans.splice(index, 1).forEach((subplan) => {
                 // add deleted subplans back to options
-                this.filtered_subplans.push(subplan)
-                this.sortSubplanOptions()
+                this.filtered_subplans.push(subplan);
+                this.sortSubplanOptions();
 
                 // find and remove code from details.ids
                 for (let i = 0; i < this.details.ids.length; i++) {
@@ -181,9 +181,9 @@ Vue.component('rule_subplan', {
             this.do_redraw();
         },
 
-        apply_subplan_filter: function () {
+        apply_subplan_filter() {
             // Create a new array containing the filtered items for vue to read off
-            var rule = this;
+            const rule = this;
 
             if (rule.program_year && rule.details.subplan_type) {
                 rule.filtered_subplans = rule.subplans.filter(
@@ -194,7 +194,7 @@ Vue.component('rule_subplan', {
                 // If there are already selected plans when the filter is applied, remove subplans from list
                 if (rule.selected_subplans.length > 0) {
                     rule.selected_subplans.forEach(element => {
-                        for (var i = 0; i < rule.filtered_subplans.length; i++) {
+                        for (let i = 0; i < rule.filtered_subplans.length; i++) {
                             if (element.id === rule.filtered_subplans[i].id) {
                                 rule.filtered_subplans.splice(i, 1);
                                 break;
@@ -202,15 +202,16 @@ Vue.component('rule_subplan', {
                         }
                     })
                 }
-            } else
+            } else {
                 rule.filtered_subplans = [];
+            }
             this.do_redraw();
         },
 
-        change_filter: function () {
+        change_filter() {
             // Clear the current list and re-apply the filter
-            this.active_filter = this.details.subplan_type
-            this.updateSubplanTypeLabel()
+            this.active_filter = this.details.subplan_type;
+            this.updateSubplanTypeLabel();
             // reset selected ids
             this.details.ids = [];
             this.selected_subplans = [];
@@ -219,7 +220,7 @@ Vue.component('rule_subplan', {
             this.do_redraw();
         },
 
-        check_options: function (is_submission) {
+        check_options(is_submission) {
             // Ensure all data has been filled in if final submission
             // options are blank if kind is blank or details.ids.length < 1
             // only display error if the user has attempted to submit the form
@@ -235,10 +236,10 @@ Vue.component('rule_subplan', {
             // Check if invalid subplan year
             this.wrong_year_selected = false;
             year_check:
-                for (var selected_index in this.details.ids) {
+                for (const selected_index in this.details.ids) {
                     selected_value = this.details.ids[selected_index];
-                    for (var element_index in this.subplans) {
-                        var element_value = this.subplans[element_index];
+                    for (const element_index in this.subplans) {
+                        const element_value = this.subplans[element_index];
                         if (element_value.id == selected_value) {
                             if ("" + element_value['year'] != this.program_year) {
                                 this.wrong_year_selected = true;
@@ -252,8 +253,8 @@ Vue.component('rule_subplan', {
             this.non_unique_options = false;
             var found = [];
 
-            for (var index in this.details.ids) {
-                var value = this.details.ids[index];
+            for (const index in this.details.ids) {
+                const value = this.details.ids[index];
                 if (found.includes(value)) {
                     this.non_unique_options = true;
                     break;
@@ -265,11 +266,11 @@ Vue.component('rule_subplan', {
             this.inconsistent_units = false;
             var desired_unit_value = 0;
 
-            for (var index in this.details.ids) {
-                var value = this.details.ids[index];
+            for (const index in this.details.ids) {
+                const value = this.details.ids[index];
                 // Find the raw data for this ID
-                for (var element_index in this.subplans) {
-                    var element_value = this.subplans[element_index];
+                for (const element_index in this.subplans) {
+                    const element_value = this.subplans[element_index];
                     if (element_value.id === value) {
                         if (desired_unit_value === 0) {
                             desired_unit_value = element_value.units;
@@ -294,14 +295,15 @@ Vue.component('rule_subplan', {
             this.selected_subplans = this.sortedSelectedList
         },
 
-        count_units: function() {
-            var units = SUBPLAN_UNITS[this.details.subplan_type];
+        count_units() {
+            const units = SUBPLAN_UNITS[this.details.subplan_type];
             if (units)
                 return {"exact": units, "max": 0, "min": 0};
             else
                 return {"exact":  0, "max": 0, "min": 0};
         },
-        update_units: function() {
+
+        update_units() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_update_units_fn();
             this.check_options(false);
