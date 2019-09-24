@@ -483,3 +483,9 @@ select.text{
 .pretty .state label {
     overflow: hidden;
 }
+
+/* Forces a checkbox to appear larger on the page */
+.large-checkbox {
+    margin: 5px;
+    font-size: 25px;
+}
