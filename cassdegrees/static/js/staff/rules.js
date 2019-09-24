@@ -18,23 +18,23 @@ const ALL_COMPONENT_HELP = {
     'incompatibility': "A rule which notes that students must not have picked any of the set of courses specified.",
     'program': 'A rule which enforces that only students from a particular course can take this option.',
     'subplan': "A rule which gives students a choice from a particular set of majors, minors, specialisations or " +
-               "other subplans. The description here is used to describe the rule when displaying this rule to " +
-               "students.",
+        "other subplans. The description here is used to describe the rule when displaying this rule to " +
+        "students.",
     'course': "A rule which specifies that students should pick a certain amount of units from a set of available " +
-              "courses.",
+        "courses.",
     'course_requisite': "A rule which specifies that students should have taken a set of courses before taking this " +
-                        "one.",
+        "one.",
     'custom_text': "If other rules don't entirely fit the requirements of a rule, the custom text field allows " +
-                   "for the specification of other program content. Note that this isn't enforced in student-facing " +
-                   "tools.",
+        "for the specification of other program content. Note that this isn't enforced in student-facing " +
+        "tools.",
     'custom_text_req': "If other rules don't entirely fit the requirements of a rule, the custom text field allows " +
-                       "for the specification of other program content. Note that this isn't enforced in student-facing " +
-                       "tools.",
+        "for the specification of other program content. Note that this isn't enforced in student-facing " +
+        "tools.",
     'elective': "A rule which allows students to choose any courses offered by the ANU as electives to fill a set" +
-                " amount of units.",
+        " amount of units.",
     'either_or': "A rule which allows for the specification of sets of different paths that students can take. Each " +
-                 "\"OR\" group is a collection of rules which must be completed if students were to pick that specific " +
-                 "group."
+        "\"OR\" group is a collection of rules which must be completed if students were to pick that specific " +
+        "group."
 };
 
 // Translation table between internal names for components and human readable ones.
@@ -78,8 +78,8 @@ const LIST_TYPES = {
 };
 
 const SUBPLAN_TYPES = {
-    'MAJ':  'Majors',
-    'MIN':  'Minors',
+    'MAJ': 'Majors',
+    'MIN': 'Minors',
     'SPEC': 'Specialisations'
 };
 
@@ -108,7 +108,7 @@ Vue.component('rule_incompatibility', {
             }
         }
     },
-    data: function() {
+    data: function () {
         return {
             "courses": [],
             "info_msg": INFO_MSGS['course'],
@@ -120,16 +120,16 @@ Vue.component('rule_incompatibility', {
             "redraw": false
         }
     },
-    created: function() {
+    created: function () {
         // Javascript has the best indirection...
         var rule = this;
 
         var request = new XMLHttpRequest();
 
-        request.addEventListener("load", function() {
+        request.addEventListener("load", function () {
             rule.courses = JSON.parse(request.response);
             rule.courses.sort(
-                function(a, b){
+                function (a, b) {
                     return a['code'].localeCompare(b['code'])
                 }
             );
@@ -140,19 +140,19 @@ Vue.component('rule_incompatibility', {
         request.send();
     },
     methods: {
-        add_course: function() {
+        add_course: function () {
             // Mutable modification - redraw needed
             this.details.incompatible_courses.push(-1);
             this.check_options();
             this.do_redraw();
         },
-        remove_course: function(index) {
+        remove_course: function (index) {
             // Mutable modification - redraw needed
             this.details.incompatible_courses.splice(index, 1);
             this.check_options();
             this.do_redraw();
         },
-        check_options: function(is_submission) {
+        check_options: function (is_submission) {
             // Check for duplicates
             this.non_unique_options = false;
             var found = [];
@@ -179,7 +179,7 @@ Vue.component('rule_incompatibility', {
             return !this.non_unique_options && !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw: function () {
             this.redraw = true;
 
             this.$nextTick(() => {
@@ -205,7 +205,7 @@ Vue.component('rule_program', {
             }
         }
     },
-    data: function() {
+    data: function () {
         return {
             "programs": [],
             "info_msg": INFO_MSGS['program'],
@@ -216,13 +216,13 @@ Vue.component('rule_program', {
             "redraw": false
         }
     },
-    created: function() {
+    created: function () {
         // Javascript has the best indirection...
         var rule = this;
 
         var request = new XMLHttpRequest();
 
-        request.addEventListener("load", function() {
+        request.addEventListener("load", function () {
             rule.programs = JSON.parse(request.response);
 
             rule.check_options();
@@ -231,14 +231,14 @@ Vue.component('rule_program', {
         request.send();
     },
     methods: {
-        check_options: function(is_submission) {
+        check_options: function (is_submission) {
             // Ensure all data has been filled in
             this.is_blank = this.details.program === "";
 
             return !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw: function () {
             this.redraw = true;
 
             this.$nextTick(() => {
@@ -264,6 +264,11 @@ Vue.component('rule_subplan', {
                     value.ids = [];
                 }
 
+                // optional description field for staff reference
+                if (!value.hasOwnProperty("list_description")) {
+                    value.list_description = "";
+                }
+
                 if (!value.hasOwnProperty("kind")) {
                     value.kind = "";
                 }
@@ -276,7 +281,7 @@ Vue.component('rule_subplan', {
             }
         }
     },
-    data: function() {
+    data: function () {
         return {
             "subplans": [],
             "active_filter": "",                // local data used to monitor value of subplan_type for dynamic label
@@ -297,12 +302,12 @@ Vue.component('rule_subplan', {
             "redraw": false
         }
     },
-    created: function() {
+    created: function () {
         var rule = this;
         var request = new XMLHttpRequest();
         this.selected_subplans = []
 
-        request.addEventListener("load", function() {
+        request.addEventListener("load", function () {
             rule.subplans = JSON.parse(request.response);
 
             // if there are already plans selected on load, load their details from subplans to selected_subplans
@@ -332,7 +337,6 @@ Vue.component('rule_subplan', {
         document.getElementById('id_year').setAttribute("oninput", "redrawVueComponents()");
 
         // Check on load whether a filter already exists
-        console.log("Type: " + this.details.subplan_type)
         if (rule.details.subplan_type !== "") {
             this.active_filter = this.details.subplan_type;
         }
@@ -353,6 +357,21 @@ Vue.component('rule_subplan', {
                 return "Search specialisations for " + year + ", press esc or tab to close"
             } else {
                 return "Select a subplan type above to proceed."
+            }
+        },
+
+        getPlanType() {
+            if (this.active_filter !== "") {
+                console.log("subplan_types: " + this.subplan_types)
+                console.log("this plan: " + this.subplan_types[this.active_filter])
+                let reqStr = this.subplan_types[this.active_filter];
+                if (reqStr !== undefined) {
+                    return reqStr.toLowerCase()
+                } else {
+                    return ""
+                }
+            } else {
+                return ""
             }
         },
 
@@ -402,7 +421,6 @@ Vue.component('rule_subplan', {
         // index is the index from the selected_courses array
         // remove code details.codes
         remove_subplan(index) {
-            console.log("attempting to delete " + index + " " + this.selected_subplans[index])
             this.selected_subplans.splice(index, 1).forEach((subplan) => {
                 // add deleted subplans back to options
                 this.filtered_subplans.push(subplan)
@@ -421,11 +439,11 @@ Vue.component('rule_subplan', {
             this.do_redraw();
         },
 
-        apply_subplan_filter: function(){
+        apply_subplan_filter: function () {
             // Create a new array containing the filtered items for vue to read off
             var rule = this;
 
-            if(rule.program_year && rule.details.subplan_type) {
+            if (rule.program_year && rule.details.subplan_type) {
                 rule.filtered_subplans = rule.subplans.filter(
                     function (item) {
                         return item.planType === rule.details.subplan_type && parseInt(rule.program_year) === item.year;
@@ -434,7 +452,7 @@ Vue.component('rule_subplan', {
                 // If there are already selected plans when the filter is applied, remove subplans from list
                 if (rule.selected_subplans.length > 0) {
                     rule.selected_subplans.forEach(element => {
-                        for (var i = 0; i < rule.filtered_subplans.length; i++){
+                        for (var i = 0; i < rule.filtered_subplans.length; i++) {
                             if (element.id === rule.filtered_subplans[i].id) {
                                 rule.filtered_subplans.splice(i, 1);
                                 break;
@@ -442,13 +460,12 @@ Vue.component('rule_subplan', {
                         }
                     })
                 }
-            }
-            else
+            } else
                 rule.filtered_subplans = [];
             this.do_redraw();
         },
 
-        change_filter: function(){
+        change_filter: function () {
             // Clear the current list and re-apply the filter
             this.active_filter = this.details.subplan_type
 
@@ -460,17 +477,15 @@ Vue.component('rule_subplan', {
             this.do_redraw();
         },
 
-        check_options: function(is_submission) {
+        check_options: function (is_submission) {
             // Ensure all data has been filled in if final submission
             // options are blank if kind is blank or details.ids.length < 1
-            console.log("is_submission: " + is_submission)
-
             // only display error if the user has attempted to submit the form
             if (is_submission) {
                 this.is_blank = this.details.kind === "" || this.details.ids.length < 1;
             } else {
                 // remove error if user corrects prior to submission
-                if (this.details.kind !=="" && this.details.ids.length > 0) {
+                if (this.details.kind !== "" && this.details.ids.length > 0) {
                     this.is_blank = false;
                 }
             }
@@ -478,18 +493,18 @@ Vue.component('rule_subplan', {
             // Check if invalid subplan year
             this.wrong_year_selected = false;
             year_check:
-            for (var selected_index in this.details.ids) {
-                selected_value = this.details.ids[selected_index];
-                for (var element_index in this.subplans) {
-                    var element_value = this.subplans[element_index];
-                    if (element_value.id == selected_value) {
-                        if ("" + element_value['year'] != this.program_year) {
-                            this.wrong_year_selected = true;
-                            break year_check;
+                for (var selected_index in this.details.ids) {
+                    selected_value = this.details.ids[selected_index];
+                    for (var element_index in this.subplans) {
+                        var element_value = this.subplans[element_index];
+                        if (element_value.id == selected_value) {
+                            if ("" + element_value['year'] != this.program_year) {
+                                this.wrong_year_selected = true;
+                                break year_check;
+                            }
                         }
                     }
                 }
-            }
 
             // Check for duplicates
             this.non_unique_options = false;
@@ -524,8 +539,7 @@ Vue.component('rule_subplan', {
                     }
                 }
             }
-
-            return !this.wrong_year_selected && !this.non_unique_options && !this.inconsistent_units &&  !this.is_blank;
+            return !this.wrong_year_selected && !this.non_unique_options && !this.inconsistent_units && !this.is_blank;
         },
 
         // force sort of multiselect options list on refresh
@@ -538,13 +552,13 @@ Vue.component('rule_subplan', {
             this.selected_subplans = this.sortedSelectedList
         },
 
-        update_units: function() {
+        update_units: function () {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_count_units_fn();
             this.check_options(false);
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw: function () {
             this.program_year = document.getElementById('id_year').value;
             this.redraw = true;
 
@@ -569,6 +583,11 @@ Vue.component('rule_course', {
                     value.codes = [];
                 }
 
+                // optional description field for staff reference
+                if (!value.hasOwnProperty("list_description")) {
+                    value.list_description = "";
+                }
+
                 if (!value.hasOwnProperty("list_type")) {
                     // possible values = LIST_TYPES
                     value.list_type = "";
@@ -588,10 +607,10 @@ Vue.component('rule_course', {
         Multiselect: window.VueMultiselect.default
     },
 
-    data: function() {
+    data: function () {
         return {
             "courses": [],          // used to store options for display - details.codes is used for database storage of selected course codes
-            "list_types": [],
+            "list_types": [],       // the list of possible list types min, max, exact (key, desc)
             "selected_courses": [], // used to store the code and name version of the course when selected
             "coursename_dict": {},  // used to store and find course names so background database not affected by selections
             "optionsProxy": [],     // required prop, default behaviour to display selection tags
@@ -612,12 +631,12 @@ Vue.component('rule_course', {
             "redraw": false
         }
     },
-    created: function() {
+    created: function () {
         var rule = this;
         var request = new XMLHttpRequest();
 
         // add available courses
-        request.addEventListener("load", function() {
+        request.addEventListener("load", function () {
             rule.courses = JSON.parse(request.response);
             rule.sortCourseOptions();
 
@@ -627,13 +646,14 @@ Vue.component('rule_course', {
             });
 
             rule.list_types = LIST_TYPES;
+            console.log(Object.keys(rule.list_types))
             rule.check_options(false);
 
             // if there are already selected courses in details.codes when the component is loaded load,
             // remove them from the options - must be done after courses response received
             if (!(rule.details.codes.length === 0)) {
-                for (let i = 0; i < rule.details.codes.length; i++){
-                    for (let x = 0; x < rule.courses.length; x++){
+                for (let i = 0; i < rule.details.codes.length; i++) {
+                    for (let x = 0; x < rule.courses.length; x++) {
                         if (rule.courses[x].code === rule.details.codes[i]) {
                             rule.courses.splice(x, 1).forEach(course => {
                                 rule.selected_courses.push(course)
@@ -655,18 +675,31 @@ Vue.component('rule_course', {
 
     computed: {
         // generates the appropriate placeholder text for the tool depending on list or course mode
-        placeholderText(){
+        placeholderText() {
             return this.is_list_search ? "Search lists..." : "Search courses, press esc or tab to close when done"
         },
 
         // used to compute appropriate ordering for template ul element
-        sortedSelectedList(){
+        sortedSelectedList() {
             return this.selected_courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
         },
 
         // used to compute appropriate ordering for dropdown list
-        sortedCourseList(){
+        sortedCourseList() {
             return this.courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
+        },
+
+        getListRequirementType() {
+            if (this.details.list_type !== "") {
+                let reqStr = this.list_types[this.details.list_type];
+                if (reqStr !== undefined) {
+                    return reqStr.toLowerCase()
+                } else {
+                    return ""
+                }
+            } else {
+                return ""
+            }
         },
 
     },
@@ -682,11 +715,11 @@ Vue.component('rule_course', {
         },
 
         // force sort of multiselect options list on refresh
-        sortCourseOptions(){
+        sortCourseOptions() {
             this.courses = this.sortedCourseList
         },
 
-        toggleListMode(){
+        toggleListMode() {
             if (this.is_list_search) {
                 this.is_list_search = false;
                 this.courses = this.tempStore;
@@ -771,8 +804,8 @@ Vue.component('rule_course', {
                 this.sortCourseOptions()
 
                 // find and remove code from details.codes
-                for (let i = 0; i < this.details.codes.length; i++){
-                    if (course.code === this.details.codes[i]){
+                for (let i = 0; i < this.details.codes.length; i++) {
+                    if (course.code === this.details.codes[i]) {
                         this.details.codes.splice(i, 1);
                         break;
                     }
@@ -787,13 +820,10 @@ Vue.component('rule_course', {
             // If final submission ensure all data has been filled in
             let blank_count = this.details.unit_count == null;
             let blank_codes = this.details.codes.length === 0;
-            let blank_listtype = this.details.list_type ==="";
+            let blank_listtype = this.details.list_type === "";
 
             if (is_submission) {
                 this.is_blank = blank_count || blank_codes || blank_listtype;
-                // this.is_blank = this.details.unit_count == null;
-                // this.is_blank = this.details.codes.length === 0;
-                // this.is_blank = this.is_blank || this.details.list_type === "";
             } else {
                 // remove error if user corrects prior to resubmission
                 if (!blank_listtype && !blank_codes && !blank_count) {
@@ -801,10 +831,10 @@ Vue.component('rule_course', {
                 }
             }
 
-
             // Duplicates are prevented by condition on updateSelected()
 
             // Ensure Unit Count is valid:
+            // Todo: consider whether you want this wrapped in the is_submission check
             if (this.details.unit_count != null) {
                 this.invalid_units = this.details.unit_count <= 0;
                 this.invalid_units_step = this.details.unit_count % 6 !== 0;
@@ -813,13 +843,13 @@ Vue.component('rule_course', {
             return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
         },
 
-        update_units: function() {
+        update_units: function () {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_count_units_fn();
             this.check_options(false);
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw: function () {
             this.redraw = true;
 
             this.$nextTick(() => {
@@ -847,7 +877,7 @@ Vue.component('rule_course_requisite', {
             }
         }
     },
-    data: function() {
+    data: function () {
         return {
             "courses": [],
             "info_msg": INFO_MSGS['course'],
@@ -858,16 +888,16 @@ Vue.component('rule_course_requisite', {
             "redraw": false
         }
     },
-    created: function() {
+    created: function () {
         // Javascript has the best indirection...
         var rule = this;
 
         var request = new XMLHttpRequest();
 
-        request.addEventListener("load", function() {
+        request.addEventListener("load", function () {
             rule.courses = JSON.parse(request.response);
             rule.courses.sort(
-                function(a, b){
+                function (a, b) {
                     return a['code'].localeCompare(b['code'])
                 }
             );
@@ -877,19 +907,19 @@ Vue.component('rule_course_requisite', {
         request.send();
     },
     methods: {
-        add_course: function() {
+        add_course: function () {
             // Mutable modification - redraw needed
             this.details.codes.push(-1);
             this.check_options();
             this.do_redraw();
         },
-        remove_course: function(index) {
+        remove_course: function (index) {
             // Mutable modification - redraw needed
             this.details.codes.splice(index, 1);
             this.check_options();
             this.do_redraw();
         },
-        check_options: function(is_submission) {
+        check_options: function (is_submission) {
             // Ensure all data has been filled in
             this.is_blank = false;
             for (var index in this.details.codes) {
@@ -916,7 +946,7 @@ Vue.component('rule_course_requisite', {
             return !this.non_unique_options && !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw: function () {
             this.redraw = true;
 
             this.$nextTick(() => {
@@ -950,7 +980,7 @@ Vue.component('rule_elective', {
             }
         }
     },
-    data: function() {
+    data: function () {
         return {
             "number_of_year_levels": 9,
             "subject_areas": [],
@@ -960,26 +990,26 @@ Vue.component('rule_elective', {
             "invalid_units": false,
             "invalid_units_step": false,
             "is_blank": false,
-          
+
             "redraw": false
         }
     },
-    created: function() {
+    created: function () {
         var rule = this;
 
         var request = new XMLHttpRequest();
 
-        request.addEventListener("load", function() {
+        request.addEventListener("load", function () {
             rule.subject_areas = JSON.parse(request.response);
             var subject_areas = [];
             for (var index in rule.subject_areas) {
-                let subject_area = rule.subject_areas[index]["code"].slice(0,4);
+                let subject_area = rule.subject_areas[index]["code"].slice(0, 4);
                 // creates a unique list of subject_areas
                 if (subject_areas.indexOf(subject_area) === -1) subject_areas.push(subject_area);
             }
             rule.subject_areas = subject_areas;
             rule.subject_areas.sort(
-                function(a, b){
+                function (a, b) {
                     return a.localeCompare(b)
                 }
             );
@@ -992,7 +1022,7 @@ Vue.component('rule_elective', {
         this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
     },
     methods: {
-        check_options: function(is_submission) {
+        check_options: function (is_submission) {
             // Ensure all data has been filled in
             this.is_blank = this.details.unit_count === "";
 
@@ -1000,21 +1030,20 @@ Vue.component('rule_elective', {
             if (this.details.unit_count !== "") {
                 this.invalid_units = this.details.unit_count < 0;
                 this.invalid_units_step = this.details.unit_count % 6 !== 0;
-            }
-            else{
+            } else {
                 this.invalid_units = false;
                 this.invalid_units_step = false;
             }
 
             return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
         },
-        update_units: function() {
+        update_units: function () {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_count_units_fn();
             this.check_options();
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw: function () {
             this.redraw = true;
 
             this.$nextTick(() => {
@@ -1048,26 +1077,26 @@ Vue.component('rule_custom_text', {
             }
         }
     },
-    data: function() {
+    data: function () {
         return {
             "not_divisible": false,
             "is_blank": false
         }
     },
-    created: function() {
+    created: function () {
         this.check_options();
         // Keep a copy of the Or Rule's "count_units" function (Or a blank function if unavailable)
         this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
     },
     methods: {
-        check_options: function(is_submission) {
+        check_options: function (is_submission) {
             this.is_blank = this.details.text === "";
 
             this.not_divisible = this.details.unit_count % 6 !== 0;
 
             return !this.not_divisible && !this.is_blank;
         },
-        update_units: function() {
+        update_units: function () {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_count_units_fn();
             this.check_options();
@@ -1091,21 +1120,21 @@ Vue.component('rule_custom_text_req', {
             }
         }
     },
-    data: function() {
+    data: function () {
         return {
             "is_blank": false
         }
     },
-    created: function() {
+    created: function () {
         this.check_options();
     },
     methods: {
-        check_options: function(is_submission) {
+        check_options: function (is_submission) {
             this.is_blank = this.details.text === "";
 
             return !this.is_blank;
         },
-        update_units: function() {
+        update_units: function () {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_count_units_fn();
             this.check_options();
@@ -1139,7 +1168,7 @@ Vue.component('rule_either_or', {
             type: Array,
         }
     },
-    data: function() {
+    data: function () {
         return {
             show_add_a_rule_modal: false,
             which_or: 0,
@@ -1148,66 +1177,71 @@ Vue.component('rule_either_or', {
             // Show warnings if appropriate
             large_unit_count: false,
 
-            component_groups: { 'rules': EITHER_OR_COMPONENT_NAMES, 'requisites': REQUISITE_EITHER_OR_COMPONENT_NAMES},
+            component_groups: {'rules': EITHER_OR_COMPONENT_NAMES, 'requisites': REQUISITE_EITHER_OR_COMPONENT_NAMES},
             component_names: EITHER_OR_COMPONENT_NAMES,
 
             is_eitheror: true,
         }
     },
     methods: {
-        add_or: function() {
+        add_or: function () {
             this.details.either_or.push([]);
             this.do_redraw();
         },
-        add_rule: function() {
+        add_rule: function () {
             this.show_add_a_rule_modal = false;
             // Add chosen rule to the right or group (based on the button clicked).
             this.details.either_or[this.which_or].push({
                 type: this.add_a_rule_modal_option,
             });
         },
-        remove: function(index, group) {
+        remove: function (index, group) {
             console.log(this.details.either_or[group]);
             this.details.either_or[group].splice(index, 1);
             this.count_units();
             this.do_redraw();
         },
-        duplicate_rule: function(index, group) {
+        duplicate_rule: function (index, group) {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.details.either_or[group].push(JSON.parse(JSON.stringify(this.details.either_or[group][index])));
             this.do_redraw();
         },
-        remove_group: function(group) {
+        remove_group: function (group) {
             this.details.either_or.splice(group, 1);
             this.count_units();
             this.do_redraw();
         },
-        duplicate_group: function(group) {
+        duplicate_group: function (group) {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.details.either_or.splice(group, 0, JSON.parse(JSON.stringify(this.details.either_or[group])));
             this.do_redraw();
         },
-        check_options: function(is_submission) {
+        check_options: function (is_submission) {
             var valid = true;
-            for (var index in this.$children){
+            for (var index in this.$children) {
                 valid = valid && this.$children[index].check_options(is_submission);
             }
 
             return valid;
         },
-        count_units: function() {
+        count_units: function () {
             // Will go through each rule and determine how many units it specifies, showing a warning if over 48
-            for(var or_group of this.details.either_or){
+            for (var or_group of this.details.either_or) {
                 var units = 0;
-                for(var rule of or_group) {
+                for (var rule of or_group) {
                     if (rule.hasOwnProperty("subplan_type")) {
                         switch (rule.subplan_type) {
-                            case "MAJ" : units += 48; break;
-                            case "MIN" : units += 24; break;
-                            case "SPEC": units += 24; break;
+                            case "MAJ" :
+                                units += 48;
+                                break;
+                            case "MIN" :
+                                units += 24;
+                                break;
+                            case "SPEC":
+                                units += 24;
+                                break;
                         }
-                    }
-                    else if (rule.hasOwnProperty("unit_count")) {
+                    } else if (rule.hasOwnProperty("unit_count")) {
                         units += parseInt(rule.unit_count);
                     }
                 }
@@ -1220,7 +1254,7 @@ Vue.component('rule_either_or', {
             this.large_unit_count = false;
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw: function () {
             this.refresh.push("");
         }
     },
@@ -1234,7 +1268,7 @@ Vue.component('rule', {
             type: Object
         }
     },
-    data: function() {
+    data: function () {
         return {
             component_names: ALL_COMPONENT_NAMES,
             component_help: ALL_COMPONENT_HELP,
@@ -1242,14 +1276,14 @@ Vue.component('rule', {
             refresh: [],
         }
     },
-    mounted: function() {
+    mounted: function () {
         var siblings = app.$children[0].$children;
 
         // Determine whether this rule is the most recent rule by finding which sibling
         // has the highest _uid assigned by Vue.
         var max = 0;
         var rule_creation_ranks = {};
-        siblings.forEach(function(sib){
+        siblings.forEach(function (sib) {
             if (!sib.$children[0].is_eitheror) {
                 rule_creation_ranks[sib._uid] = sib;
                 sib.$el.classList.remove("rule_active_visual");
@@ -1262,13 +1296,12 @@ Vue.component('rule', {
                 sib.$el.classList.remove("rule_active_visual");
 
                 if (either_or_rules.length > 0) {
-                    either_or_rules.forEach(function(rule) {
+                    either_or_rules.forEach(function (rule) {
                         rule_creation_ranks[rule._uid] = rule;
                         rule.$el.classList.remove("rule_active_visual");
                         max = (rule._uid > max) ? rule._uid : max;
                     })
-                }
-                else {
+                } else {
                     rule_creation_ranks[sib._uid] = sib;
                     max = (sib._uid > max) ? sib._uid : max;
                 }
@@ -1280,26 +1313,27 @@ Vue.component('rule', {
         recent_rule.$el.classList.add("rule_active_visual");
         recent_rule.$el.scrollIntoView({behavior: "smooth"})
     },
-    methods:{
-        check_options: function(is_submission) {
+    methods: {
+        check_options: function (is_submission) {
             var valid = true;
-            for (var index in this.$children){
+            for (var index in this.$children) {
                 valid = valid && this.$children[index].check_options(is_submission);
             }
 
             return valid;
         },
-        get_or_rule_count_units_fn: function() {
+        get_or_rule_count_units_fn: function () {
             // Looks through the parent nodes until it finds the OR rule, returning its "count_units" function
             // If no OR rule is found, an empty function is returned
             var parent_or = this.$parent;
-            while(parent_or !== undefined){
-                if (parent_or.constructor.options.name === 'rule_either_or'){
+            while (parent_or !== undefined) {
+                if (parent_or.constructor.options.name === 'rule_either_or') {
                     return parent_or.count_units;
                 }
                 parent_or = parent_or.$parent;
             }
-            return function() {};
+            return function () {
+            };
         }
     },
     template: '#ruleTemplate'
@@ -1317,12 +1351,12 @@ Vue.component('rule_container', {
             default: ""
         }
     },
-    data: function() {
+    data: function () {
         return {
             show_add_a_rule_modal: false,
             add_a_rule_modal_option: 'course',
 
-            component_groups: { 'rules': COMPONENT_NAMES, 'requisites': REQUISITE_COMPONENT_NAMES},
+            component_groups: {'rules': COMPONENT_NAMES, 'requisites': REQUISITE_COMPONENT_NAMES},
             component_names: null,
 
             // Forces the element to re-render, if mutable events occurred
@@ -1330,29 +1364,29 @@ Vue.component('rule_container', {
         }
     },
     methods: {
-        add_rule: function() {
+        add_rule: function () {
             this.show_add_a_rule_modal = false;
             this.rules.push({
                 type: this.add_a_rule_modal_option,
             });
         },
-        remove: function(index) {
+        remove: function (index) {
             this.rules.splice(index, 1);
         },
-        duplicate_rule: function(index) {
+        duplicate_rule: function (index) {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.rules.push(JSON.parse(JSON.stringify(this.rules[index])));
         },
-        check_options: function(is_submission) {
+        check_options: function (is_submission) {
             var valid = true;
-            for (var index in this.$children){
+            for (var index in this.$children) {
                 valid = valid && this.$children[index].check_options(is_submission);
             }
 
             return valid;
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw: function () {
             this.redraw = true;
 
             this.$nextTick(() => {
@@ -1367,9 +1401,9 @@ Vue.component('rule_container', {
  * Submits the rules form.
  */
 function handleRules() {
+    // Todo: remove existing success message if present prior to validation
     var valid = true;
-    console.log("handleRules called")
-    for (var index in app.$children){
+    for (var index in app.$children) {
         valid = valid && app.$children[index].check_options(true);
     }
 
@@ -1396,7 +1430,7 @@ if (reqs.length > 0) {
 
 
 function redrawVueComponents() {
-    for (var index in app.$children){
+    for (var index in app.$children) {
         app.$children[index].do_redraw();
     }
 }
