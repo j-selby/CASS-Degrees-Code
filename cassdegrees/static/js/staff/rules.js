@@ -18,23 +18,23 @@ const ALL_COMPONENT_HELP = {
     'incompatibility': "A rule which notes that students must not have picked any of the set of courses specified.",
     'program': 'A rule which enforces that only students from a particular course can take this option.',
     'subplan': "A rule which gives students a choice from a particular set of majors, minors, specialisations or " +
-        "other subplans. The description here is used to describe the rule when displaying this rule to " +
-        "students.",
+               "other subplans. The description here is used to describe the rule when displaying this rule to " +
+               "students.",
     'course': "A rule which specifies that students should pick a certain amount of units from a set of available " +
-        "courses.",
+              "courses.",
     'course_requisite': "A rule which specifies that students should have taken a set of courses before taking this " +
-        "one.",
+                        "one.",
     'custom_text': "If other rules don't entirely fit the requirements of a rule, the custom text field allows " +
-        "for the specification of other program content. Note that this isn't enforced in student-facing " +
-        "tools.",
+                   "for the specification of other program content. Note that this isn't enforced in student-facing " +
+                   "tools.",
     'custom_text_req': "If other rules don't entirely fit the requirements of a rule, the custom text field allows " +
-        "for the specification of other program content. Note that this isn't enforced in student-facing " +
-        "tools.",
+                       "for the specification of other program content. Note that this isn't enforced in student-facing " +
+                       "tools.",
     'elective': "A rule which allows students to choose any courses offered by the ANU as electives to fill a set" +
-        " amount of units.",
+                " amount of units.",
     'either_or': "A rule which allows for the specification of sets of different paths that students can take. Each " +
-        "\"OR\" group is a collection of rules which must be completed if students were to pick that specific " +
-        "group."
+                 "\"OR\" group is a collection of rules which must be completed if students were to pick that specific " +
+                 "group."
 };
 
 // Translation table between internal names for components and human readable ones.
@@ -78,8 +78,8 @@ const LIST_TYPES = {
 };
 
 const SUBPLAN_TYPES = {
-    'MAJ': 'Majors',
-    'MIN': 'Minors',
+    'MAJ':  'Majors',
+    'MIN':  'Minors',
     'SPEC': 'Specialisations'
 };
 
@@ -248,10 +248,6 @@ Vue.component('rule_program', {
     },
     template: '#programRuleTemplate'
 });
-
-// -------------------------------- SUBPLAN RULE ----------------------------------------------------------------------
-
-// with implementation of the multiselect, there is no longer a need for -1 placeholders for unselected components.
 
 Vue.component('rule_subplan', {
     props: {
@@ -570,8 +566,6 @@ Vue.component('rule_subplan', {
     template: '#subplanRuleMultiselectTemplate'
 });
 
-// -------------------------------- END SUBPLAN RULE ----------------------------------------------------------------------
-
 Vue.component('rule_course', {
     props: {
         "details": {
@@ -758,7 +752,7 @@ Vue.component('rule_course', {
                     list.elements.forEach((course) => {
                         // add course code to details.codes if not already present
                         if (!this.details.codes.some(code => code === course.code)) {
-                            this.details.codes.push(course.code)
+                            this.details.codes.push({'code': resource.code, 'name': resource.name})
                         }
 
                         // if a course is added through a list, remove it from the temporary store of courses
@@ -781,12 +775,12 @@ Vue.component('rule_course', {
                     // Adds selected resources to array and prevents duplicates
                     if (!this.details.codes.some(code => code === resource.code)) {
                         this.selected_courses.push(resource)
-                        this.details.codes.push(resource.code)
+                        this.details.codes.push({'code': resource.code, 'name': resource.name});
                     }
                     // remove the selected course from the list of available courses to add
                     let resourceID = this.courses.indexOf(resource)
                     this.courses.splice(resourceID, 1)
-                })
+                });
             }
 
             // Clear options proxy to avoid selection tags from being displayed
@@ -805,7 +799,7 @@ Vue.component('rule_course', {
 
                 // find and remove code from details.codes
                 for (let i = 0; i < this.details.codes.length; i++) {
-                    if (course.code === this.details.codes[i]) {
+                    if (course.code === this.details.codes[i]['code']) {
                         this.details.codes.splice(i, 1);
                         break;
                     }
