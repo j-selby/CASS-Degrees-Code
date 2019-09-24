@@ -1,0 +1,90 @@
+// Handler for different Vue components, redirecting to the right component
+// Also has a visual container with help buttons/etc
+Vue.component('rule', {
+    props: {
+        "details": {
+            type: Object
+        }
+    },
+    data: function() {
+        return {
+            component_names: ALL_COMPONENT_NAMES,
+            component_help: ALL_COMPONENT_HELP,
+            show_help: false,
+            refresh: [],
+        }
+    },
+    mounted: function() {
+        var siblings = app.$children[0].$children;
+
+        // Determine whether this rule is the most recent rule by finding which sibling
+        // has the highest _uid assigned by Vue.
+        var max = 0;
+        var rule_creation_ranks = {};
+        siblings.forEach(function(sib){
+            if (!sib.$children[0].is_eitheror) {
+                rule_creation_ranks[sib._uid] = sib;
+                sib.$el.classList.remove("rule_active_visual");
+                max = (sib._uid > max) ? sib._uid : max;
+            }
+            // Else we need to get the children of the either or rule
+            else {
+                // If nested or rules get implemented, this section may need to be made recursive
+                var either_or_rules = sib.$children[0].$children;
+                sib.$el.classList.remove("rule_active_visual");
+
+                if (either_or_rules.length > 0) {
+                    either_or_rules.forEach(function(rule) {
+                        rule_creation_ranks[rule._uid] = rule;
+                        rule.$el.classList.remove("rule_active_visual");
+                        max = (rule._uid > max) ? rule._uid : max;
+                    })
+                }
+                else {
+                    rule_creation_ranks[sib._uid] = sib;
+                    max = (sib._uid > max) ? sib._uid : max;
+                }
+            }
+        });
+        var recent_rule = rule_creation_ranks[max];
+
+        // Add a visual cue and scroll to the most recent rule
+        recent_rule.$el.classList.add("rule_active_visual");
+        recent_rule.$el.scrollIntoView({behavior: "smooth"})
+    },
+    methods: {
+        check_options: function (is_submission) {
+            var valid = true;
+            for (var index in this.$children) {
+                valid = valid && this.$children[index].check_options(is_submission);
+            }
+
+            return valid;
+        },
+
+        count_units: function() {
+            var units = {"exact": 0, "max": 0, "min": 0};
+            for (var child of this.$children){
+                var child_units = child.count_units();
+                for (var key in child_units)
+                    units[key] += child_units[key];
+            }
+            return units;
+        },
+
+        get_or_rule_update_units_fn: function () {
+            // Looks through the parent nodes until it finds the OR rule, returning its "count_units" function
+            // If no OR rule is found, an empty function is returned
+            var parent_or = this.$parent;
+            while (parent_or !== undefined) {
+                if (parent_or.constructor.options.name === 'rule_either_or') {
+                    return parent_or.update_units;
+                }
+                parent_or = parent_or.$parent;
+            }
+            return function () {
+            };
+        }
+    },
+    template: '#ruleTemplate'
+});
