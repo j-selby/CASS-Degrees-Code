@@ -101,104 +101,44 @@ const INFO_MSGS = {
         '<a href="/staff/create/program/" target="_blank">here</a> first before creating this Requisite.</p>'
 };
 
-// Contains a set of rules, with a button to add more
-Vue.component('rule_container', {
-    props: {
-        "rules": {
-            type: Array
-        },
-        // Message inserted between rules
-        "separator": {
-            type: String,
-            default: ""
-        }
-    },
-    data: function() {
-        return {
-            show_add_a_rule_modal: false,
-            add_a_rule_modal_option: 'course_list',
-
-            component_groups: { 'rules': COMPONENT_NAMES, 'requisites': REQUISITE_COMPONENT_NAMES},
-            component_names: null,
-
-            // Forces the element to re-render, if mutable events occurred
-            redraw: false,
-        }
-    },
-    methods: {
-        add_rule: function() {
-            this.show_add_a_rule_modal = false;
-            this.rules.push({
-                type: this.add_a_rule_modal_option,
-            });
-        },
-        remove: function(index) {
-            this.rules.splice(index, 1);
-        },
-        duplicate_rule: function(index) {
-            // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
-            this.rules.push(JSON.parse(JSON.stringify(this.rules[index])));
-        },
-        check_options: function (is_submission) {
-            var valid = true;
-            for (var index in this.$children) {
-                valid = valid && this.$children[index].check_options(is_submission);
-            }
-
-            return valid;
-        },
-        count_units: function() {
-            var units = {"exact": 0, "max": 0, "min": 0};
-            for (var child of this.$children){
-                var child_units = child.count_units();
-                for (var key in child_units)
-                    units[key] += child_units[key];
-            }
-            return units;
-        },
-        // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
-            this.redraw = true;
-
-            this.$nextTick(() => {
-                this.redraw = false;
-            });
-        }
-    },
-    template: '#ruleContainerTemplate'
-});
-
-/**
- * Submits the rules form.
- */
-function handleRules() {
-    // Todo: remove existing success message if present prior to validation
-    var valid = true;
-    for (var index in app.$children) {
-        valid = valid && app.$children[index].check_options(true);
-    }
-
-    // Serialize list structures - this doesn't translate well over POST requests normally.
-    document.getElementById("rules").value = JSON.stringify(app.rules);
-
-    return valid;
-}
-
-var app = new Vue({
+const app = new Vue({
     el: '#rulesContainer',
     data: {
         rules: []
+    },
+    methods: {
+        redraw: function () {
+            this.$children.forEach((child) => {
+                child.do_redraw();
+            });
+        },
+        /**
+         * Submits Vue components into the form.
+         */
+        exportRules: function () {
+            // Todo: remove existing success message if present prior to validation
+            var valid = true;
+
+            for (var index in app.$children) {
+                valid = valid && app.$children[index].check_options(true);
+            }
+
+            // Serialize list structures - this doesn't translate well over POST requests normally.
+            document.getElementById("rules").value = JSON.stringify(this.rules);
+
+            return valid;
+        }
+    },
+    mounted: function () {
+        const reqs = document.getElementById("rules").value.trim();
+        if (reqs.length > 0) {
+            const parsed = JSON.parse(reqs);
+            if (parsed != null) {
+                this.rules = parsed;
+            }
+        }
     }
 });
-
-var reqs = document.getElementById("rules").value.trim();
-if (reqs.length > 0) {
-    var parsed = JSON.parse(reqs);
-    if (parsed != null) {
-        app.rules = parsed;
-    }
-}
-
 
 function isValidUnitCount(value) {
     // Go through each child and sum up all of the units
@@ -211,11 +151,4 @@ function isValidUnitCount(value) {
 
     // Return true if the specified value is within the unit count bounds
     return units.exact + units.min <= value && value <= units.exact + units.min + units.max;
-}
-
-
-function redrawVueComponents() {
-    for (var index in app.$children){
-        app.$children[index].do_redraw();
-    }
 }

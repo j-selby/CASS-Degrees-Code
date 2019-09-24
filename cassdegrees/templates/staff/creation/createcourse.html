@@ -84,7 +84,7 @@
 
     <script>
         function submit_form(form_action, redirect) {
-            if (handleRules()) {
+            if (app.exportRules()) {
                 document.getElementById('mainForm').action.value = form_action;
                 document.getElementById('redirect').value = redirect;
                 document.getElementById('mainForm').submit();
