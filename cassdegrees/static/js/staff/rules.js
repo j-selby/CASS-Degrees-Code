@@ -83,6 +83,12 @@ const SUBPLAN_TYPES = {
     'SPEC': 'Specialisations'
 };
 
+const SUBPLAN_UNITS = {
+    'MAJ':  48,
+    'MIN':  24,
+    'SPEC': 24
+};
+
 const INFO_MSGS = {
     'course': '<p>This Requisite requires Courses in the system. Please create Courses ' +
         '<a href="/staff/create/course/" target="_blank">here</a> or bulk upload Courses ' +
@@ -413,12 +419,11 @@ Vue.component('rule_subplan', {
             return !this.wrong_year_selected && !this.non_unique_options && !this.inconsistent_units &&  !this.is_blank;
         },
         count_units: function() {
-            switch (this.details.subplan_type) {
-                case "MAJ" : return {"exact": 48, "max": 0, "min": 0};
-                case "MIN" : return {"exact": 24, "max": 0, "min": 0};
-                case "SPEC": return {"exact": 24, "max": 0, "min": 0};
-                default:     return {"exact":  0, "max": 0, "min": 0};
-            }
+            var units = SUBPLAN_UNITS[this.details.subplan_type];
+            if (units)
+                return {"exact": units, "max": 0, "min": 0};
+            else
+                return {"exact":  0, "max": 0, "min": 0};
         },
         update_units: function() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
