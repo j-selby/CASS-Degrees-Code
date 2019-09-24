@@ -756,7 +756,7 @@ Vue.component('rule_course', {
                     list.elements.forEach((course) => {
                         // add course code to details.codes if not already present
                         if (!this.details.codes.some(code => code === course.code)) {
-                            this.details.codes.push({'code': resource.code, 'name': resource.name})
+                            this.details.codes.push({'code': course.code, 'name': course.name})
                         }
 
                         // if a course is added through a list, remove it from the temporary store of courses
