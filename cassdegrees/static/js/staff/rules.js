@@ -648,7 +648,7 @@ Vue.component('rule_course', {
             if (!(rule.details.codes.length === 0)) {
                 for (let i = 0; i < rule.details.codes.length; i++) {
                     for (let x = 0; x < rule.courses.length; x++) {
-                        if (rule.courses[x].code === rule.details.codes[i]) {
+                        if (rule.courses[x].code === rule.details.codes[i]['code']) {
                             rule.courses.splice(x, 1).forEach(course => {
                                 rule.selected_courses.push(course)
                             });
