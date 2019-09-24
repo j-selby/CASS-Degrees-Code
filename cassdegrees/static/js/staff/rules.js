@@ -117,9 +117,9 @@ const app = new Vue({
          */
         exportRules: function () {
             // Todo: remove existing success message if present prior to validation
-            var valid = true;
+            let valid = true;
 
-            for (var index in app.$children) {
+            for (const index in app.$children) {
                 valid = valid && app.$children[index].check_options(true);
             }
 
