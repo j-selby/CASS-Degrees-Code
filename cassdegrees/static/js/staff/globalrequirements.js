@@ -83,7 +83,7 @@ Vue.component('global_requirement_general', {
 
         const request = new XMLHttpRequest();
 
-        request.addEventListener("load",  () => {
+        request.addEventListener("load", () => {
             rule.subject_areas = JSON.parse(request.response);
             const subject_areas = [];
             rule.subject_areas.forEach((area) => {
