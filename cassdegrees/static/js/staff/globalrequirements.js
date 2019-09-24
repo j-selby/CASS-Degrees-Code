@@ -23,7 +23,7 @@ Vue.component('global_requirement_general', {
         "details": {
             type: Object,
 
-            validator: function (value) {
+            validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("minmax")) {
                     value.minmax = "min";
@@ -69,7 +69,7 @@ Vue.component('global_requirement_general', {
             }
         }
     },
-    data: function() {
+    data() {
         return {
             "invalid_units": false,
             "invalid_units_step": false,
@@ -78,32 +78,28 @@ Vue.component('global_requirement_general', {
             "subject_areas": []
         }
     },
-    created: function() {
-        var rule = this;
+    created() {
+        const rule = this;
 
-        var request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
 
-        request.addEventListener("load", function() {
+        request.addEventListener("load",  () => {
             rule.subject_areas = JSON.parse(request.response);
-            var subject_areas = [];
-            for (var index in rule.subject_areas) {
-                let subject_area = rule.subject_areas[index]["code"].slice(0,4);
+            const subject_areas = [];
+            rule.subject_areas.forEach((area) => {
+                let subject_area = area["code"].slice(0, 4);
                 // creates a unique list of subject_areas
                 if (subject_areas.indexOf(subject_area) === -1) subject_areas.push(subject_area);
-            }
+            });
+            subject_areas.sort((a, b) => a.localeCompare(b));
             rule.subject_areas = subject_areas;
-            rule.subject_areas.sort(
-                function(a, b){
-                    return a.localeCompare(b)
-                }
-            );
             rule.check_options();
         });
         request.open("GET", "/api/search/?select=code&from=course");
         request.send();
     },
     methods: {
-        check_options: function() {
+        check_options() {
             this.invalid_units = this.details.unit_count <= 0;
             this.invalid_units_step = this.details.unit_count % 6 !== 0;
             this.units_is_blank = this.details.unit_count === "";
@@ -125,26 +121,26 @@ Vue.component('global_requirement', {
             type: Object
         }
     },
-    data: function() {
+    data() {
         return {
             component_names: GLOBAL_REQUIREMENT_NAMES,
             component_help: GLOBAL_REQUIREMENT_HELP,
             show_help: false,
         }
     },
-    mounted: function() {
-        var siblings = globalRequirementsApp.$children[0].$children;
+    mounted() {
+        const siblings = globalRequirementsApp.$children[0].$children;
 
         // Determine whether this rule is the most recent rule by finding which sibling
         // has the highest _uid assigned by Vue.
-        var max = 0;
-        var rule_creation_ranks = {};
-        siblings.forEach(function(sib){
+        let max = 0;
+        const rule_creation_ranks = {};
+        siblings.forEach(function (sib) {
             rule_creation_ranks[sib._uid] = sib;
             sib.$el.classList.remove("rule_active_visual");
             max = (sib._uid > max) ? sib._uid : max;
         });
-        var recent_rule = rule_creation_ranks[max];
+        const recent_rule = rule_creation_ranks[max];
 
         // Add a visual cue and scroll to the most recent rule
         recent_rule.$el.classList.add("rule_active_visual");
@@ -165,7 +161,7 @@ Vue.component('global_requirement_container', {
             default: ""
         }
     },
-    data: function() {
+    data() {
         return {
             show_add_a_global_requirement_modal: false,
             add_a_global_requirement_modal_option: 'min',
@@ -177,17 +173,17 @@ Vue.component('global_requirement_container', {
         }
     },
     methods: {
-        add_global_requirement: function() {
+        add_global_requirement() {
             this.show_add_a_global_requirement_modal = false;
             this.global_requirements.push({
                 type: "general",
             });
         },
-        remove: function(index) {
+        remove(index) {
             this.global_requirements.splice(index, 1);
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw() {
             this.redraw = true;
 
             this.$nextTick(() => {
@@ -207,9 +203,9 @@ const globalRequirementsApp = new Vue({
         /**
          * Submits Vue components into the form.
          */
-        export_requirements: function() {
+        export_requirements() {
             let valid = true;
-            for (const index in this.$children[0].$children){
+            for (const index in this.$children[0].$children) {
                 valid = valid && this.$children[0].$children[index].$children[0].check_options();
             }
 
@@ -219,7 +215,7 @@ const globalRequirementsApp = new Vue({
             return valid;
         }
     },
-    mounted: function() {
+    mounted() {
         const reqs = document.getElementById("globalRequirements").value.trim();
         if (reqs.length > 0) {
             const parsed = JSON.parse(reqs);

@@ -6,7 +6,7 @@ Vue.component('rule', {
             type: Object
         }
     },
-    data: function() {
+    data() {
         return {
             component_names: ALL_COMPONENT_NAMES,
             component_help: ALL_COMPONENT_HELP,
@@ -14,14 +14,14 @@ Vue.component('rule', {
             refresh: [],
         }
     },
-    mounted: function() {
-        var siblings = app.$children[0].$children;
+    mounted() {
+        const siblings = app.$children[0].$children;
 
         // Determine whether this rule is the most recent rule by finding which sibling
         // has the highest _uid assigned by Vue.
-        var max = 0;
-        var rule_creation_ranks = {};
-        siblings.forEach(function(sib){
+        let max = 0;
+        const rule_creation_ranks = {};
+        siblings.forEach(function (sib) {
             if (!sib.$children[0].is_eitheror) {
                 rule_creation_ranks[sib._uid] = sib;
                 sib.$el.classList.remove("rule_active_visual");
@@ -30,48 +30,47 @@ Vue.component('rule', {
             // Else we need to get the children of the either or rule
             else {
                 // If nested or rules get implemented, this section may need to be made recursive
-                var either_or_rules = sib.$children[0].$children;
+                const either_or_rules = sib.$children[0].$children;
                 sib.$el.classList.remove("rule_active_visual");
 
                 if (either_or_rules.length > 0) {
-                    either_or_rules.forEach(function(rule) {
+                    either_or_rules.forEach(function (rule) {
                         rule_creation_ranks[rule._uid] = rule;
                         rule.$el.classList.remove("rule_active_visual");
                         max = (rule._uid > max) ? rule._uid : max;
                     })
-                }
-                else {
+                } else {
                     rule_creation_ranks[sib._uid] = sib;
                     max = (sib._uid > max) ? sib._uid : max;
                 }
             }
         });
-        var recent_rule = rule_creation_ranks[max];
+        const recent_rule = rule_creation_ranks[max];
 
         // Add a visual cue and scroll to the most recent rule
         recent_rule.$el.classList.add("rule_active_visual");
         recent_rule.$el.scrollIntoView({behavior: "smooth"})
     },
-    methods:{
-        check_options: function() {
-            var valid = true;
-            for (var index in this.$children){
+    methods: {
+        check_options() {
+            let valid = true;
+            for (const index in this.$children) {
                 valid = valid && this.$children[index].check_options();
             }
 
             return valid;
         },
-        get_or_rule_count_units_fn: function() {
+        get_or_rule_count_units_fn() {
             // Looks through the parent nodes until it finds the OR rule, returning its "count_units" function
             // If no OR rule is found, an empty function is returned
-            var parent_or = this.$parent;
-            while(parent_or !== undefined){
-                if (parent_or.constructor.options.name === 'rule_either_or'){
+            let parent_or = this.$parent;
+            while (parent_or !== undefined) {
+                if (parent_or.constructor.options.name === 'rule_either_or') {
                     return parent_or.count_units;
                 }
                 parent_or = parent_or.$parent;
             }
-            return function() {};
+            return () => {};
         }
     },
     template: '#ruleTemplate'

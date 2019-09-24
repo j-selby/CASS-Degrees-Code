@@ -3,7 +3,7 @@ Vue.component('rule_program', {
         "details": {
             type: Object,
 
-            validator: function (value) {
+            validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("program")) {
                     value.program = "";
@@ -13,7 +13,7 @@ Vue.component('rule_program', {
             }
         }
     },
-    data: function() {
+    data: function () {
         return {
             "programs": [],
             "info_msg": INFO_MSGS['program'],
@@ -24,13 +24,13 @@ Vue.component('rule_program', {
             "redraw": false
         }
     },
-    created: function() {
+    created() {
         // Javascript has the best indirection...
-        var rule = this;
+        const rule = this;
 
-        var request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
 
-        request.addEventListener("load", function() {
+        request.addEventListener("load", () => {
             rule.programs = JSON.parse(request.response);
 
             rule.check_options();
@@ -39,14 +39,14 @@ Vue.component('rule_program', {
         request.send();
     },
     methods: {
-        check_options: function() {
+        check_options() {
             // Ensure all data has been filled in
             this.is_blank = this.details.program === "";
 
             return !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw() {
             this.redraw = true;
 
             this.$nextTick(() => {

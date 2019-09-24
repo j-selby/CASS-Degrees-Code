@@ -3,7 +3,7 @@ Vue.component('rule_course_list', {
         "details": {
             type: Object,
 
-            validator: function (value) {
+            validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("codes")) {
                     value.codes = [];
@@ -28,7 +28,7 @@ Vue.component('rule_course_list', {
         Multiselect: window.VueMultiselect.default
     },
 
-    data: function() {
+    data: function () {
         return {
             "courses": [],          // used to store options for display - details.codes is used for database storage of selected course codes
             "list_types": [],
@@ -52,12 +52,12 @@ Vue.component('rule_course_list', {
             "redraw": false
         }
     },
-    created: function() {
+    created: function () {
         var rule = this;
         var request = new XMLHttpRequest();
 
         // add available courses
-        request.addEventListener("load", function() {
+        request.addEventListener("load", function () {
             rule.courses = JSON.parse(request.response);
             rule.sortCourseOptions();
 
@@ -72,8 +72,8 @@ Vue.component('rule_course_list', {
             // if there are already selected courses in details.codes when the component is loaded load,
             // remove them from the options - must be done after courses response received
             if (!(rule.details.codes.length === 0)) {
-                for (let i = 0; i < rule.details.codes.length; i++){
-                    for (let x = 0; x < rule.courses.length; x++){
+                for (let i = 0; i < rule.details.codes.length; i++) {
+                    for (let x = 0; x < rule.courses.length; x++) {
                         if (rule.courses[x].code === rule.details.codes[i]['code']) {
                             rule.courses.splice(x, 1).forEach(course => {
                                 rule.selected_courses.push(course)
@@ -95,17 +95,17 @@ Vue.component('rule_course_list', {
 
     computed: {
         // generates the appropriate placeholder text for the tool depending on list or course mode
-        placeholderText(){
+        placeholderText() {
             return this.is_list_search ? "Search lists..." : "Search courses, press esc or tab to close when done"
         },
 
         // used to compute appropriate ordering for template ul element
-        sortedSelectedList(){
+        sortedSelectedList() {
             return this.selected_courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
         },
 
         // used to compute appropriate ordering for dropdown list
-        sortedCourseList(){
+        sortedCourseList() {
             return this.courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
         },
 
@@ -122,11 +122,11 @@ Vue.component('rule_course_list', {
         },
 
         // force sort of multiselect options list on refresh
-        sortCourseOptions(){
+        sortCourseOptions() {
             this.courses = this.sortedCourseList
         },
 
-        toggleListMode(){
+        toggleListMode() {
             if (this.is_list_search) {
                 this.is_list_search = false;
                 this.courses = this.tempStore;
@@ -206,12 +206,12 @@ Vue.component('rule_course_list', {
         removeDependency(index) {
             this.selected_courses.splice(index, 1).forEach((course) => {
                 // add deleted course back to options
-                this.courses.push(course)
-                this.sortCourseOptions()
+                this.courses.push(course);
+                this.sortCourseOptions();
 
                 // find and remove code from details.codes
-                for (let i = 0; i < this.details.codes.length; i++){
-                    if (course.code === this.details.codes[i]['code']){
+                for (let i = 0; i < this.details.codes.length; i++) {
+                    if (course.code === this.details.codes[i]['code']) {
                         this.details.codes.splice(i, 1);
                         break;
                     }
@@ -222,7 +222,7 @@ Vue.component('rule_course_list', {
             this.do_redraw();
         },
 
-        check_options: function() {
+        check_options() {
             // Ensure all data has been filled in
             this.is_blank = this.details.unit_count == null;
             this.is_blank = this.details.codes.length === 0;
@@ -239,13 +239,13 @@ Vue.component('rule_course_list', {
             return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
         },
 
-        update_units: function() {
+        update_units() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_count_units_fn();
             this.check_options();
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw() {
             this.redraw = true;
 
             this.$nextTick(() => {

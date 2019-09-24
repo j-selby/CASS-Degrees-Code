@@ -3,7 +3,7 @@ Vue.component('rule_custom_text_req', {
         "details": {
             type: Object,
 
-            validator: function (value) {
+            validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("text")) {
                     value.text = "";
@@ -13,21 +13,21 @@ Vue.component('rule_custom_text_req', {
             }
         }
     },
-    data: function() {
+    data() {
         return {
             "is_blank": false
         }
     },
-    created: function() {
+    created() {
         this.check_options();
     },
     methods: {
-        check_options: function() {
+        check_options() {
             this.is_blank = this.details.text === "";
 
             return !this.is_blank;
         },
-        update_units: function() {
+        update_units() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_count_units_fn();
             this.check_options();

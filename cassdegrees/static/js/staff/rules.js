@@ -19,23 +19,23 @@ const ALL_COMPONENT_HELP = {
     'incompatibility': "A rule which notes that students must not have picked any of the set of courses specified.",
     'program': 'A rule which enforces that only students from a particular course can take this option.',
     'subplan': "A rule which gives students a choice from a particular set of majors, minors, specialisations or " +
-               "other subplans. The description here is used to describe the rule when displaying this rule to " +
-               "students.",
+        "other subplans. The description here is used to describe the rule when displaying this rule to " +
+        "students.",
     'course': "A rule which specifies that students should pick a certain amount of units from a set of available " +
-              "courses.",
+        "courses.",
     'course_requisite': "A rule which specifies that students should have taken a set of courses before taking this " +
-                        "one.",
+        "one.",
     'custom_text': "If other rules don't entirely fit the requirements of a rule, the custom text field allows " +
-                   "for the specification of other program content. Note that this isn't enforced in student-facing " +
-                   "tools.",
+        "for the specification of other program content. Note that this isn't enforced in student-facing " +
+        "tools.",
     'custom_text_req': "If other rules don't entirely fit the requirements of a rule, the custom text field allows " +
-                       "for the specification of other program content. Note that this isn't enforced in student-facing " +
-                       "tools.",
+        "for the specification of other program content. Note that this isn't enforced in student-facing " +
+        "tools.",
     'elective': "A rule which allows students to choose any courses offered by the ANU as electives to fill a set" +
-                " amount of units.",
+        " amount of units.",
     'either_or': "A rule which allows for the specification of sets of different paths that students can take. Each " +
-                 "\"OR\" group is a collection of rules which must be completed if students were to pick that specific " +
-                 "group."
+        "\"OR\" group is a collection of rules which must be completed if students were to pick that specific " +
+        "group."
 };
 
 // Translation table between internal names for components and human readable ones.
@@ -79,8 +79,8 @@ const LIST_TYPES = {
 };
 
 const SUBPLAN_TYPES = {
-    'MAJ':  'Majors',
-    'MIN':  'Minors',
+    'MAJ': 'Majors',
+    'MIN': 'Minors',
     'SPEC': 'Specialisations'
 };
 
@@ -100,7 +100,7 @@ const app = new Vue({
         rules: []
     },
     methods: {
-        redraw: function () {
+        redraw() {
             this.$children.forEach((child) => {
                 child.do_redraw();
             });
@@ -108,7 +108,7 @@ const app = new Vue({
         /**
          * Submits Vue components into the form.
          */
-        export_rules: function () {
+        export_rules() {
             let valid = true;
 
             for (const index in this.$children) {
@@ -121,7 +121,7 @@ const app = new Vue({
             return valid;
         }
     },
-    mounted: function () {
+    mounted() {
         const reqs = document.getElementById("rules").value.trim();
         if (reqs.length > 0) {
             const parsed = JSON.parse(reqs);

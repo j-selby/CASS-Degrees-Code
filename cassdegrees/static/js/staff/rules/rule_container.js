@@ -10,12 +10,12 @@ Vue.component('rule_container', {
             default: ""
         }
     },
-    data: function() {
+    data() {
         return {
             show_add_a_rule_modal: false,
             add_a_rule_modal_option: 'course_list',
 
-            component_groups: { 'rules': COMPONENT_NAMES, 'requisites': REQUISITE_COMPONENT_NAMES},
+            component_groups: {'rules': COMPONENT_NAMES, 'requisites': REQUISITE_COMPONENT_NAMES},
             component_names: null,
 
             // Forces the element to re-render, if mutable events occurred
@@ -23,29 +23,29 @@ Vue.component('rule_container', {
         }
     },
     methods: {
-        add_rule: function() {
+        add_rule() {
             this.show_add_a_rule_modal = false;
             this.rules.push({
                 type: this.add_a_rule_modal_option,
             });
         },
-        remove: function(index) {
+        remove(index) {
             this.rules.splice(index, 1);
         },
-        duplicate_rule: function(index) {
+        duplicate_rule(index) {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.rules.push(JSON.parse(JSON.stringify(this.rules[index])));
         },
-        check_options: function() {
+        check_options() {
             var valid = true;
-            for (var index in this.$children){
+            for (var index in this.$children) {
                 valid = valid && this.$children[index].check_options();
             }
 
             return valid;
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw() {
             this.redraw = true;
 
             this.$nextTick(() => {

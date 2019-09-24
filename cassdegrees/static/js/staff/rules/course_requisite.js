@@ -3,7 +3,7 @@ Vue.component('rule_course_requisite', {
         "details": {
             type: Object,
 
-            validator: function (value) {
+            validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("codes")) {
                     value.codes = [""];
@@ -13,7 +13,7 @@ Vue.component('rule_course_requisite', {
             }
         }
     },
-    data: function() {
+    data() {
         return {
             "courses": [],
             "info_msg": INFO_MSGS['course'],
@@ -24,16 +24,16 @@ Vue.component('rule_course_requisite', {
             "redraw": false
         }
     },
-    created: function() {
+    created() {
         // Javascript has the best indirection...
-        var rule = this;
+        const rule = this;
 
-        var request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
 
-        request.addEventListener("load", function() {
+        request.addEventListener("load", function () {
             rule.courses = JSON.parse(request.response);
             rule.courses.sort(
-                function(a, b){
+                function (a, b) {
                     return a['code'].localeCompare(b['code'])
                 }
             );
@@ -43,23 +43,23 @@ Vue.component('rule_course_requisite', {
         request.send();
     },
     methods: {
-        add_course: function() {
+        add_course() {
             // Mutable modification - redraw needed
             this.details.codes.push(-1);
             this.check_options();
             this.do_redraw();
         },
-        remove_course: function(index) {
+        remove_course(index) {
             // Mutable modification - redraw needed
             this.details.codes.splice(index, 1);
             this.check_options();
             this.do_redraw();
         },
-        check_options: function() {
+        check_options() {
             // Ensure all data has been filled in
             this.is_blank = false;
-            for (var index in this.details.codes) {
-                var value = this.details.codes[index];
+            for (const index in this.details.codes) {
+                const value = this.details.codes[index];
                 if (value === -1 || value === "") {
                     this.is_blank = true;
                     break;
@@ -68,10 +68,10 @@ Vue.component('rule_course_requisite', {
 
             // Check for duplicates
             this.non_unique_options = false;
-            var found = [];
+            const found = [];
 
-            for (var index in this.details.codes) {
-                var value = this.details.codes[index];
+            for (const index in this.details.codes) {
+                const value = this.details.codes[index];
                 if (found.includes(value)) {
                     this.non_unique_options = true;
                     break;
@@ -82,7 +82,7 @@ Vue.component('rule_course_requisite', {
             return !this.non_unique_options && !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
+        do_redraw() {
             this.redraw = true;
 
             this.$nextTick(() => {
