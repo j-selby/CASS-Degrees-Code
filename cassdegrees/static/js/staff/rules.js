@@ -865,6 +865,7 @@ Vue.component('rule_course', {
 
             return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
         },
+
         count_units: function() {
             switch(this.details.list_type){
                 case "min":   return {"exact": 0, "max": 0, "min": parseInt(this.details.unit_count)};
@@ -879,6 +880,7 @@ Vue.component('rule_course', {
             this.parent_update_units_fn();
             this.check_options(false);
         },
+
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
             this.redraw = true;
