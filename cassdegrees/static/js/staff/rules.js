@@ -288,6 +288,8 @@ Vue.component('rule_subplan', {
             "optionsProxy": [],                  // required prop, default behaviour to display selection tags
             "selected_subplans": [],             // used to store the code and name version of the course when selected
             "showLoadingSpinner": false,
+            "subplan_type_label": "",
+            "student_description_label": "",
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -302,6 +304,7 @@ Vue.component('rule_subplan', {
         var rule = this;
         var request = new XMLHttpRequest();
         this.selected_subplans = []
+        rule.subplan_types = SUBPLAN_TYPES;
 
         request.addEventListener("load", function () {
             rule.subplans = JSON.parse(request.response);
@@ -325,8 +328,6 @@ Vue.component('rule_subplan', {
         request.open("GET", "/api/search/?select=id,code,name,units,year,publish,planType&from=subplan&publish=true");
         request.send();
 
-        rule.subplan_types = SUBPLAN_TYPES;
-
         // Sets the program year to be the value of the id_year field in the original component
         rule.program_year = document.getElementById('id_year').value;
         // Modifies the original 'id_year' element by telling it to refresh all components on all keystrokes
@@ -339,6 +340,13 @@ Vue.component('rule_subplan', {
 
         // Keep a copy of the OR Rule's "count_units" function (Or a blank function if unavailable)
         this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
+
+        this.updateSubplanTypeLabel()
+        this.updateStudentDescriptionLabel()
+    },
+
+    mounted: function() {
+
     },
 
     computed: {
@@ -353,21 +361,6 @@ Vue.component('rule_subplan', {
                 return "Search specialisations for " + year + ", press esc or tab to close"
             } else {
                 return "Select a subplan type above to proceed."
-            }
-        },
-
-        getPlanType() {
-            if (this.active_filter !== "") {
-                console.log("subplan_types: " + this.subplan_types)
-                console.log("this plan: " + this.subplan_types[this.active_filter])
-                let reqStr = this.subplan_types[this.active_filter];
-                if (reqStr !== undefined) {
-                    return reqStr.toLowerCase()
-                } else {
-                    return ""
-                }
-            } else {
-                return ""
             }
         },
 
@@ -464,7 +457,7 @@ Vue.component('rule_subplan', {
         change_filter: function () {
             // Clear the current list and re-apply the filter
             this.active_filter = this.details.subplan_type
-
+            this.updateSubplanTypeLabel()
             // reset selected ids
             this.details.ids = [];
             this.selected_subplans = [];
@@ -553,6 +546,17 @@ Vue.component('rule_subplan', {
             this.parent_count_units_fn();
             this.check_options(false);
         },
+
+        updateStudentDescriptionLabel() {
+            this.student_description_label = this.details.kind
+        },
+
+        updateSubplanTypeLabel() {
+            if (this.details.subplan_type !== "") {
+                this.subplan_type_label = this.subplan_types[this.active_filter].toLowerCase()
+            }
+        },
+
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function () {
             this.program_year = document.getElementById('id_year').value;
@@ -570,6 +574,16 @@ Vue.component('rule_course', {
     props: {
         "details": {
             type: Object,
+
+            // provide default values on initialisation to avoid undefined error
+            default() {
+                return {
+                    codes: [],
+                    list_description: "",
+                    list_type: "",
+                    unit_count: 0
+                }
+            },
 
             validator: function (value) {
                 // Ensure that the object has all the attributes we need
@@ -612,6 +626,8 @@ Vue.component('rule_course', {
             "tempStore": [],        // holds course options when list selection is in use
             "showLoadingSpinner": false,
             "info_msg": INFO_MSGS['course'],
+            "list_type_label": "",
+            "unit_value_label": "",
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -628,6 +644,7 @@ Vue.component('rule_course', {
     created: function () {
         var rule = this;
         var request = new XMLHttpRequest();
+        rule.list_types = LIST_TYPES;
 
         // add available courses
         request.addEventListener("load", function () {
@@ -639,8 +656,6 @@ Vue.component('rule_course', {
                 rule.coursename_dict[courseObj.code] = courseObj.name
             });
 
-            rule.list_types = LIST_TYPES;
-            console.log(Object.keys(rule.list_types))
             rule.check_options(false);
 
             // if there are already selected courses in details.codes when the component is loaded load,
@@ -662,9 +677,12 @@ Vue.component('rule_course', {
         request.open("GET", "/api/search/?select=code,name&from=course");
         request.send();
 
-
         // Keep a copy of the Or Rule's "count_units" function (Or a blank function if unavailable)
         this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
+
+        // update labels based on existing or default values
+        this.updateListTypeLabel()
+        this.updateUnitCountLabel()
     },
 
     computed: {
@@ -682,20 +700,6 @@ Vue.component('rule_course', {
         sortedCourseList() {
             return this.courses.sort((a, b) => (a.code > b.code) ? 1 : -1)
         },
-
-        getListRequirementType() {
-            if (this.details.list_type !== "") {
-                let reqStr = this.list_types[this.details.list_type];
-                if (reqStr !== undefined) {
-                    return reqStr.toLowerCase()
-                } else {
-                    return ""
-                }
-            } else {
-                return ""
-            }
-        },
-
     },
 
     methods: {
@@ -810,6 +814,16 @@ Vue.component('rule_course', {
             this.do_redraw();
         },
 
+        updateUnitCountLabel() {
+            this.unit_value_label = this.details.unit_count
+        },
+
+        updateListTypeLabel() {
+            if (this.details.list_type !== "") {
+                this.list_type_label = this.list_types[this.details.list_type].toLowerCase()
+            }
+        },
+
         check_options: function (is_submission) {
             // If final submission ensure all data has been filled in
             let blank_count = this.details.unit_count == null;
@@ -818,6 +832,11 @@ Vue.component('rule_course', {
 
             if (is_submission) {
                 this.is_blank = blank_count || blank_codes || blank_listtype;
+                // Ensure Unit Count is valid:
+                if (this.details.unit_count != null) {
+                    this.invalid_units = this.details.unit_count <= 0;
+                    this.invalid_units_step = this.details.unit_count % 6 !== 0;
+                }
             } else {
                 // remove error if user corrects prior to resubmission
                 if (!blank_listtype && !blank_codes && !blank_count) {
@@ -826,13 +845,6 @@ Vue.component('rule_course', {
             }
 
             // Duplicates are prevented by condition on updateSelected()
-
-            // Ensure Unit Count is valid:
-            // Todo: consider whether you want this wrapped in the is_submission check
-            if (this.details.unit_count != null) {
-                this.invalid_units = this.details.unit_count <= 0;
-                this.invalid_units_step = this.details.unit_count % 6 !== 0;
-            }
 
             return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
         },

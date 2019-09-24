@@ -194,7 +194,7 @@
 
         <p class="form-group">
             <label style="width: 20.8333%; text-align: right; float: left;">List type:</label>
-            <select v-model="details.list_type" v-on:change="check_options(false)" required>
+            <select v-model="details.list_type" v-on:change="updateListTypeLabel()" required>
                 <option v-for="(msg, type) in list_types" v-bind:value="type">{{ type }}</option>
             </select>
         </p>
@@ -202,7 +202,7 @@
         <p class="form-group">
             <label style="width: 20.8333%; text-align: right; float: left;">Number of units:</label>
             <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
-                   v-on:change="check_options(false)" v-model="details.unit_count" min="0" step="6" max="1000" required>
+                   v-on:change="updateUnitCountLabel()" v-model="details.unit_count" min="0" step="6" max="1000" required>
         </p>
 
         <br>
@@ -212,7 +212,7 @@
         <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
         <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
 
-        <p>Students must select {{ getListRequirementType }} {{ details.unit_count }} units from the following courses:</p>
+        <p>Students must select {{ list_type_label }} {{ unit_value_label }} units from the following courses:</p>
 
         <br>
 
@@ -275,7 +275,7 @@
 
             <p class="form-group">
                 <label style="width: 20.8333%; text-align: right; float: left;">Student description:</label>
-                <input class="text tfull" v-model="details.kind" v-on:change="check_options(false)" aria-required="true"
+                <input class="text tfull" v-model="details.kind" v-on:change="updateStudentDescriptionLabel()" aria-required="true"
                        placeholder="e.g. Arts Major - brief description for students here" style="margin-left: 0;">
             </p>
 
@@ -288,7 +288,7 @@
 
             <br>
 
-            <p>Students must pick one {{ details.kind }} from the following {{ getPlanType }}:</p>
+            <p>Students must pick one {{ student_description_label }} from the following {{ subplan_type_label }}:</p>
 
             <br>
 
