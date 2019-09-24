@@ -6,6 +6,18 @@
 // (Global requirement) inner container: Dynamic field inside a container containing options depending
 //                                       on what rule type was selected.
 
+// Translation table between internal names for components and human readable ones.
+const GLOBAL_REQUIREMENT_NAMES = {
+    'general': "Global Requirement"
+};
+
+const GLOBAL_REQUIREMENT_HELP = {
+    'general': "Enforces for an entire degree that a maximum or minimum amount of units must come from a particular " +
+        "set of course levels or from particular subject areas - e.g. a minimum of 60 units must come from " +
+        "completion of 3000 and 4000 level courses from the ARTV subject area. Multiple of these global " +
+        "requirements may exist (e.g. if different unit counts are needed).",
+};
+
 Vue.component('global_requirement_general', {
     props: {
         "details": {
@@ -186,44 +198,34 @@ Vue.component('global_requirement_container', {
     template: '#globalRequirementContainerTemplate'
 });
 
-/**
- * Submits the program form.
- */
-function handleProgram() {
-    var valid = true;
-    for (var index in globalRequirementsApp.$children[0].$children){
-        valid = valid && globalRequirementsApp.$children[0].$children[index].$children[0].check_options();
-    }
-
-    // Serialize list structures - this doesn't translate well over POST requests normally.
-    document.getElementById("globalRequirements").value = JSON.stringify(globalRequirementsApp.global_requirements);
-
-    return valid;
-}
-
-// Translation table between internal names for components and human readable ones.
-const GLOBAL_REQUIREMENT_NAMES = {
-    'general': "Global Requirement"
-};
-
-const GLOBAL_REQUIREMENT_HELP = {
-    'general': "Enforces for an entire degree that a maximum or minimum amount of units must come from a particular " +
-            "set of course levels or from particular subject areas - e.g. a minimum of 60 units must come from " +
-            "completion of 3000 and 4000 level courses from the ARTV subject area. Multiple of these global " +
-            "requirements may exist (e.g. if different unit counts are needed).",
-};
-
-var globalRequirementsApp = new Vue({
+const globalRequirementsApp = new Vue({
     el: '#globalRequirementsContainer',
     data: {
         global_requirements: []
+    },
+    methods: {
+        /**
+         * Submits Vue components into the form.
+         */
+        export_requirements: function() {
+            let valid = true;
+            for (const index in this.$children[0].$children){
+                valid = valid && this.$children[0].$children[index].$children[0].check_options();
+            }
+
+            // Serialize list structures - this doesn't translate well over POST requests normally.
+            document.getElementById("globalRequirements").value = JSON.stringify(this.global_requirements);
+
+            return valid;
+        }
+    },
+    mounted: function() {
+        const reqs = document.getElementById("globalRequirements").value.trim();
+        if (reqs.length > 0) {
+            const parsed = JSON.parse(reqs);
+            if (parsed != null) {
+                this.global_requirements = parsed;
+            }
+        }
     }
 });
-
-var reqs = document.getElementById("globalRequirements").value.trim();
-if (reqs.length > 0) {
-    var parsed = JSON.parse(reqs);
-    if (parsed != null) {
-        globalRequirementsApp.global_requirements = parsed;
-    }
-}

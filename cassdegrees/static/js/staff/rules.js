@@ -108,8 +108,8 @@ const app = new Vue({
         /**
          * Submits Vue components into the form.
          */
-        exportRules: function () {
-            var valid = true;
+        export_rules: function () {
+            let valid = true;
 
             for (const index in this.$children) {
                 valid = valid && this.$children[index].check_options();

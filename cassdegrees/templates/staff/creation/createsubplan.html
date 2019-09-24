@@ -83,12 +83,12 @@
 
     <script>
         function submit_course_form(){
-            app.exportRules();
+            app.export_rules();
             document.getElementById('mainForm').submit();
         }
 
         function submit_form(redirect) {
-            if (handleProgram() && app.exportRules()) {
+            if (globalRequirementsApp.export_requirements() && app.export_rules()) {
                 // Ensure that the course has been agreed to to being non public on submission.
                 if (!document.getElementById("id_publish").checked &&
                     !confirm("You haven't marked this subplan as public - this means this won't appear " +
