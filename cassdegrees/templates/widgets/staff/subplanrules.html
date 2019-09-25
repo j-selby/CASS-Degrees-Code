@@ -41,6 +41,11 @@
             </p>
 
             <br>
+            <div style="text-align:right; width:100%; padding:0; padding-bottom: 5px">
+                <input type="button" value="Hide Course List" class="btn-uni-grad btn-small"
+                       onclick="toggleHideNextClass(this.parentElement, 'resources-list');
+                       (this.value=='Hide Course List') ? this.value='Show Course List' : this.value='Hide Course List';"/>
+            </div>
 
             <multiselect
                     :options="courses"
