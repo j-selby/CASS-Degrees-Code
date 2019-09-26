@@ -319,8 +319,8 @@
             <input type="button" value="Sort Courses" class="btn-uni-grad btn-small" style="margin-left: 0"
                    @click="selected_courses=sortedSelectedList;">
             <input type="button" value="Hide Courses" class="btn-uni-grad btn-small" style="margin-left: 0"
-                   onclick="toggleHideNextClass(this.parentElement, 'resources-list');
-                   (this.value=='Hide Courses') ? this.value='Show Courses' : this.value='Hide Courses';"/>
+                   v-on:click="is_hidden_courses=!is_hidden_courses"
+                   onclick="(this.value=='Hide Courses') ? this.value='Show Courses' : this.value='Hide Courses';"/>
         </div>
 
         <multiselect
@@ -344,7 +344,7 @@
         <div class="msg-warn" v-if="is_list_search">Searching in list mode,
             <a href="javascript:void(0);" @click="toggleListMode()">return to course mode</a></div>
 
-        <ul class="resources-list">
+        <ul class="resources-list" v-if="!is_hidden_courses">
             <template v-for="(resource, index) in selected_courses">
                 <li class="resource-item" :data-index="index">
                     <div class="resource-info">
@@ -359,6 +359,7 @@
             </template>
             <div class="msg-warn" v-if="selected_courses.length == 0">You have not added any courses yet!</div>
         </ul>
+        <div class="msg-warn" v-if="is_hidden_courses">This course list has been hidden!</div>
     </fieldset>
 </script>
 {% endverbatim %}
