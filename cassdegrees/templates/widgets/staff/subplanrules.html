@@ -22,23 +22,23 @@
                 <label>Students must complete:</label>
             </p>
 
-            <select v-model="details.list_type" v-on:change="check_options" required>
+            <select v-model="details.list_type" v-on:change="check_options(false)" required>
                 <option v-for="(msg, type) in list_types" v-bind:value="type">{{ msg }}</option>
             </select>
 
             <p v-if="details.list_type == 'min_max'">
                 A minimum of
                 <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
-                   v-on:change="check_options" v-model="details.min_unit_count" min="0" step="6" max="1000" required> units
+                   v-on:change="check_options(false)" v-model="details.min_unit_count" min="0" step="6" max="1000" required> units
                 and a maximum of
                 <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
-                   v-on:change="check_options" v-model="details.max_unit_count" min="0" step="6" max="1000" required> units
+                   v-on:change="check_options(false)" v-model="details.max_unit_count" min="0" step="6" max="1000" required> units
             </p>
 
             <span v-if="details.list_type !='min_max'">
                 <!-- {#       instyle css only temporary #} -->
                 <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
-                       v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" required> units
+                       v-on:change="check_options(false)" v-model="details.unit_count" min="0" step="6" max="1000" required> units
             </span>
 
 
