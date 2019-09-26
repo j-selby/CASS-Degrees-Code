@@ -485,7 +485,7 @@ Vue.component('rule_course', {
             "tempStore": [],        // holds course options when list selection is in use
             "showLoadingSpinner": false,
             "info_msg": INFO_MSGS['course'],
-            "is_hidden_courses": false,
+            "is_courses_view_hidden": false,
 
             // Display related warnings if true
             "non_unique_options": false,
