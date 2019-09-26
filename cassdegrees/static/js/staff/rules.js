@@ -75,7 +75,7 @@ const LIST_TYPES = {
     'min': 'A Minimum Of',
     'exact': 'Exactly',
     'max': 'A Maximum Of',
-    'min_max': "Minimum and maximum"
+    'min_max': "Minimum and Maximum"
 };
 
 const SUBPLAN_TYPES = {
@@ -855,30 +855,32 @@ Vue.component('rule_course', {
             if (is_submission) {
                 this.is_blank = blank_count || blank_codes || blank_listtype;
                 // Ensure Unit Count is valid:
-                if (this.details.unit_count != null) {
-                    this.invalid_units = this.details.unit_count <= 0;
-                    this.invalid_units_step = this.details.unit_count % 6 !== 0;
+                if (this.details.list_type != "min_max") {
+                    if (this.details.unit_count != null) {
+                        this.invalid_units = this.details.unit_count <= 0;
+                        this.invalid_units_step = this.details.unit_count % 6 !== 0;
+                    }
+                } else {
+                    console.log("TELL ME WHYYYYY");
+                    if (this.details.min_unit_count != null && this.details.max_unit_count != null) {
+                        this.invalid_units = this.details.min_unit_count <= 0 || this.details.max_unit_count <= 0;
+                        this.invalid_units_step = this.details.min_unit_count %6 !== 0 || this.details.max_unit_count %6 !== 0;
+
+                        this.invalid_min_max_units = parseInt(this.details.min_unit_count) > parseInt(this.details.max_unit_count);
+                    } else {
+                        this.is_blank = true;
+                    }
                 }
+
             } else {
                 // remove error if user corrects prior to resubmission
                 if (!blank_listtype && !blank_codes && !blank_count) {
                     this.is_blank = false;
                 }
             }
-            else {
-                if (this.details.min_unit_count != null && this.details.max_unit_count != null) {
-                    this.invalid_units = this.details.min_unit_count <= 0 || this.details.max_unit_count <= 0;
-                    this.invalid_units_step = this.details.min_unit_count %6 !== 0 || this.details.max_unit_count %6 !== 0;
 
-                    this.invalid_min_max_units = parseInt(this.details.min_unit_count) > parseInt(this.details.max_unit_count);
-                }
-                else
-                    this.is_blank = true;
-            }
-
-          this.do_redraw();
-          // Duplicates are prevented by condition on updateSelected()  
-          return !this.invalid_units && !this.invalid_units_step && !this.is_blank && !this.invalid_min_max_units;
+            // Duplicates are prevented by condition on updateSelected()
+            return !this.invalid_units && !this.invalid_units_step && !this.is_blank && !this.invalid_min_max_units;
             
         },
 
