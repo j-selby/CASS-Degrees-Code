@@ -79,23 +79,4 @@ function updateCheckboxes() {
     });
 }
 
-/**
- * From the given element, finds the next element with a given className and toggles it hidden or shown.
- *
- * @param startElem: The calling element, or the
- * @param className: The class to check for
- * @returns None
- */
-function toggleHideNextClass(startElem, className) {
-    targetElem = startElem.nextElementSibling;
-    while (!targetElem.classList.contains(className)) {
-        targetElem = targetElem.nextElementSibling;
-    }
-    if (targetElem.style.display === "none") {
-        targetElem.style.display = "block";
-    } else {
-        targetElem.style.display = "none";
-    }
-}
-
 document.addEventListener("DOMContentLoaded", updateCheckboxes);
