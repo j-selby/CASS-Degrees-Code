@@ -618,8 +618,7 @@ Vue.component('rule_course', {
                         for (let i = 0; i < this.tempStore.length; i++) {
                             if (this.tempStore[i].code === course.code) {
                                 this.tempStore.splice(i, 1).forEach(option => {
-                                    this.selected_courses.push(option);
-                                    console.log(option);
+                                    this.selected_courses.unshift(option);
                                 });
                                 break;
                             }
@@ -634,7 +633,7 @@ Vue.component('rule_course', {
                 value.forEach((resource) => {
                     // Adds selected resources to array and prevents duplicates
                     if (!this.details.codes.some(code => code === resource.code)) {
-                        this.selected_courses.push(resource)
+                        this.selected_courses.unshift(resource)
                         this.details.codes.push({'code': resource.code, 'name': resource.name});
                     }
                     // remove the selected course from the list of available courses to add
