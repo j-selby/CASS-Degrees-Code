@@ -94,11 +94,11 @@
                     <p>
                         {% if rule.list_type != "min_max" %}
                             {% if rule.list_type == "min" %}
-                                At least
+                                A minimum of
                             {% elif rule.list_type == "exact" %}
                                 Exactly
                             {% elif rule.list_type == "max" %}
-                                No more than
+                                A maximum of
                             {% endif %}
                             {{ rule.unit_count }} units
                         {% else %}
