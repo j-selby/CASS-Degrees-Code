@@ -65,8 +65,9 @@ Vue.component('rule', {
             const units = {"exact": 0, "max": 0, "min": 0};
             for (const child of this.$children){
                 const child_units = child.count_units();
-                for (var key in child_units)
+                for (const key in child_units) {
                     units[key] += child_units[key];
+                }
             }
             return units;
         },

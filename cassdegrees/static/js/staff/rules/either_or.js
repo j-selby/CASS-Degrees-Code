@@ -72,27 +72,29 @@ Vue.component('rule_either_or', {
             this.do_redraw();
         },
         check_options(is_submission) {
-            var valid = true;
-            for (var child of this.$children){
+            let valid = true;
+            for (const child of this.$children) {
                 valid = valid && child.check_options(is_submission);
             }
 
             // Count the number of units in each group, creating an error if there are any inconsistencies
             this.inconsistent_units = false;
-            var units = null;
-            for(var or_group of this.details.either_or){
+            let units = null;
+            for(const or_group of this.details.either_or){
                 // Sum up the units of the or group
-                var group_units = {"exact": 0, "max": 0, "min": 0};
-                for (var details of or_group){
-                    var child_units = this.find_rule(details).count_units();
-                    for (var key in child_units)
-                        group_units[key] += child_units[key]
+                const group_units = {"exact": 0, "max": 0, "min": 0};
+                for (const details of or_group) {
+                    const child_units = this.find_rule(details).count_units();
+                    for (const key in child_units) {
+                        group_units[key] += child_units[key];
+                    }
                 }
 
                 // If units has not been set yet, set it to the current OR group
                 if (units == null){
                     units = group_units;
                 }
+
                 // If units has been set, verify they are compatible and shrink the possible unit bounds
                 else {
                     // If the current unit count is incompatible with the OR rule count, notify of inconsistent units
@@ -106,8 +108,8 @@ Vue.component('rule_either_or', {
                     }
 
                     // Shrink the bounds of the OR rule units as much as possible
-                    var min =  Math.max(units.exact + units.min, group_units.exact + group_units.min);
-                    var max;
+                    const min = Math.max(units.exact + units.min, group_units.exact + group_units.min);
+                    let max;
                     if (units.exact + units.min + units.max > group_units.exact + group_units.min + group_units.max)
                         max = group_units.exact + group_units.min + group_units.max - min;
                     else
@@ -121,36 +123,41 @@ Vue.component('rule_either_or', {
         },
         count_units() {
             // Get the unit count of the entire OR rule as the unit count of the first group
-            var units = {"exact": 0, "max": 0, "min": 0};
+            const units = {"exact": 0, "max": 0, "min": 0};
             if (this.details.either_or.length !== 0){
-                for (var details of this.details.either_or[0]) {
-                    var child_units = this.find_rule(details).count_units();
-                    for (var key in child_units)
-                        units[key] += child_units[key]
+                for (const details of this.details.either_or[0]) {
+                    const child_units = this.find_rule(details).count_units();
+                    for (const key in child_units) {
+                        units[key] += child_units[key];
+                    }
                 }
             }
 
             return units;
         },
 
-        find_rule: function(rule_details) {
+        find_rule(rule_details) {
             // Takes a rule details object and finds the child node with a matching set of rules
-            for(var child of this.$children)
-                if (child.details === rule_details)
+            for (const child of this.$children) {
+                if (child.details === rule_details) {
                     return child;
+                }
+            }
+
             return null;
         },
-        update_units: function() {
+        update_units() {
             // "check_options" is run as an updated unit count affects the error messages in this rule
             this.check_options();
 
             // Will go through each rule and determine how many units it specifies, showing a warning if over 48
-            for (var or_group of this.details.either_or) {
-                var group_units = {"exact": 0, "max": 0, "min": 0};
-                for (var details of or_group){
-                    var child_units = this.find_rule(details).count_units();
-                    for (var key in child_units)
-                        group_units[key] += child_units[key]
+            for (const or_group of this.details.either_or) {
+                const group_units = {"exact": 0, "max": 0, "min": 0};
+                for (const details of or_group){
+                    const child_units = this.find_rule(details).count_units();
+                    for (const key in child_units) {
+                        group_units[key] += child_units[key];
+                    }
                 }
 
                 if (group_units.exact + group_units.min > 48) {

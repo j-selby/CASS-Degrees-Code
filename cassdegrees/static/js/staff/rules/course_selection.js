@@ -74,8 +74,8 @@ Vue.component('rule_course_list', {
         }
     },
     created: function () {
-        var rule = this;
-        var request = new XMLHttpRequest();
+        const rule = this;
+        const request = new XMLHttpRequest();
         rule.list_types = LIST_TYPES;
 
         // add available courses
@@ -162,8 +162,8 @@ Vue.component('rule_course_list', {
                 this.tempStore = this.courses;
 
                 // get available lists from database
-                var rule = this;
-                var request = new XMLHttpRequest();
+                const rule = this;
+                const request = new XMLHttpRequest();
 
                 request.addEventListener("load", function () {
                     rule.lists = JSON.parse(request.response);

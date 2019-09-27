@@ -37,19 +37,20 @@ Vue.component('rule_container', {
             this.rules.push(JSON.parse(JSON.stringify(this.rules[index])));
         },
         check_options() {
-            var valid = true;
-            for (var index in this.$children) {
+            let valid = true;
+            for (const index in this.$children) {
                 valid = valid && this.$children[index].check_options();
             }
 
             return valid;
         },
         count_units: function() {
-            var units = {"exact": 0, "max": 0, "min": 0};
-            for (var child of this.$children){
-                var child_units = child.count_units();
-                for (var key in child_units)
+            const units = {"exact": 0, "max": 0, "min": 0};
+            for (const child of this.$children) {
+                const child_units = child.count_units();
+                for (const key in child_units) {
                     units[key] += child_units[key];
+                }
             }
             return units;
         },

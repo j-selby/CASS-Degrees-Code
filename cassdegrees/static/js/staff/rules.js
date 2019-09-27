@@ -142,11 +142,12 @@ const app = new Vue({
 
 function isValidUnitCount(value) {
     // Go through each child and sum up all of the units
-    var units = {"exact": 0, "max": 0, "min": 0};
-    for (var child of app.$children){
-        var child_units = child.count_units();
-        for (var key in child_units)
+    const units = {"exact": 0, "max": 0, "min": 0};
+    for (const child of app.$children) {
+        const child_units = child.count_units();
+        for (const key in child_units) {
             units[key] += child_units[key];
+        }
     }
 
     // Return true if the specified value is within the unit count bounds

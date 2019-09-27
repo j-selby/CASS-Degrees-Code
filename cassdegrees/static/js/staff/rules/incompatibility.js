@@ -60,7 +60,7 @@ Vue.component('rule_incompatibility', {
         check_options(is_submission) {
             // Check for duplicates
             this.non_unique_options = false;
-            var found = [];
+            let found = [];
 
             for (const index in this.details.incompatible_courses) {
                 const value = this.details.incompatible_courses[index];

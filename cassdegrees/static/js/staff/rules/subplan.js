@@ -62,9 +62,9 @@ Vue.component('rule_subplan', {
 
             // if there are already plans selected on load, load their details from subplans to selected_subplans
             if (rule.details.ids.length > 0) {
-                for (var i = 0; i < rule.details.ids.length; i++) {
+                for (let i = 0; i < rule.details.ids.length; i++) {
                     let existingID = rule.details.ids[i];
-                    for (var x = 0; x < rule.subplans.length; x++) {
+                    for (let x = 0; x < rule.subplans.length; x++) {
                         if (existingID === rule.subplans[x].id) {
                             rule.selected_subplans.push(rule.subplans[x])
                             break;
@@ -251,7 +251,7 @@ Vue.component('rule_subplan', {
 
             // Check for duplicates
             this.non_unique_options = false;
-            var found = [];
+            let found = [];
 
             for (const index in this.details.ids) {
                 const value = this.details.ids[index];
@@ -264,7 +264,7 @@ Vue.component('rule_subplan', {
 
             // Check for inconsistent units
             this.inconsistent_units = false;
-            var desired_unit_value = 0;
+            let desired_unit_value = 0;
 
             for (const index in this.details.ids) {
                 const value = this.details.ids[index];
