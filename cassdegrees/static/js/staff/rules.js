@@ -115,7 +115,7 @@ const app = new Vue({
         /**
          * Submits Vue components into the form.
          */
-        exportRules() {
+        export_rules() {
             // Todo: remove existing success message if present prior to validation
             let valid = true;
 
