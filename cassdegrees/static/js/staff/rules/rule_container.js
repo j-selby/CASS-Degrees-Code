@@ -56,10 +56,10 @@ Vue.component('rule_container', {
                 this.do_redraw();
             }
         },
-        check_options() {
+        check_options(is_submission) {
             let valid = true;
             for (const index in this.$children) {
-                valid = valid && this.$children[index].check_options();
+                valid = valid && this.$children[index].check_options(is_submission);
             }
 
             return valid;
