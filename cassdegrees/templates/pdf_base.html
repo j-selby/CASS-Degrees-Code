@@ -18,7 +18,7 @@
 
         @page {
             size: A4 landscape;
-            margin: 1cm;
+            margin: 0.5cm;
         }
 
         /* Basic column rules */
@@ -29,6 +29,11 @@
 
         .columns-3 {
             column-count: 3;
+            column-fill: auto;
+        }
+
+        .columns-4 {
+            column-count: 4;
             column-fill: auto;
         }
 
@@ -53,6 +58,11 @@
         .no-bottom-margin {
             margin-bottom: 0 !important;
             padding-bottom: 0 !important;
+        }
+
+        .no-top-margin {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
         }
 
         .grey-text {
