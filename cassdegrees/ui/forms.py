@@ -348,7 +348,7 @@ class EditCourseFormSnippet(ModelForm):
         if len(data) == 9 and not data[-1:].isalpha():
             raise forms.ValidationError("Extra Key should be a letter e.g. A, B, C")
         if CourseModel.objects.filter(code=data):
-            raise forms.ValidationError("A course with the same code already exists!")
+            raise forms.ValidationError("A course with this code already exists!")
         return data.upper()
 
     def clean_name(self):
