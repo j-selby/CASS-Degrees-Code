@@ -48,6 +48,10 @@
     top: 0px;
 }
 
+.shadow {
+    box-shadow: 0 5px 0 rgba(0,0,0,0.1);
+}
+
 .custom_search_bar input[type=text]{
     height: 30px;
     width: 78%;

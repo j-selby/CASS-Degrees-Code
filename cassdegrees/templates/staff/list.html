@@ -56,7 +56,7 @@
                 {% csrf_token %}
                 {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
                 <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
-                <div class="list_menu">
+                <div class="list_menu shadow">
                     <p class="left">
                         <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="{{ render.staff_url_prefix }}create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% elif title == 'List' %}list{% endif %}/" value="+ New {{ title }}">
                         <input class="btn-uni-grad btn-medium" type ="submit" formaction="{{ render.staff_url_prefix }}delete/{% if title == 'Program' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% elif title == 'List' %}lists{% endif %}/" value="&times Delete Selected">
