@@ -123,7 +123,7 @@
             {% endwith %}
         {% elif rule.type == "custom_text" %}
             {% if rule.show_course_boxes %}
-                {% student_course_box rule.units render_rules %}
+                {% student_course_box rule.unit_count render_rules %}
             {% endif %}
         {% elif rule.type == "elective" %}
             {% student_course_box rule.units render_rules %}
