@@ -20,16 +20,16 @@ def student_course_box(context, count, display_course_index):
                       "<div class=\"box-solid course-drop dropzone\">" \
                       "<span class=\"grey-text\">Course #" + str(i + 1) + ":&nbsp;</span>" \
                       "<span class=\"course-code\"></span>&nbsp;" \
-                      "<input type=\"button\" class=\"course-clear-button\" onclick=\"clearCourse(this.parentElement)\" " \
-                      "class=\"btn-uni-grad btn-snall\" value=\"Remove\" />" \
+                      "<input type=\"button\" onclick=\"clearCourse(this.parentElement)\" " \
+                      "class=\"course-clear-button btn-uni-grad btn-snall\" value=\"Remove\" />" \
                       "</div></div>"
         else:
             output += "<div class=\"card selectable-card\">" \
                       "<div class=\"box-solid course-drop dropzone\">" \
                       "<span class=\"grey-text\">Course:&nbsp;</span>" \
                       "<span class=\"course-code\"></span>&nbsp;" \
-                      "<input type=\"button\" class=\"course-clear-button\" onclick=\"clearCourse(this.parentElement)\" " \
-                      "class=\"btn-uni-grad btn-snall\" value=\"Remove\" />" \
+                      "<input type=\"button\" onclick=\"clearCourse(this.parentElement)\" " \
+                      "class=\"course-clear-button btn-uni-grad btn-snall\" value=\"Remove\" />" \
                       "</div></div>"
 
     return Template(output).render(context)
