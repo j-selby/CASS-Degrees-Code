@@ -250,11 +250,11 @@ Vue.component('rule_course_list', {
         updateListTypeLabel() {
             if (this.details.list_type !== "") {
                 if (this.details.list_type !== "min_max") {
-                    this.details.max_unit_count = this.details.unit_count = "0";
-                    this.details.min_unit_count = this.details.unit_count = "0";
+                    this.details.max_unit_count = this.details.unit_count;
+                    this.details.min_unit_count = this.details.unit_count;
                 }
                 else
-                    this.details.unit_count = this.details.min_unit_count = "0";
+                    this.details.unit_count = this.details.min_unit_count;
 
                 this.list_type_label = this.list_types[this.details.list_type].toLowerCase();
 
