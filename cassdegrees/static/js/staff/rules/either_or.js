@@ -5,7 +5,7 @@ Vue.component('rule_either_or', {
             validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("either_or")) {
-                    value.either_or = [];
+                    value.either_or = [[], []];
                 }
 
                 return true;

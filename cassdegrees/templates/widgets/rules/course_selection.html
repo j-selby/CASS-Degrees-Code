@@ -43,36 +43,39 @@
         <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
         <div class="msg-error" v-if="invalid_min_max_units">Minimum units count can not be greater than maximum units count!</div>
 
-        <p v-if="details.list_type != 'min_max'">
-            Students must select {{ list_type_label }} {{ unit_value_label }} units from the following courses:
-        </p>
-        <p v-if="details.list_type == 'min_max'">
-            Students must select a minimum of {{ min_unit_value_label }} units
-            and a maximum of {{ max_unit_value_label }} units from the following courses:
-        </p>
+        <div v-if="courses.length != 0">
+            <p v-if="details.list_type != 'min_max'">
+                Students must select {{ list_type_label }} {{ unit_value_label }} units from the following courses:
+            </p>
+            <p v-if="details.list_type == 'min_max'">
+                Students must select a minimum of {{ min_unit_value_label }} units
+                and a maximum of {{ max_unit_value_label }} units from the following courses:
+            </p>
 
-        <br>
+            <br>
 
-        <multiselect
-                :options="courses"
-                :value="optionsProxy"
-                @input="updateSelected"
-                :show-labels="true"
-                :multiple="true"
-                :searchable="true"
-                :close-on-select="false"
-                :placeholder="placeholderText"
-                :custom-label="customLabel"
-                track-by="name"
-                :max-height="200"
-                :open-direction="'top'"
-                :loading="showLoadingSpinner"
-                ref="multiselectref"
-        >
-        </multiselect>
+            <multiselect
+                    :options="courses"
+                    :value="optionsProxy"
+                    @input="updateSelected"
+                    :show-labels="true"
+                    :multiple="true"
+                    :searchable="true"
+                    :close-on-select="false"
+                    :placeholder="placeholderText"
+                    :custom-label="customLabel"
+                    track-by="name"
+                    :max-height="200"
+                    :open-direction="'top'"
+                    :loading="showLoadingSpinner"
+                    ref="multiselectref"
+            >
+            </multiselect>
+        </div>
+        <div v-else v-html="info_msg"></div>
 
         <div class="msg-warn" v-if="is_list_search">Searching in list mode,
-            <a href="javascript:void(0);" @click="toggleListMode()">return to course mode</a></div>
+        <a href="javascript:void(0);" @click="toggleListMode()">return to course mode</a></div>
 
         <ul class="resources-list">
             <template v-for="(resource, index) in sortedSelectedList">

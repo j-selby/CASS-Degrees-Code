@@ -9,7 +9,7 @@ Vue.component('rule_course_list', {
                     codes: [],
                     list_description: "",
                     list_type: "",
-                    unit_count: 0
+                    unit_count: 6
                 }
             },
 
