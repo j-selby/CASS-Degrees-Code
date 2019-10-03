@@ -59,13 +59,13 @@
                 <div class="list-menu">
                     <p class="left">
                         <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="{{ render.staff_url_prefix }}create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% elif title == 'List' %}list{% endif %}/" value="+ New {{ title }}">
+                        {% if title == "Course" %}
+                            <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="{{ render.staff_url_prefix }}report/course/" value="View Courses Report">
+                        {% endif %}
+                    </p>
+                    <p class="right">
                         <input class="btn-uni-grad btn-medium" type ="submit" formaction="{{ render.staff_url_prefix }}delete/{% if title == 'Program' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% elif title == 'List' %}lists{% endif %}/" value="&times Delete Selected">
                     </p>
-                    {% if title == "Course" %}
-                        <p class="right">
-                            <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="{{ render.staff_url_prefix }}report/course/" value="View Courses Report">
-                        </p>
-                    {% endif %}
                 </div>
 
                 <div id="select_all_div_{{ title }}" class="left fullwidth" hidden>
@@ -87,7 +87,7 @@
                             {% else %}
                                 <th class="text-center">
                                     Select All</br>
-                                    <input id="select_all" title="Select All" type="checkbox" name="select_all" onclick="selectAll(this, '{{ title }}')">
+                                    <input id="select_all" title="Select All" type="checkbox" name="select_all" onchange="selectAll(this, '{{ title }}')">
                                 </th>
                                 <th>{{ title }}</th>
                             {% endif %}
@@ -146,6 +146,8 @@
             var {{ title }}List = new List("{{ title }}Sorter", {{ title }}Options);
             var {{ title }}MsgHidden = true;
 
+            var PAGE_MAX = {{ title }}Options.page;
+
             // Code for Select All (in current page/all entries)
             function selectAll(source, currTitle) {
                 var checkboxes = document.getElementsByClassName('select_' + currTitle);
@@ -160,6 +162,7 @@
                     document.getElementById("select_all_msg_" + currTitle).innerHTML = "All " + checkboxes.length
                         + " " + currTitle + "s in this page are selected. <a href='#' class='show_all'>Select all " + currTitle + "s </a>" ;
                 }
+
                 var showAll = document.querySelector('.show_all');
                 {# checks for when the main select all checkbox is toggled #}
                 if (showAll) {
@@ -167,12 +170,34 @@
                 }
                 function selectAllHandler() {
                     let list = window[currTitle + "List"];
-                    list.page = list.size();
-                    list.update();
+                    updatePagination(list, list.size());
                     selectAll(source, currTitle);
                     document.getElementById("select_all_msg_" + currTitle).innerHTML = "All " + currTitle + "s " +
-                        "are selected.";
+                        "are selected. <a href='#' class='reset_pagination'>Clear All Selection</a>";
+
+                    {# clears all checkboxes #}
+                    var resetPagination = document.querySelector('.reset_pagination');
+                    if (resetPagination) {
+                        resetPagination.addEventListener('click', resetHandler, false);
+                    }
+                    function resetHandler() {
+                        unselectAll(checkboxes);
+                        source.checked = false;
+                        document.getElementById("select_all_div_" + currTitle).style.display = "none";
+                        window[currTitle + "MsgHidden"] = true;
+                    }
                 }
+            }
+
+            function unselectAll(checkboxes) {
+                for (var i=0, n=checkboxes.length; i<n; i++) {
+                    checkboxes[i].checked = false;
+                }
+            }
+
+            function updatePagination(list, number) {
+                list.page = number;
+                list.update();
             }
         </script>
     {% endfor %}
