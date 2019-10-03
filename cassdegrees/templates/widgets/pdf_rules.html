@@ -3,7 +3,7 @@
 
 {# Renders rule a rule for a PDF program #}
 {% if render_rules|default_if_none:True %}
-    <div class="box try-complete-box">
+    <div class="box{% if rule.type != "either_or" %} try-complete-box{% endif %}">
         {% if rule.type == "subplan" %}
             <p>Completion of {{ rule.kind }} for {{ rule.units }} units:</p>
         {% elif rule.type == 'elective' %}
@@ -81,10 +81,6 @@
 
                 {% if not forloop.last %}
                     <p class="bottom-margin top-margin">or...</p>
-                {% else %}
-                    {% for rule in group %}
-                        {% include "widgets/pdf_rules.html" with render_rules=False render_units=True %}
-                    {% endfor %}
                 {% endif %}
             {% endfor %}
         {% elif rule.type == "custom_text" %}
@@ -94,6 +90,18 @@
             ERROR: Unknown rule type "{{ rule.type }}"!
         {% endif %}
     </div>
+
+    {% if rule.type == "either_or" %}
+        {% for group in rule.either_or %}
+            {% if forloop.last %}
+                {% for rule in group %}
+                    {% include "widgets/pdf_rules.html" with render_rules=False render_units=True %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+        {% if forloop.last %}<div class="break-box"></div>{% endif %}
+    {% endif %}
 {% endif %}
 
 {% if render_units %}
