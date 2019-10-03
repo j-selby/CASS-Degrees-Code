@@ -3,7 +3,7 @@
 
 {# Renders rule a rule for a PDF program #}
 {% if render_rules|default_if_none:True %}
-    <div class="box{% if rule.type != "either_or" %} try-complete-box{% endif %}">
+    <div class="{% if render_units %}box{% else %}sub-box{% endif %}{% if rule.type != "either_or" %} try-complete-box{% endif %}">
         {% if rule.type == "subplan" %}
             <p>Completion of {{ rule.kind }} for {{ rule.units }} units:</p>
         {% elif rule.type == 'elective' %}
