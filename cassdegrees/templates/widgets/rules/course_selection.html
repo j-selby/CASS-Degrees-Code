@@ -51,38 +51,37 @@
                 Students must select a minimum of {{ min_unit_value_label }} units
                 and a maximum of {{ max_unit_value_label }} units from the following courses:
             </p>
-
-            <br>
-            <div class="align_right" style="margin-bottom: 5px">
-                <input type="button" value="Search Lists" class="btn-uni-grad btn-small" style="margin-left: 0"
-                       v-on:click="toggleListMode();"
-                       onclick="(this.value=='Search Lists') ? this.value='Search Courses' : this.value='Search Lists';">
-                <input type="button" value="Sort Courses" class="btn-uni-grad btn-small" style="margin-left: 0"
-                       @click="selected_courses=sortedSelectedList;">
-                <input type="button" value="Hide Courses" class="btn-uni-grad btn-small" style="margin-left: 0"
-                       v-on:click="is_courses_view_hidden=!is_courses_view_hidden"
-                       onclick="(this.value=='Hide Courses') ? this.value='Show Courses' : this.value='Hide Courses';"/>
-            </div>
-
-            <multiselect
-                    :options="courses"
-                    :value="optionsProxy"
-                    @input="updateSelected"
-                    :show-labels="true"
-                    :multiple="true"
-                    :searchable="true"
-                    :close-on-select="false"
-                    :placeholder="placeholderText"
-                    :custom-label="customLabel"
-                    track-by="name"
-                    :max-height="200"
-                    :open-direction="'top'"
-                    :loading="showLoadingSpinner"
-                    ref="multiselectref"
-            >
-            </multiselect>
         </div>
         <div v-else v-html="info_msg"></div>
+
+        <br>
+        <div class="align_right" style="margin-bottom: 5px">
+            <input type="button" value="Search Lists" class="btn-uni-grad btn-small" style="margin-left: 0"
+                   v-on:click="toggleListMode();"
+                   onclick="(this.value=='Search Lists') ? this.value='Search Courses' : this.value='Search Lists';">
+            <input type="button" value="Sort Courses" class="btn-uni-grad btn-small" style="margin-left: 0"
+                   @click="selected_courses=sortedSelectedList;">
+            <input type="button" value="Hide Courses" class="btn-uni-grad btn-small" style="margin-left: 0"
+                   v-on:click="is_courses_view_hidden=!is_courses_view_hidden"
+                   onclick="(this.value=='Hide Courses') ? this.value='Show Courses' : this.value='Hide Courses';"/>
+        </div>
+        <multiselect
+                :options="courses"
+                :value="optionsProxy"
+                @input="updateSelected"
+                :show-labels="true"
+                :multiple="true"
+                :searchable="true"
+                :close-on-select="false"
+                :placeholder="placeholderText"
+                :custom-label="customLabel"
+                track-by="name"
+                :max-height="200"
+                :open-direction="'top'"
+                :loading="showLoadingSpinner"
+                ref="multiselectref"
+        >
+        </multiselect>
 
         <div class="msg-warn" v-if="is_list_search">Searching in list mode,
         <a href="javascript:void(0);" @click="toggleListMode()">return to course mode</a></div>
@@ -100,7 +99,6 @@
                     </div>
                 </li>
             </template>
-            <div class="msg-warn" v-if="selected_courses.length == 0">You have not added any courses yet!</div>
         </ul>
 
         <div class="msg-warn" v-if="is_courses_view_hidden">This course list has been hidden!</div>
