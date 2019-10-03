@@ -153,7 +153,12 @@
                 var checkboxes = document.getElementsByClassName('select_' + currTitle);
                 {# toggles all current rows displayed #}
                 for (var i=0, n=checkboxes.length; i<n; i++) {
-                    checkboxes[i].checked = source.checked;
+                    if (source.checked) {
+                        checkboxes[i].checked = source.checked;
+                    } else {
+                        checkboxes[i].checked = true;
+                        source.checked = true;
+                    }
                 }
                 {# if popup msg for current tab is still hidden #}
                 if (window[currTitle + "MsgHidden"]) {
