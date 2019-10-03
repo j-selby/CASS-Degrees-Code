@@ -1,11 +1,12 @@
-{% load static %}
+{% load cache_control %}
 
 {% verbatim %}
 <script type="text/x-template" id="ruleContainerTemplate">
     <div v-if="!redraw">
         <div v-for="(item, index) in rules" :key="index" >
             <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)"
-                  v-on:remove="remove(index)" v-on:duplicate_rule="duplicate_rule(index)"></rule>
+                  v-on:remove="remove(index)" v-on:duplicate_rule="duplicate_rule(index)"
+                  v-on:move_up="move_up(index)" v-on:move_down="move_down(index)"></rule>
             <div v-if="index < rules.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
         </div>
 {% endverbatim %}
@@ -48,4 +49,4 @@
     </div>
 </script>
 
-<script type="text/javascript" src="{% static "js/staff/rules/rule_container.js" %}"></script>
+<script type="text/javascript" src="{% static_no_cache "js/staff/rules/rule_container.js" %}"></script>

@@ -10,7 +10,7 @@ Vue.component('rule_custom_text', {
                 }
 
                 if (!value.hasOwnProperty("unit_count")) {
-                    value.unit_count = "0";
+                    value.unit_count = "6";
                 }
 
                 if (!value.hasOwnProperty("show_course_boxes")) {
@@ -27,6 +27,8 @@ Vue.component('rule_custom_text', {
             "is_blank": false,
             // Grabs title of page to figure out the type [Course, Subplan, Program, List]
             "type": document.getElementById('page-title').innerText.split(' ')[1]
+            "invalid_units": false,
+            "is_blank": false
         }
     },
     created() {
@@ -38,6 +40,7 @@ Vue.component('rule_custom_text', {
         check_options(is_submission) {
             this.is_blank = this.details.text === "";
 
+            this.invalid_units = this.details.unit_count <= 0;
             this.not_divisible = this.details.unit_count % 6 !== 0;
 
             return !this.not_divisible && !this.is_blank;

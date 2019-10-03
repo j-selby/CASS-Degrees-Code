@@ -59,6 +59,8 @@ Vue.component('rule_course_list', {
             "info_msg": INFO_MSGS['course'],
             "list_type_label": "",
             "unit_value_label": "",
+            "max_unit_value_label": "",
+            "min_unit_value_label": "",
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -113,8 +115,7 @@ Vue.component('rule_course_list', {
         this.parent_update_units_fn = this.$parent.get_or_rule_update_units_fn();
 
         // update labels based on existing or default values
-        this.updateListTypeLabel()
-        this.updateUnitCountLabel()
+        this.updateListTypeLabel();
     },
 
     computed: {
@@ -246,13 +247,19 @@ Vue.component('rule_course_list', {
             this.do_redraw();
         },
 
-        updateUnitCountLabel() {
-            this.unit_value_label = this.details.unit_count
-        },
-
         updateListTypeLabel() {
             if (this.details.list_type !== "") {
-                this.list_type_label = this.list_types[this.details.list_type].toLowerCase()
+                if (this.details.list_type !== "min_max") {
+                    this.details.max_unit_count = this.details.unit_count = "0";
+                    this.details.min_unit_count = this.details.unit_count = "0";
+                }
+                else
+                    this.details.unit_count = this.details.min_unit_count = "0";
+
+                this.list_type_label = this.list_types[this.details.list_type].toLowerCase();
+
+                this.update_units();
+                this.do_redraw();
             }
         },
 
@@ -265,15 +272,14 @@ Vue.component('rule_course_list', {
             if (is_submission) {
                 this.is_blank = blank_count || blank_codes || blank_listtype;
                 // Ensure Unit Count is valid:
-                if (this.details.list_type != "min_max") {
+                if (this.details.list_type !== "min_max") {
                     if (this.details.unit_count != null) {
                         this.invalid_units = this.details.unit_count <= 0;
                         this.invalid_units_step = this.details.unit_count % 6 !== 0;
                     }
                 } else {
-                    console.log("TELL ME WHYYYYY");
                     if (this.details.min_unit_count != null && this.details.max_unit_count != null) {
-                        this.invalid_units = this.details.min_unit_count <= 0 || this.details.max_unit_count <= 0;
+                        this.invalid_units = this.details.min_unit_count < 0 || this.details.max_unit_count <= 0;
                         this.invalid_units_step = this.details.min_unit_count %6 !== 0 || this.details.max_unit_count %6 !== 0;
 
                         this.invalid_min_max_units = parseInt(this.details.min_unit_count) > parseInt(this.details.max_unit_count);
@@ -286,6 +292,12 @@ Vue.component('rule_course_list', {
                 // remove error if user corrects prior to resubmission
                 if (!blank_listtype && !blank_codes && !blank_count) {
                     this.is_blank = false;
+                }
+                if (this.details.unit_count != null){
+                    if (this.details.unit_count > 0)
+                        this.invalid_units = false;
+                    if (this.details.unit_count % 6 === 0)
+                        this.invalid_units_step = false
                 }
             }
 
@@ -309,6 +321,9 @@ Vue.component('rule_course_list', {
 
         update_units() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
+            this.unit_value_label = this.details.unit_count;
+            this.min_unit_value_label = this.details.min_unit_count;
+            this.max_unit_value_label = this.details.max_unit_count;
             this.parent_update_units_fn();
             this.check_options(false);
         },

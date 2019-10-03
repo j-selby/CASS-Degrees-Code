@@ -119,11 +119,11 @@ class EditProgramFormSnippet(ModelForm):
                   'staffNotes', 'studentNotes')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. BARTS"}),
-            'year': forms.NumberInput(attrs={'class': "text eighth-width",
+            'year': forms.NumberInput(attrs={'class': "text eighth-width", 'placeholder': "e.g. 2020",
                                              'onkeydown': "javascript: return checkKeys(event)",
                                              'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Bachelor of Arts"}),
-            'units': forms.NumberInput(attrs={'class': "text eighth-width",
+            'units': forms.NumberInput(attrs={'class': "text eighth-width", 'placeholder': "e.g. 144",
                                               'onkeydown': "javascript: return checkKeys(event)",
                                               'step': 6, 'max': 512}),
             'publish': forms.CheckboxInput(),
@@ -192,7 +192,7 @@ class EditSubplanFormSnippet(ModelForm):
         fields = ('code', 'year', 'name', 'units', 'planType', 'globalRequirements', 'rules', 'publish')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH-MIN"}),
-            'year': forms.NumberInput(attrs={'class': "text eighth-width",
+            'year': forms.NumberInput(attrs={'class': "text eighth-width", 'placeholder': "e.g. 2020",
                                              'onkeydown': "javascript: return checkKeys(event)",
                                              'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Art History"}),
@@ -286,6 +286,10 @@ class EditListFormSnippet(ModelForm):
             'elements': forms.HiddenInput
         }
 
+    def __init__(self, *args, **kwargs):
+        super(EditListFormSnippet, self).__init__(*args, **kwargs)
+        self.fields['elements'].error_messages = {'required': 'Courses must be added before you can save'}
+
 
 class EditCourseFormSnippet(ModelForm):
     rules = JSONField(field_id='rules', required=False)
@@ -317,7 +321,7 @@ class EditCourseFormSnippet(ModelForm):
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006, ARTH1100"}),
             'name': forms.TextInput(attrs={'class': "text tfull",
                                            'placeholder': "e.g. Art and Design Histories: Form and Space"}),
-            'units': forms.NumberInput(attrs={'class': "text eighth-width",
+            'units': forms.NumberInput(attrs={'class': "text eighth-width", 'placeholder': "e.g. 6",
                                               'onkeydown': "javascript: return checkKeys(event)",
                                               'type': "number"}),
             'offeredYears': forms.Select(choices=offered_years_choices, attrs={'class': "eighth-width"})
@@ -334,9 +338,6 @@ class EditCourseFormSnippet(ModelForm):
             'currentlyActive': "Currently Active Course",
         }
         error_messages = {
-            NON_FIELD_ERRORS: {
-                'unique_together': "A Course with the same %(field_labels)s already exists!",
-            }
         }
 
     def clean_code(self):
@@ -350,6 +351,8 @@ class EditCourseFormSnippet(ModelForm):
             raise forms.ValidationError("Course Code should end with 4 numbers!")
         if len(data) == 9 and not data[-1:].isalpha():
             raise forms.ValidationError("Extra Key should be a letter e.g. A, B, C")
+        if CourseModel.objects.filter(code=data):
+            raise forms.ValidationError("A course with this code already exists!")
         return data.upper()
 
     def clean_name(self):
