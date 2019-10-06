@@ -62,26 +62,6 @@ Vue.component('rule_either_or', {
             this.details.either_or[group].push(JSON.parse(JSON.stringify(this.details.either_or[group][index])));
             this.do_redraw();
         },
-        move_up_rule(index, group) {
-            var rules_array = this.details.either_or[group];
-
-            if (index > 0) {
-                var to_move = rules_array[index];
-                rules_array[index] = rules_array[index - 1];
-                rules_array[index - 1] = to_move;
-                this.do_redraw();
-            }
-        },
-        move_down_rule(index, group) {
-            var rules_array = this.details.either_or[group];
-
-            if (index < rules_array.length - 1) {
-                var to_move = rules_array[index];
-                rules_array[index] = rules_array[index + 1];
-                rules_array[index + 1] = to_move;
-                this.do_redraw();
-            }
-        },
         remove_group(group) {
             this.details.either_or.splice(group, 1);
             this.update_units();
@@ -219,6 +199,11 @@ Vue.component('rule_either_or', {
         // https://michaelnthiessen.com/force-re-render/
         do_redraw() {
             this.refresh.push("");
+        },
+        set_id(group, id) {
+            // Used for tracking where elements are dropped outside of Vue
+            id_map[this._uid] = this;
+            return this._uid + "_" + group + "_" + id;
         }
     },
     template: '#eitherOrTemplate'

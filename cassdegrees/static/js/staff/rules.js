@@ -1,5 +1,7 @@
 //! Vue.js based means of adding/removing rules. Excludes serialization (see programmanagement.js)
 
+var id_map = {};
+
 // Stores a JSON of all rule names, for internal reference only.
 const ALL_COMPONENT_NAMES = {
     'incompatibility': "Incompatibility",
@@ -166,3 +168,176 @@ function isValidUnitCount(value) {
     // Return true if the specified value is within the unit count bounds
     return units.exact + units.min <= value && value <= units.exact + units.min + units.max;
 }
+
+// Resets the on-screen position of a particular draggable
+function resetDraggable(target) {
+    target.style.webkitTransform =
+        target.style.transform =
+            'translate(' + 0 + 'px, ' + 0 + 'px)';
+}
+
+// Moves the element to the x, y position
+function dragMoveListener(event, x, y) {
+    var target = event.target.parentNode;
+    target.style.webkitTransform =
+        target.style.transform =
+            'translate(' + x + 'px, ' + y + 'px)';
+}
+
+interact('.draggable-rule').draggable({
+    inertia: false,
+    autoScroll: true,
+
+    x: 0,
+    y: 0,
+
+    onstart: function(event) {
+        // Make the class look like it's hovering
+        event.target.parentNode.classList.add('hovering');
+        // Unhide all of the drop zones, then re-hide the one belowe the currently held element
+        var dropzones = document.getElementsByClassName('dropzone dropzone-area');
+        for (var dropzone of dropzones) {
+            dropzone.hidden = false;
+        }
+        event.target.parentNode.parentNode.getElementsByClassName('dropzone dropzone-area')[0].hidden = true;
+
+        // Set the original X and Y position of the element
+        this.x = event.pageX;
+        this.y = event.pageY;
+
+        // Changes the Y value by the amount of dropzones that will appear
+        // To my knowledge, there is no reliable way to get this information otherwise
+        var or_y = 0;
+        var dropzone_height = 72;
+        var id = event.target.parentNode.parentNode.id;
+        for (var dropzone of dropzones) {
+            // Set the dropzone id
+            var dz_id = dropzone.parentNode.id;
+
+            // If the dropzone is in an OR rule, don't add the height directly in case we are dragging the OR rule
+            if (dz_id.split('_').length === 3){
+                // If the dragged rule is in the OR rule, add the accumulated OR values and don't add any more dropzones
+                if(dz_id === id) {
+                    y += or_y;
+                    break;
+                }
+                // Add 1 dropzone height to the OR rule count
+                or_y += dropzone_height;
+            }
+            // If the dropzone is not in an OR rule
+            else{
+                // If we have found the dragged rule, don't ad any more dropzones
+                if(dz_id === id)
+                    break;
+                // If an or rule was just passed, add all of the accumulated dropbox heights
+                if (or_y > 0) {
+                    y += or_y;
+                    or_y = 0;
+                }
+                // Add the current dropbox height
+                y += dropzone_height;
+            }
+
+        }
+    },
+    onmove: function(event) {
+        dragMoveListener(event, event.pageX-this.x, event.pageY-this.y)
+    },
+    onend: function(event) {
+        // Flag this course to be moved back to the start
+        event.target.parentNode.classList.remove("hovering");
+        var dropzones = document.getElementsByClassName('dropzone dropzone-area');
+        for (var dropzone of dropzones)
+            dropzone.hidden = true;
+
+        resetDraggable(event.target.parentNode);
+    }
+});
+
+interact('.dropzone').dropzone({
+    accept: '.draggable-rule',
+    overlap: 'pointer',
+
+    ondragenter: function (event) {
+        event.target.classList.add("hover");
+    },
+    ondragleave: function (event) {
+        event.target.classList.remove("hover");
+    },
+    ondrop: function (event) {
+        var courseObject = event.relatedTarget;
+        var target = event.target;
+
+        // Remove our hover
+        target.classList.remove("hover");
+
+        // Get IDs of focus and target objects, which provides information on their location
+        var focus_id = courseObject.parentNode.parentNode.id;
+        var target_id = target.parentNode.id;
+
+        // Deconstruct the vue rule information
+        var old_parent_id = parseInt(focus_id .split('_')[0]);
+        var new_parent_id = parseInt(target_id .split('_')[0]);
+        var old_component_id = parseInt(focus_id .split('_')[1]);
+        var new_component_id = parseInt(target_id .split('_')[1]);
+        var old_group_id;
+        var new_group_id;
+
+        // Get the old and new parent components, as well as the current vue component
+        var new_parent = id_map[new_parent_id];
+        var old_parent = id_map[old_parent_id];
+        var current_component = old_parent.$children[old_component_id];
+
+        // If the component that the current rule is moving from is an either-or rule, get more detailed rule information
+        if (old_parent.is_eitheror) {
+            old_group_id = old_component_id;
+            old_component_id = parseInt(focus_id.split('_')[2]);
+            current_component = old_parent.find_rule(old_parent.details.either_or[old_group_id][old_component_id])
+        }
+
+        if (new_parent.is_eitheror){
+            // Update the rule information to account for the OR rule. Add 1 to the component ID to get the correct position
+            new_group_id = new_component_id;
+            new_component_id = parseInt(target_id .split('_')[2]) + 1;
+
+            // Insert the new element in to the rules
+            new_parent.details.either_or[new_group_id].splice(new_component_id, 0, current_component.details);
+            // If the new parent is different from the old one, add the rule values to it
+            if (old_parent_id !== new_parent_id)
+                new_parent.$children.push(current_component);
+            // If the new parent is the same, and the group is the same, increment the old component ID if it should change
+            else if (old_group_id === new_group_id &&
+                    new_component_id < old_component_id){
+                old_component_id += 1;
+            }
+
+            // Remove the old rule
+            if (old_parent.is_eitheror)
+                old_parent.remove(old_component_id, old_group_id);
+            else
+                old_parent.remove(old_component_id);
+        }
+        // If the new parent is not an OR rule (meaning it is a rule-container)
+        else{
+            // Increment new component ID to correctly identify the insertion location
+            new_component_id += 1;
+
+            // Insert new rule in to the parent
+            new_parent.rules.splice(new_component_id, 0, current_component.details);
+
+            // If the new parent is different from the old one, add the rule values to it
+            if (old_parent_id !== new_parent_id)
+                new_parent.$children.push(current_component);
+            // If the new parent is the same, increment the old component ID if it should change
+            else if (new_component_id < old_component_id){
+                old_component_id += 1;
+            }
+
+            // Remove the old rule
+            if (old_parent.is_eitheror)
+                old_parent.remove(old_component_id, old_group_id);
+            else
+                old_parent.remove(old_component_id);
+        }
+    }
+});
