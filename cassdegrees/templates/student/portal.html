@@ -33,7 +33,7 @@
 
         <div class="list">
             {% for degree in programs %}
-                <a href="../staff/pdf/program?id={{ degree.id }}" class="hide-link-underline">
+                <a href="../staff/pdf/program?id={{ degree.id }}" target="_blank" class="hide-link-underline">
                     <div class="course-details hide">
                         {{ degree.name }}
                         {{ degree.year }}
