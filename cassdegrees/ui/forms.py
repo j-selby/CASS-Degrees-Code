@@ -46,12 +46,6 @@ def check_constraint(model, data, constraints, view_str, formID):
             missing_inputs = True
             break
 
-    print("Verify dict:")
-    print(dictionary)
-
-    print("Params:")
-    print(constraints)
-
     # check that input has been received for the fields and then check for duplicate
     if not missing_inputs:
         try:
