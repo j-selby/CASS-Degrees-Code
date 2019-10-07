@@ -189,7 +189,10 @@ Vue.component('rule_either_or', {
         set_id(group, id) {
             // Used for tracking where elements are dropped outside of Vue
             id_map[this._uid] = this;
-            return this._uid + "_" + group + "_" + id;
+            if (id == null)
+                return this._uid + "_" + group;
+            else
+                return this._uid + "_" + group + "_" + id;
         }
     },
     template: '#eitherOrTemplate'
