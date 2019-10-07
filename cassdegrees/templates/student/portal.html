@@ -3,19 +3,26 @@
 {% load cache_control %}
 {% load breadcrumbs %}
 
-{% block page-title %}Create New Plan{% endblock %}
+{% block page-title %}Student Portal{% endblock %}
 
-{% block subtitle %}Create new student plan{% endblock %}
+{% block subtitle %}Welcome to the CASS Student Portal{% endblock %}
 
 {% block breadcrumb-trail %}
-    {% finalcrumb 'Create new student plan' %}
+    {% finalcrumb 'Homepage' %}
 {% endblock %}
 
 {% block content %}
+    {% if render.msg != None %}
+        <p class="msg-success">{{ render.msg }}</p>
+    {% endif %}
+    {# linebreaksbr adds a <br> whenever there is a \n in a string #}
+    {% if render.error != None %}
+        <p class="msg-error">{{ render.error|linebreaksbr }}</p>
+    {% endif %}
+
     <p>
-        Firstly, select the program that you are completing/intend to complete. Make sure you pick the year
-        that your degree is (typically, the year you started) - if unsure, check your student record on
-        ISIS.
+        This page provides a searchable list of program templates in PDF form.<br>
+        Search by the program name to find the plan you're looking for and click on the program to view the template.
     </p>
 
     <div id="programs">
@@ -26,7 +33,7 @@
 
         <div class="list">
             {% for degree in programs %}
-                <a href="/create/?id={{ degree.id }}" class="hide-link-underline">
+                <a href="../staff/pdf/program?id={{ degree.id }}" class="hide-link-underline">
                     <div class="course-details hide">
                         {{ degree.name }}
                         {{ degree.year }}
@@ -92,7 +99,6 @@
             {% endfor %}
         </div>
     </div>
-
     <script src="{% static 'js/vendor/list.js' %}" type="application/javascript"></script>
     <script src="{% static_no_cache 'js/student/list.js' %}" type="application/javascript"></script>
 {% endblock %}

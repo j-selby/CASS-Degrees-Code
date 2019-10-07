@@ -3,6 +3,7 @@ from django.forms import model_to_dict
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.db.models import Q
 
 import zlib
 import base64
@@ -294,3 +295,13 @@ def student_pdf(request):
                                          template="pdf_program.html", context=context)
 
         return response.render()
+
+
+# Student portal page
+def student_portal(request):
+    # Load up the error and regular messages to render in the plan
+    render_settings = load_messages(request.session)
+
+    # Gives published programs for the page to render
+    return render(request, 'student/portal.html', context={'programs': ProgramModel.objects.filter(publish=True),
+                  'render': render_settings})

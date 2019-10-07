@@ -35,6 +35,7 @@ urlpatterns = [
     path('edit/', student_edit),
     path('pdf/', student_pdf),
     path('delete/', student_delete),
+    path('portal/', student_portal),
 
     path(staff_url_prefix, index),
     path(staff_url_prefix + 'create/course/', create_course),
