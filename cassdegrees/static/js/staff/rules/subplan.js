@@ -139,7 +139,6 @@ Vue.component('rule_subplan', {
         // Add all subplans of the current filtered type, remove them from the filtered_subplans list of options
         addAllSubplans() {
             this.filtered_subplans.forEach((subplan) => {
-                console.log(subplan)
                 if (!this.details.ids.some(id => id === subplan.id)) {
                     this.selected_subplans.unshift(subplan);
                     this.details.ids.push(subplan.id)
