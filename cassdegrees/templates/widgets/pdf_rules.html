@@ -34,16 +34,12 @@
                             <p>Complete {{ rule.unit_count }} units from the following
                                 {% if rule.unit_count|add:"0" <= 6 %}course{% else %}set of courses{% endif %}:
                             {% if not render_units %}
-                                {% for code in rule.codes %}
-                                    {{ code.code }}{% if not forloop.last %}, {% endif %}
-                                {% endfor %}
+                                {% truncate_course_list rule.codes %}
                             {% endif %}
                         {% else %}
                             {# Not all required courses - give descriptions #}
                             <p>Complete {{ rule.unit_count }} units from a selection of:</p>
-                            {% for code in rule.codes %}
-                                {{ code.code }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
+                            {% truncate_course_list rule.codes %}
                         {% endif %}
                     {% endwith %}
                 {% else %}
@@ -54,17 +50,13 @@
                                 {{ rule.max_unit_count }} units from the following
                                 {% if rule.unit_count|add:"0" <= 6 %}course{% else %}set of courses{% endif %}:</p>
                             {% if not render_units %}
-                                {% for code in rule.codes %}
-                                    {{ code.code }}{% if not forloop.last %}, {% endif %}
-                                {% endfor %}
+                                {% truncate_course_list rule.codes %}
                             {% endif %}
                         {% else %}
                             {# Not all required courses - give descriptions #}
                             <p><p>Complete a minimum of {{ rule.min_unit_count }} units and a maximum of
                                 {{ rule.max_unit_count }} units from a selection of:</p>
-                            {% for code in rule.codes %}
-                                {{ code.code }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
+                            {% truncate_course_list rule.codes %}
                         {% endif %}
                     {% endwith %}
                 {% endif %}

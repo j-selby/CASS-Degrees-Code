@@ -51,6 +51,23 @@ def course_box_with_values(context, count, courses, plan):
 
     return Template(output).render(context)
 
+
+@register.simple_tag(takes_context=True)
+def truncate_course_list(context, courses, count=5):
+    output = ""
+    for i in range(0, len(courses)):
+        output += str(courses[i]['code'])
+
+        if i >= count - 1 and count < len(courses):
+            output += " and " + str(len(courses) - count) + " more"
+            break
+
+        if i + 1 < len(courses):
+            output += ", "
+
+    return Template(output).render(context)
+
+
 # https://stackoverflow.com/questions/4651172/reference-list-item-by-index-within-django-template/29664945#29664945
 @register.filter
 def index(List, i):
