@@ -24,15 +24,18 @@ Vue.component('rule_container', {
     },
     methods: {
         add_rule() {
+            should_mark_newest_component = true;
             this.show_add_a_rule_modal = false;
             this.rules.push({
                 type: this.add_a_rule_modal_option,
             });
         },
         remove(index) {
+            should_mark_newest_component = false;
             this.rules.splice(index, 1);
         },
         duplicate_rule(index) {
+            should_mark_newest_component = true;
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.rules.push(JSON.parse(JSON.stringify(this.rules[index])));
         },

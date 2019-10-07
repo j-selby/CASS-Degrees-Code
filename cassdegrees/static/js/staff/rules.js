@@ -1,6 +1,7 @@
 //! Vue.js based means of adding/removing rules. Excludes serialization (see programmanagement.js)
 
 var id_map = {};
+var should_mark_newest_component = false;
 
 // Stores a JSON of all rule names, for internal reference only.
 const ALL_COMPONENT_NAMES = {
@@ -200,6 +201,8 @@ interact('.draggable-rule').draggable({
             dropzone.hidden = false;
         }
         event.target.parentNode.parentNode.getElementsByClassName('dropzone dropzone-area')[0].hidden = true;
+        for (var rule of document.getElementsByClassName('rule_active_visual'))
+            rule.classList.remove('rule_active_visual');
 
         // Set the original X and Y position of the element
         this.x = event.pageX;
@@ -316,6 +319,8 @@ interact('.dropzone').dropzone({
                 old_parent.remove(old_component_id, old_group_id);
             else
                 old_parent.remove(old_component_id);
+
+            new_parent.update_units();
         }
         // If the new parent is not an OR rule (meaning it is a rule-container)
         else{
@@ -325,11 +330,8 @@ interact('.dropzone').dropzone({
             // Insert new rule in to the parent
             new_parent.rules.splice(new_component_id, 0, current_component.details);
 
-            // If the new parent is different from the old one, add the rule values to it
-            if (old_parent_id !== new_parent_id)
-                new_parent.$children.push(current_component);
             // If the new parent is the same, increment the old component ID if it should change
-            else if (new_component_id < old_component_id){
+            if (new_component_id < old_component_id){
                 old_component_id += 1;
             }
 
@@ -339,5 +341,7 @@ interact('.dropzone').dropzone({
             else
                 old_parent.remove(old_component_id);
         }
+
+        should_mark_newest_component = false;
     }
 });
