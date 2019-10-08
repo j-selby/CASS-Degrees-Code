@@ -302,7 +302,7 @@ def student_portal(request):
     # Load up the error and regular messages to render in the plan
     render_settings = load_messages(request.session)
 
-    paginator = Paginator(ProgramModel.objects.filter(publish=True), 10) # Show 25 contacts per page
+    paginator = Paginator(ProgramModel.objects.filter(publish=True), 10)  # Show 10 programs per page
 
     page = request.GET.get('page')
     programs = paginator.get_page(page)
