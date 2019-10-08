@@ -194,12 +194,15 @@ interact('.draggable-rule').draggable({
     onstart: function(event) {
         // Make the class look like it's hovering
         event.target.parentNode.classList.add('hovering');
-        // Unhide all of the drop zones, then re-hide the one belowe the currently held element
+        // Unhide all of the drop zones
         var dropzones = document.getElementsByClassName('dropzone dropzone-area');
         for (var dropzone of dropzones) {
             dropzone.hidden = false;
         }
-        event.target.parentNode.parentNode.getElementsByClassName('dropzone dropzone-area')[0].hidden = true;
+        // Hide all dropzones belonging to the current component
+        for (var dropzone of event.target.parentNode.parentNode.getElementsByClassName('dropzone dropzone-area'))
+            dropzone.hidden = true;
+
         for (var rule of document.getElementsByClassName('rule_active_visual'))
             rule.classList.remove('rule_active_visual');
 
