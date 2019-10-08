@@ -173,8 +173,7 @@ function isValidUnitCount(value) {
 // Resets the on-screen position of a particular draggable
 function resetDraggable(target) {
     target.style.webkitTransform =
-        target.style.transform =
-            'translate(' + 0 + 'px, ' + 0 + 'px)';
+        target.style.transform = null;
 }
 
 // Moves the element to the x, y position
@@ -212,10 +211,10 @@ interact('.draggable-rule').draggable({
         // To my knowledge, there is no reliable way to get this information otherwise
         var or_y = 0;
         var dropzone_height = 72;
-        var id = event.target.parentNode.parentNode.id;
+        var id = event.target.parentNode.parentNode.getAttribute('drag_id');
         for (var dropzone of dropzones) {
             // Set the dropzone id
-            var dz_id = dropzone.parentNode.id;
+            var dz_id = dropzone.parentNode.getAttribute('drag_id');
 
             // If the dropzone is in an OR rule, don't add the height directly in case we are dragging the OR rule
             if (dz_id.split('_').length === 3){
@@ -275,8 +274,8 @@ interact('.dropzone').dropzone({
         target.classList.remove("hover");
 
         // Get IDs of focus and target objects, which provides information on their location
-        var focus_id = courseObject.parentNode.parentNode.id;
-        var target_id = target.parentNode.id;
+        var focus_id = courseObject.parentNode.parentNode.getAttribute('drag_id');
+        var target_id = target.parentNode.getAttribute('drag_id');
 
         // Deconstruct the vue rule information
         var old_parent_id = parseInt(focus_id .split('_')[0]);
@@ -370,10 +369,10 @@ interact('.draggable-group').draggable({
         // Changes the Y value by the amount of dropzones that will appear
         // To my knowledge, there is no reliable way to get this information otherwise
         var dropzone_height = 72;
-        var id = event.target.id;
+        var id = event.target.getAttribute('drag_id');
         for (var dropzone of dropzones) {
             // Set the dropzone id
-            var dz_id = dropzone.parentNode.id;
+            var dz_id = dropzone.parentNode.getAttribute('drag_id');
 
             // If we have found the dragged rule, don't ad any more dropzones
             if(dz_id === id)
@@ -415,8 +414,8 @@ interact('.group-dropzone').dropzone({
         target.classList.remove("hover");
 
         // Get IDs of focus and target objects, which provides information on their location
-        var focus_id = courseObject.id;
-        var target_id = target.parentNode.id;
+        var focus_id = courseObject.getAttribute('drag_id');
+        var target_id = target.parentNode.getAttribute('drag_id');
 
         // Deconstruct the vue rule information
         var old_parent_id = parseInt(focus_id .split('_')[0]);
