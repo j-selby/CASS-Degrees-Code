@@ -192,18 +192,33 @@ interact('.draggable-rule').draggable({
     y: 0,
 
     onstart: function(event) {
+        let id = event.target.parentNode.parentNode.getAttribute('drag_id');
+
         // Make the class look like it's hovering
         event.target.parentNode.classList.add('hovering');
         // Unhide all of the drop zones
-        var dropzones = document.getElementsByClassName('dropzone dropzone-area');
-        for (var dropzone of dropzones) {
+        let dropzones = document.getElementsByClassName('dropzone dropzone-area');
+        for (let dropzone of dropzones) {
             dropzone.hidden = false;
         }
         // Hide all dropzones belonging to the current component
-        for (var dropzone of event.target.parentNode.parentNode.getElementsByClassName('dropzone dropzone-area'))
+        for (let dropzone of event.target.parentNode.parentNode.getElementsByClassName('dropzone dropzone-area'))
             dropzone.hidden = true;
 
-        for (var rule of document.getElementsByClassName('rule_active_visual'))
+        // If the current rule is an OR rule, mark it as such and hide all internal OR rule components
+        let is_or_rule = false;
+        if (id.split('_').length < 3) {
+            // If the currently held component is an OR rule
+            let current_rule = app.$children[0].$children[id.split('_')[1]];
+            if (current_rule && current_rule.$children[0].is_eitheror) {
+                is_or_rule = true;
+                for (let or_group of document.getElementsByClassName('draggable draggable-group'))
+                    for (let dropzone of or_group.getElementsByClassName('dropzone dropzone-area'))
+                        dropzone.hidden = true;
+            }
+        }
+
+        for (let rule of document.getElementsByClassName('rule_active_visual'))
             rule.classList.remove('rule_active_visual');
 
         // Set the original X and Y position of the element
@@ -212,12 +227,11 @@ interact('.draggable-rule').draggable({
 
         // Changes the Y value by the amount of dropzones that will appear
         // To my knowledge, there is no reliable way to get this information otherwise
-        var or_y = 0;
-        var dropzone_height = 72;
-        var id = event.target.parentNode.parentNode.getAttribute('drag_id');
-        for (var dropzone of dropzones) {
+        let or_y = 0;
+        let dropzone_height = 72;
+        for (let dropzone of dropzones) {
             // Set the dropzone id
-            var dz_id = dropzone.parentNode.getAttribute('drag_id');
+            let dz_id = dropzone.parentNode.getAttribute('drag_id');
 
             // If the dropzone is in an OR rule, don't add the height directly in case we are dragging the OR rule
             if (dz_id.split('_').length === 3){
@@ -236,7 +250,8 @@ interact('.draggable-rule').draggable({
                     break;
                 // If an or rule was just passed, add all of the accumulated dropbox heights
                 if (or_y > 0) {
-                    this.y += or_y;
+                    if (! is_or_rule)
+                        this.y += or_y;
                     or_y = 0;
                 }
                 // Add the current dropbox height
