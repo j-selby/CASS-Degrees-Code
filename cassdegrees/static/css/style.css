@@ -120,8 +120,13 @@
 
 .hovering {
     z-index:100;
-    box-shadow: 5px 10px 8px #888888;
+    box-shadow: 15px 30px 24px #888888;
     position: relative;
+    opacity: 0.8;
+}
+
+.hidden-outer {
+    height: 0px;
 }
 
 

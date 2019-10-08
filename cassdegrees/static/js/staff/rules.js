@@ -176,12 +176,14 @@ function resetDraggable(target) {
         target.style.transform = null;
 }
 
-// Moves the element to the x, y position
-function dragMoveListener(event, x, y) {
+// Moves the element to the x, y position and scales it
+function dragMoveListener(event, x, y, origin_x, origin_y) {
     var target = event.target.parentNode;
+    target.style.transformOrigin = origin_x + 'px ' + origin_y + 'px';
+
     target.style.webkitTransform =
         target.style.transform =
-            'translate(' + x + 'px, ' + y + 'px)';
+            'translate(' + (event.pageX - x) + 'px, ' + (event.pageY - y) + 'px) scale(0.33)';
 }
 
 interact('.draggable-rule').draggable({
@@ -190,9 +192,12 @@ interact('.draggable-rule').draggable({
 
     x: 0,
     y: 0,
+    origin_x: 0,
+    origin_y: 0,
 
     onstart: function(event) {
         let id = event.target.parentNode.parentNode.getAttribute('drag_id');
+        event.target.parentNode.parentNode.classList.add('hidden-outer');
 
         // Make the class look like it's hovering
         event.target.parentNode.classList.add('hovering');
@@ -224,6 +229,8 @@ interact('.draggable-rule').draggable({
         // Set the original X and Y position of the element
         this.x = event.pageX;
         this.y = event.pageY;
+        this.origin_x = event.x0-event.rect.left;
+        this.origin_y = event.y0-event.rect.top;
 
         // Changes the Y value by the amount of dropzones that will appear
         // To my knowledge, there is no reliable way to get this information otherwise
@@ -261,11 +268,12 @@ interact('.draggable-rule').draggable({
         }
     },
     onmove: function(event) {
-        dragMoveListener(event, event.pageX-this.x, event.pageY-this.y)
+        dragMoveListener(event, this.x, this.y, this.origin_x, this.origin_y)
     },
     onend: function(event) {
         // Flag this course to be moved back to the start
         event.target.parentNode.classList.remove("hovering");
+        event.target.parentNode.parentNode.classList.remove('hidden-outer');
         var dropzones = document.getElementsByClassName('dropzone dropzone-area');
         for (var dropzone of dropzones)
             dropzone.hidden = true;
@@ -324,7 +332,7 @@ interact('.dropzone').dropzone({
             new_parent.details.either_or[new_group_id].splice(new_component_id, 0, current_component.details);
             // If the new parent is different from the old one, add the rule values to it
             if (old_parent_id !== new_parent_id)
-                new_parent.$children.push(current_component);
+                new_parent.$forceUpdate();
             // If the new parent is the same, and the group is the same, increment the old component ID if it should change
             else if (old_group_id === new_group_id &&
                     new_component_id < old_component_id){
@@ -369,10 +377,13 @@ interact('.draggable-group').draggable({
 
     x: 0,
     y: 0,
+    origin_x: 0,
+    origin_y: 0,
 
     onstart: function(event) {
         // Make the class look like it's hovering
         event.target.parentNode.classList.add('hovering');
+        event.target.parentNode.classList.add('hidden-outer');
         // Unhide all of the drop zones, then re-hide the one belowe the currently held element
         var dropzones = document.getElementsByClassName('group-dropzone dropzone-area');
         for (var dropzone of dropzones) {
@@ -383,6 +394,8 @@ interact('.draggable-group').draggable({
         // Set the original X and Y position of the element
         this.x = event.pageX;
         this.y = event.pageY;
+        this.origin_x = event.x0-event.rect.left;
+        this.origin_y = event.y0-event.rect.top;
 
         // Changes the Y value by the amount of dropzones that will appear
         // To my knowledge, there is no reliable way to get this information otherwise
@@ -401,11 +414,12 @@ interact('.draggable-group').draggable({
         }
     },
     onmove: function(event) {
-        dragMoveListener(event, event.pageX-this.x, event.pageY-this.y)
+        dragMoveListener(event, this.x, this.y, this.origin_x, this.origin_y)
     },
     onend: function(event) {
         // Flag this course to be moved back to the start
         event.target.parentNode.classList.remove("hovering");
+        event.target.parentNode.classList.remove('hidden-outer');
         var dropzones = document.getElementsByClassName('group-dropzone dropzone-area');
         for (var dropzone of dropzones)
             dropzone.hidden = true;
