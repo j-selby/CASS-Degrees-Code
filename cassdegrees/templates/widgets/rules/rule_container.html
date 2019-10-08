@@ -30,12 +30,13 @@
 
 {% verbatim %}
                         <div class="select">
-                            <select v-model="add_a_rule_modal_option">
+                            <select v-model="add_a_rule_modal_option" v-on:change="update_modal_help">
                                 <option v-for="(option, index) in component_names" v-bind:value="index">
                                     {{ option }}
                                 </option>
                             </select>
                         </div>
+                    <p><i>{{ active_modal_rule_help }}</i></p>
                     </div>
                     <footer class="box-solid">
                         <button class="button is-success" v-on:click="add_rule">Add</button>

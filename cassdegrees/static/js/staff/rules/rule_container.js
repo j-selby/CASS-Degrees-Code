@@ -17,12 +17,17 @@ Vue.component('rule_container', {
 
             component_groups: {'rules': COMPONENT_NAMES, 'requisites': REQUISITE_COMPONENT_NAMES, 'subplan': SUBPLAN_COMPONENT_NAMES},
             component_names: null,
+            component_help: ALL_COMPONENT_HELP,
+            active_modal_rule_help: ALL_COMPONENT_HELP['course_list'],
 
             // Forces the element to re-render, if mutable events occurred
             redraw: false,
         }
     },
     methods: {
+        update_modal_help() {
+            this.active_modal_rule_help = this.component_help[this.add_a_rule_modal_option];
+        },
         add_rule() {
             this.show_add_a_rule_modal = false;
             this.rules.push({
