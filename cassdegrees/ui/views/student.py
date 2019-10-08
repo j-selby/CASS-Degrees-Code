@@ -3,7 +3,7 @@ from django.forms import model_to_dict
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.utils import timezone
-from django.db.models import Q
+from django.core.paginator import Paginator
 
 import zlib
 import base64
@@ -302,6 +302,10 @@ def student_portal(request):
     # Load up the error and regular messages to render in the plan
     render_settings = load_messages(request.session)
 
+    paginator = Paginator(ProgramModel.objects.filter(publish=True), 10) # Show 25 contacts per page
+
+    page = request.GET.get('page')
+    programs = paginator.get_page(page)
+
     # Gives published programs for the page to render
-    return render(request, 'student/portal.html', context={'programs': ProgramModel.objects.filter(publish=True),
-                  'render': render_settings})
+    return render(request, 'student/portal.html', context={'programs': programs, 'render': render_settings})
