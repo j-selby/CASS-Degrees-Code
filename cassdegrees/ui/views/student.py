@@ -302,7 +302,28 @@ def student_portal(request):
     # Load up the error and regular messages to render in the plan
     render_settings = load_messages(request.session)
 
-    paginator = Paginator(ProgramModel.objects.filter(publish=True), 10)  # Show 10 programs per page
+    query = request.GET.get('q', '')
+
+    filtered = {}
+
+    # No search, render default page
+    if not query:
+        paginator = Paginator(ProgramModel.objects.filter(publish=True), 10)  # Show 10 programs per page
+
+        page = request.GET.get('page')
+        programs = paginator.get_page(page)
+        return render(request, 'student/portal.html', context={'programs': programs, 'render': render_settings})
+
+    # User search
+    else:
+        if len(query) == 4 and query.isnumeric():
+            filtered = ProgramModel.objects.filter(year__icontains=int(query), publish=True)
+        else:
+            filtered = ProgramModel.objects.filter(code__icontains=query, publish=True)
+            if not filtered:
+                filtered = ProgramModel.objects.filter(name__icontains=query, publish=True)
+
+    paginator = Paginator(filtered, 10)  # Show 10 programs per page
 
     page = request.GET.get('page')
     programs = paginator.get_page(page)
