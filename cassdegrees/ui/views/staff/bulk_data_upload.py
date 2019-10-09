@@ -48,6 +48,7 @@ def bulk_data_upload(request):
         supported_file_types = [".xlsx", ".xls", ".csv"]
 
         if file_type not in supported_file_types:
+            any_error = True
             context['user_msg'] = "Failed to upload file... " \
                                   "File format '" + file_type + "' is not supported! <br>" \
                                   "Please make sure the file extension and contents are correct."
@@ -115,6 +116,7 @@ def bulk_data_upload(request):
                     "otherOffering",
                     "currentlyActive"
                 ])
+                row_counter = 1  # Used solely for keeping track of the row number for error reporting. Starts at 1.
                 for row in sheet.iter_rows():
                     # This is the initialisation phase, where the file reader determines the column positions.
                     col_counter = 0
@@ -134,6 +136,8 @@ def bulk_data_upload(request):
                     # Once the column positions are set,
                     # check the offerings specified in the 'Semester' and 'Sessions' columns and process accordingly.
                     else:
+                        row_counter += 1
+
                         code = row[col_index["Course Code"]].value
                         name = row[col_index["Course Title"]].value
 
@@ -142,7 +146,14 @@ def bulk_data_upload(request):
                         sessions = str(row[col_index["Sessions"]].value)
                         comments = str(row[col_index["Comments"]].value)
 
-                        semesters = semesters.upper() if semesters is not None else ""
+                        # If any of these values are missing, then this row is malformed and thus must be rejected.
+                        if code is None or name is None or semesters is None:
+                            failed_to_upload.append({'item_code': 'AAAA0000 Bad Row Error',
+                                                     'item_name': f'(Malformed row number {row_counter})',
+                                                     'error': "This row has missing data, skipping"})
+                            continue
+
+                        semesters = semesters.upper()
                         sessions = sessions.upper() if sessions is not None else ""
                         comments = comments.upper() if comments is not None else ""
 
@@ -241,11 +252,22 @@ def bulk_data_upload(request):
                     "otherOffering",
                     "currentlyActive"
                 ])
+                row_counter = 1  # Used solely for keeping track of the row number for error reporting. Starts at 1.
                 for row in sheet.iter_rows():
                     # Don't do anything for the column header row
                     if set(first_row) != set(row):
+                        row_counter += 1
                         code, name, units, years_offered, offerings, subplan_dep, program_dep, status = \
                             [col.value for col in row]
+
+                        # If any of these values are missing, then this row is malformed and thus must be rejected.
+                        if code is None or name is None or units is None or years_offered is None or offerings is None \
+                                or status is None:
+                            any_error = True
+                            failed_to_upload.append({'item_code': "AAAA0000 Bad Row Error",
+                                                     'item_name': f'(Malformed row number {row_counter}',
+                                                     'error': "This row has missing data, skipping"})
+                            continue
 
                         s1_offer = "Sem1" in offerings
                         s2_offer = "Sem2" in offerings
