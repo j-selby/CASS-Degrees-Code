@@ -360,7 +360,7 @@ class EditCourseFormSnippet(ModelForm):
         if len(data) == 9 and not data[-1:].isalpha():
             raise forms.ValidationError("Extra Key should be a letter e.g. A, B, C")
 
-        # course codes must be unique
+        # course codes must be unique, unless you are editing existing courses
         if CourseModel.objects.filter(code=data) and CourseModel.objects.get(code=data).id != self.instance.id:
             raise forms.ValidationError("A course with this code already exists!")
         return data.upper()
