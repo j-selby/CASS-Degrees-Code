@@ -30,12 +30,12 @@ from .views.student import *
 staff_url_prefix = "staff/"
 
 urlpatterns = [
-    path('', student_index),
+    path('', student_portal),
     path('create/', student_create),
     path('edit/', student_edit),
     path('pdf/', student_pdf),
     path('delete/', student_delete),
-    path('portal/', student_portal),
+    path('prototype/', student_index),
 
     path(staff_url_prefix, index),
     path(staff_url_prefix + 'create/course/', create_course),

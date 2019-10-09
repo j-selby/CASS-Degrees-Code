@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from api.models import ProgramModel, CourseModel, SubplanModel
 from django.forms import model_to_dict
 from django.http import HttpResponseBadRequest
@@ -66,6 +67,7 @@ def load_messages(cookies):
 
 
 # Static page for student landing
+@login_required
 def student_index(request):
     # Load up the error and regular messages to render in the plan
     render_settings = load_messages(request.session)
@@ -81,7 +83,7 @@ def student_index(request):
             except ProgramModel.DoesNotExist:
                 continue
 
-    return render(request, 'student/index.html', context={'plans': plans, 'render': render_settings})
+    return render(request, 'student/prototype.html', context={'plans': plans, 'render': render_settings})
 
 
 # Delete the requested plan
@@ -312,7 +314,7 @@ def student_portal(request):
 
         page = request.GET.get('page')
         programs = paginator.get_page(page)
-        return render(request, 'student/portal.html', context={'programs': programs, 'render': render_settings})
+        return render(request, 'student/index.html', context={'programs': programs, 'render': render_settings})
 
     # User search
     else:
@@ -329,4 +331,4 @@ def student_portal(request):
     programs = paginator.get_page(page)
 
     # Gives published programs for the page to render
-    return render(request, 'student/portal.html', context={'programs': programs, 'render': render_settings})
+    return render(request, 'student/index.html', context={'programs': programs, 'render': render_settings})
