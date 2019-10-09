@@ -87,6 +87,7 @@ def student_index(request):
 
 
 # Delete the requested plan
+@login_required
 def student_delete(request):
     plan_name = request.GET.get('plan', None)
 
@@ -100,6 +101,7 @@ def student_delete(request):
 
 
 # Creation page. Also sends program metadata.
+@login_required
 def student_create(request):
     id_to_view = request.GET.get('id', None)
     plan_to_duplicate = request.GET.get('plan', None)
@@ -140,6 +142,7 @@ def student_create(request):
 
 
 # Main edit page. Sends program metadata for specific course chosen.
+@login_required
 def student_edit(request):
     courses = CourseModel.objects.distinct('code')
     subplans = SubplanModel.objects.all()
