@@ -58,5 +58,5 @@ urlpatterns = [
     path(staff_url_prefix + 'view/list/', view_section),
     path(staff_url_prefix + 'report/course/', report_section),
     path(staff_url_prefix + 'report/course/excel_report/', generate_excel),
-    path(staff_url_prefix + 'pdf/program/', view_program_pdf),
+    path(staff_url_prefix + 'pdf/program/', check_published),
 ]
