@@ -78,7 +78,6 @@ def truncate_course_list(context, courses, cache_large_lists, count=5):
 @register.simple_tag(takes_context=True)
 def print_extended_course_lists(context):
     if not hasattr(context, "large_course_lists"):
-        print("No large course lists. Ah well.")
         return Template("").render(context)
 
     output = "<div class=\"break-page\"></div>" \
