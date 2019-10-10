@@ -55,7 +55,6 @@ def bulk_data_upload(request):
         supported_file_types = [".xlsx", ".xls", ".csv"]
 
         if file_type not in supported_file_types:
-            any_error = True
             context['user_msg'] = "Failed to upload file... " \
                                   "File format '" + file_type + "' is not supported! <br>" \
                                   "Please make sure the file extension and contents are correct."
@@ -129,9 +128,20 @@ def bulk_data_upload(request):
                                     col_index[cell.value] = col_counter
                                     col_counter += 1
 
-                                # If every column has been indexed, then mark columns_set as true.
-                                if col_counter == len(row):
+                                # If every necessary column has been indexed, then mark columns_set as true.
+                                cols = col_index.keys()
+                                if 'School/Centre' in cols and 'Course Code' in cols and 'Course Title' in cols and \
+                                        'Primary Convener' in cols and 'Semesters' in cols and 'Sessions' in cols and \
+                                        'Comments' in cols:
                                     columns_set = True
+
+                                if col_counter == len(row) and not columns_set:
+                                    context['user_msg'] = "Failed to upload file... " \
+                                                          "File doesn't contain all expected columns! These are: \n" \
+                                                          "'School/Centre', 'Course Code', 'Course Title', " \
+                                                          "'Primary Convener', 'Semesters', 'Sessions' and 'Comments'."
+                                    context['err_type'] = "error"
+                                    return render(request, 'staff/bulkupload.html', context=context)
 
                     # Once the column positions are set,
                     # check the offerings specified in the 'Semester' and 'Sessions' columns and process accordingly.
