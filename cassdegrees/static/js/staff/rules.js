@@ -186,7 +186,7 @@ function dragMoveListener(event, x, y, origin_x, origin_y) {
             'translate(' + (event.pageX - x) + 'px, ' + (event.pageY - y) + 'px) scale(0.33)';
 }
 
-interact('.draggable-rule').draggable({
+interact('.draggable-rule').ignoreFrom('.btn-snall').draggable({
     inertia: false,
     autoScroll: true,
 
@@ -198,6 +198,10 @@ interact('.draggable-rule').draggable({
     onstart: function(event) {
         let id = event.target.parentNode.parentNode.getAttribute('drag_id');
         event.target.parentNode.parentNode.classList.add('hidden-outer');
+
+        // Unhide all collapsed elements
+        for (let element of event.target.getElementsByClassName('collapse-on'))
+            element.onclick();
 
         // Make the class look like it's hovering
         event.target.parentNode.classList.add('hovering');
@@ -371,7 +375,7 @@ interact('.dropzone').dropzone({
     }
 });
 
-interact('.draggable-group').draggable({
+interact('.draggable-group').ignoreFrom('.rule-container').draggable({
     inertia: false,
     autoScroll: true,
 
@@ -384,6 +388,11 @@ interact('.draggable-group').draggable({
         // Make the class look like it's hovering
         event.target.parentNode.classList.add('hovering');
         event.target.parentNode.classList.add('hidden-outer');
+
+        // Unhide all collapsed elements
+        for (let element of event.target.getElementsByClassName('collapse-on'))
+            element.onclick();
+
         // Unhide all of the drop zones, then re-hide the one belowe the currently held element
         var dropzones = document.getElementsByClassName('group-dropzone dropzone-area');
         for (var dropzone of dropzones) {
