@@ -39,6 +39,13 @@ def bulk_data_upload(request):
     if request.method == 'POST':
         base_model_url = request.build_absolute_uri('/api/model/')
 
+        # Check if any errors or successes appear when uploading the files.
+        # Used for determining type of message to show to the user on the progress of their file upload.
+        any_error = False
+        any_success = False
+        failed_to_upload = []
+        correctly_uploaded = []
+
         # Open file in text mode:
         # https://stackoverflow.com/questions/16243023/how-to-resolve-iterator-should-return-strings-not-bytes
         raw_uploaded_file = request.FILES['uploaded_file']
@@ -59,13 +66,6 @@ def bulk_data_upload(request):
 
         # First row contains the column type headings (code, name etc). We can't add them to the db.
         first_row_checked = False
-
-        # Check if any errors or successes appear when uploading the files.
-        # Used for determining type of message to show to the user on the progress of their file upload.
-        any_error = False
-        any_success = False
-        failed_to_upload = []
-        correctly_uploaded = []
 
         # If the uploaded file was an excel sheet, convert it to a format that is the same as the output of when
         # the percent separated value files are processed by the else statement below.
@@ -148,6 +148,9 @@ def bulk_data_upload(request):
 
                         # If any of these values are missing, then this row is malformed and thus must be rejected.
                         if code is None or name is None or semesters is None:
+                            any_error = True
+                            # Item code AAAA0000 is used to bring the error all the way to the top (due to sorting),
+                            # as it is a critical error.
                             failed_to_upload.append({'item_code': 'AAAA0000 Bad Row Error',
                                                      'item_name': f'(Malformed row number {row_counter})',
                                                      'error': "This row has missing data, skipping"})
@@ -264,6 +267,8 @@ def bulk_data_upload(request):
                         if code is None or name is None or units is None or years_offered is None or offerings is None \
                                 or status is None:
                             any_error = True
+                            # Item code AAAA0000 is used to bring the error all the way to the top (due to sorting),
+                            # as it is a critical error.
                             failed_to_upload.append({'item_code': "AAAA0000 Bad Row Error",
                                                      'item_name': f'(Malformed row number {row_counter}',
                                                      'error': "This row has missing data, skipping"})
