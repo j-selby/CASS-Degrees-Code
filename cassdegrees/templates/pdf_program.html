@@ -37,10 +37,10 @@
                 {% if rule.type == "general" %}
                     <p>
                         {{rule.prettyList}}
-                        {% if rule.subject_area != "any" %}
+                        {% if rule.subject_area != "" %}
                             {{ rule.subject_area }}
                         {% endif %}
-                        courses: <br/>
+                        Courses: <br/>
                         <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> units ({{ rule.unit_count }}
                         {% if rule.minmax == "min" %}
                             <b>minimum</b>)
