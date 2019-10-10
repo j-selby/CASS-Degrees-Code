@@ -42,7 +42,7 @@
         <input type="hidden" id="redirect" name="redirect">
 
         <fieldset>
-            <legend>Configure Program Details</legend>
+            <legend class="collapse-off clickable" onclick="collapseContent(this)">Configure Program Details</legend>
 
             {{ form.management_form }}
 
@@ -67,7 +67,7 @@
         </fieldset>
 
         <fieldset>
-            <legend>Student Notes</legend>
+            <legend class="collapse-off clickable" onclick="collapseContent(this)">Student Notes</legend>
 
             <p class="form-group">
                 {{ form.studentNotes.label_tag }}
@@ -80,7 +80,7 @@
         </fieldset>
 
         <fieldset>
-            <legend>Staff Comments</legend>
+            <legend class="collapse-off clickable" onclick="collapseContent(this)">Staff Comments</legend>
             <p class="form-group">
                 {{ form.staffNotes.label_tag }}
                 {{ form.staffNotes }}
