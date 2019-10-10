@@ -63,9 +63,9 @@
                     {% elif rule.minmax == "max" %}
                         maximum of {{ rule.unit_count }} units may
                     {% endif %}
-                    come from completion of {{ rule.prettyList }}
+                    come from completion of
                     {% if rule.subject_area == "" or rule.subject_area|lower == "any" %}
-                        Courses.
+                        any {{ rule.prettyList }} Courses.
                     {% else %}
                         {{ rule.subject_area }} Courses.
                     {% endif %}
