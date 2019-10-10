@@ -125,9 +125,10 @@
                 {% elif rule.type == 'elective' %}
                     <p>
                         {{ rule.unit_count }} units from completion of
-                        {% if rule.year_level != '' %}
+                        {% if rule.year_level|lower != 'all' %}
                             {{ rule.year_level }}-level
                         {% endif %}
+
                         {% if rule.subject_area == '' %}
                             Elective Courses offered by ANU.
                         {% else %}
