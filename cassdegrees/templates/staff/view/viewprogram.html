@@ -65,10 +65,11 @@
                     {% endif %}
                     come from completion of
                     {% if rule.subject_area == "" or rule.subject_area|lower == "any" %}
-                        any {{ rule.prettyList }} Courses.
+                        any {{ rule.prettyList }}
                     {% else %}
-                        {{ rule.subject_area }} Courses.
+                        {{ rule.prettyList }} {{ rule.subject_area }}
                     {% endif %}
+                    Courses.
                     {% if rule.customRequirements != "" %}
                         {{ rule.customRequirements }}
                     {% endif %}
