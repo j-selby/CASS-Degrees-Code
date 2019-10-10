@@ -64,10 +64,10 @@
                         maximum of {{ rule.unit_count }} units may
                     {% endif %}
                     come from completion of {{ rule.prettyList }}
-                    {% if rule.subject_area == "any" %}
-                        courses.
+                    {% if rule.subject_area == "" %}
+                        Courses.
                     {% else %}
-                        courses from the subject area {{ rule.subject_area }}.
+                        {{ rule.subject_area }} Courses.
                     {% endif %}
                     {% if rule.customRequirements != "" %}
                         {{ rule.customRequirements }}
