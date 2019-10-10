@@ -13,10 +13,11 @@ Vue.component('rule_container', {
     data() {
         return {
             show_add_a_rule_modal: false,
-            add_a_rule_modal_option: 'course_list',
+            add_a_rule_modal_option: '',
 
             component_groups: {'rules': COMPONENT_NAMES, 'requisites': REQUISITE_COMPONENT_NAMES, 'subplan': SUBPLAN_COMPONENT_NAMES},
             component_names: null,
+            component_help: ALL_COMPONENT_HELP,
 
             // Forces the element to re-render, if mutable events occurred
             redraw: false,
@@ -24,37 +25,20 @@ Vue.component('rule_container', {
     },
     methods: {
         add_rule() {
+            should_mark_newest_component = true;
             this.show_add_a_rule_modal = false;
             this.rules.push({
                 type: this.add_a_rule_modal_option,
             });
         },
         remove(index) {
+            should_mark_newest_component = false;
             this.rules.splice(index, 1);
         },
         duplicate_rule(index) {
+            should_mark_newest_component = true;
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.rules.push(JSON.parse(JSON.stringify(this.rules[index])));
-        },
-        move_up(index) {
-            var rules_array = this.rules;
-
-            if (index > 0) {
-                var to_move = rules_array[index];
-                rules_array[index] = rules_array[index - 1];
-                rules_array[index - 1] = to_move;
-                this.do_redraw();
-            }
-        },
-        move_down(index) {
-            var rules_array = this.rules;
-
-            if (index < rules_array.length - 1) {
-                var to_move = rules_array[index];
-                rules_array[index] = rules_array[index + 1];
-                rules_array[index + 1] = to_move;
-                this.do_redraw();
-            }
         },
         check_options(is_submission) {
             let valid = true;
@@ -81,6 +65,11 @@ Vue.component('rule_container', {
             this.$nextTick(() => {
                 this.redraw = false;
             });
+        },
+        set_id(id) {
+            // Used for tracking where elements are dropped outside of Vue
+            id_map[this._uid] = this;
+            return this._uid + "_" + id;
         }
     },
     template: '#ruleContainerTemplate'

@@ -31,7 +31,7 @@
             {% csrf_token %}
             <input type="hidden" name="id" value="{{ request.GET.id }}">
             <div class="fullwidth auto-overflow">
-                <input class="btn-uni-grad btn-small right" type ="submit" formaction="/staff/delete/courses/" value="&#128465Delete">
+                <input class="btn-uni-grad btn-small right" type ="submit" formaction="/staff/delete/courses/" value="&times Delete">
             </div>
         </form>
     {% endif %}
@@ -87,6 +87,9 @@
     <script>
         function submit_form(form_action, redirect) {
             if (app.export_rules()) {
+                // Disable check for unsaved changes - we are saving them here!
+                contentsSubmission = true;
+
                 document.getElementById('mainForm').action.value = form_action;
                 document.getElementById('redirect').value = redirect;
                 document.getElementById('mainForm').submit();
