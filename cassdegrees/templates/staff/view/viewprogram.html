@@ -182,16 +182,17 @@
                                         </ul>
                                     </p>
                                 {# Elective Or Rule #}
-                                {% elif rule.type == 'elective' %}
+                                {% elif sub_rule.type == 'elective' %}
                                     <p>
-                                        {{ rule.unit_count }} units from completion of
-                                        {% if rule.year_level != 'all' %}
-                                            {{ rule.year_level }}-level
+                                        {{ sub_rule.unit_count }} units from completion of
+                                        {% if sub_rule.year_level|lower != 'all' %}
+                                            {{ sub_rule.year_level }}-level
                                         {% endif %}
-                                        {% if rule.subject_area == 'all' %}
-                                            elective courses offered by ANU
+
+                                        {% if sub_rule.subject_area == '' %}
+                                            Elective Courses offered by ANU.
                                         {% else %}
-                                            courses in the subject area {{ rule.subject_area }}
+                                            {{ sub_rule.subject_area }} Courses.
                                         {% endif %}
                                     </p>
                                 {# Custom-text Or Rule #}
