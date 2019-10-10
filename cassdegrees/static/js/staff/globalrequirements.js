@@ -29,10 +29,10 @@ Vue.component('global_requirement_general', {
                     value.minmax = "min";
                 }
                 if (!value.hasOwnProperty("unit_count")) {
-                    value.unit_count = 0;
+                    value.unit_count = 6;
                 }
                 if (!value.hasOwnProperty("subject_area")) {
-                    value.subject_area = 'any';
+                    value.subject_area = "";
                 }
                 if (!value.hasOwnProperty("courses1000Level")) {
                     value.courses1000Level = false;
@@ -74,8 +74,7 @@ Vue.component('global_requirement_general', {
             "invalid_units": false,
             "invalid_units_step": false,
             "units_is_blank": false,
-            "is_invalid": false,
-            "subject_areas": []
+            "is_invalid": false
         }
     },
     created() {
@@ -84,15 +83,6 @@ Vue.component('global_requirement_general', {
         const request = new XMLHttpRequest();
 
         request.addEventListener("load", () => {
-            rule.subject_areas = JSON.parse(request.response);
-            const subject_areas = [];
-            rule.subject_areas.forEach((area) => {
-                let subject_area = area["code"].slice(0, 4);
-                // creates a unique list of subject_areas
-                if (subject_areas.indexOf(subject_area) === -1) subject_areas.push(subject_area);
-            });
-            subject_areas.sort((a, b) => a.localeCompare(b));
-            rule.subject_areas = subject_areas;
             rule.check_options();
         });
         request.open("GET", "/api/search/?select=code&from=course");
