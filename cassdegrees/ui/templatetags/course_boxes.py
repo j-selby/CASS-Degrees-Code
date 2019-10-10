@@ -59,7 +59,7 @@ def truncate_course_list(context, courses, cache_large_lists, count=5):
         if not hasattr(context, "large_course_lists"):
             context.large_course_lists = {}
 
-        id = len(context.large_course_lists) + 1 # Zero-indexed -> human readable
+        id = len(context.large_course_lists) + 1  # Zero-indexed -> human readable
 
         context.large_course_lists[id] = courses
 
