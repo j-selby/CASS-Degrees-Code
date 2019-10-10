@@ -63,7 +63,7 @@ def truncate_course_list(context, courses, cache_large_lists, count=5):
 
         context.large_course_lists[id] = courses
 
-        return Template("See appendix #" + str(id) + " for complete course list.").render(context)
+        return Template("See appendix #" + str(id) + ".").render(context)
 
     output = ""
     for i in range(0, len(courses)):
