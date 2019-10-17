@@ -43,9 +43,15 @@ Vue.component('rule_custom_text', {
 
                 this.invalid_units = this.details.unit_count <= 0;
                 this.not_divisible = this.details.unit_count % 6 !== 0;
-
-                return !this.not_divisible && !this.is_blank;
+            } else {
+                if (this.details.text !== "")
+                    this.is_blank = false;
+                if (this.details.unit_count > 0)
+                    this.invalid_units = false;
+                if (this.details.unit_count % 6 === 0)
+                    this.not_divisible = false;
             }
+            return !this.not_divisible && !this.is_blank;
         },
         count_units() {
             return {"exact": parseInt(this.details.unit_count), "max": 0, "min": 0};
