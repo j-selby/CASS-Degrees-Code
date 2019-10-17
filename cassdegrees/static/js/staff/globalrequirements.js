@@ -90,17 +90,31 @@ Vue.component('global_requirement_general', {
     },
     methods: {
         check_options(is_submission) {
-            this.invalid_units = this.details.unit_count <= 0;
-            this.invalid_units_step = this.details.unit_count % 6 !== 0;
-            this.units_is_blank = this.details.unit_count === "";
-
+            // Add/Remove errors
             if (is_submission) {
+                this.invalid_units = this.details.unit_count <= 0;
+                this.invalid_units_step = this.details.unit_count % 6 !== 0;
+                this.units_is_blank = this.details.unit_count === "";
                 this.is_invalid = !this.details.courses1000Level && !this.details.courses2000Level && !this.details.courses3000Level
                     && !this.details.courses4000Level && !this.details.courses5000Level && !this.details.courses6000Level
                     && !this.details.courses7000Level && !this.details.courses8000Level && !this.details.courses9000Level
                     && this.details.subject_area === "";
             }
-            return !this.is_invalid && !this.invalid_units && !this.invalid_units_step && !this.units_is_blank;
+            // Remove errors
+            else {
+                if (this.details.unit_count > 0)
+                    this.invalid_units = false;
+                if (this.details.unit_count % 6 === 0)
+                    this.invalid_units_step = false;
+                if (this.details.unit_count !== "")
+                    this.units_is_blank = false;
+                if (this.details.subject_area !== ""
+                    || this.details.courses1000Level || this.details.courses2000Level || this.details.courses3000Level
+                    || this.details.courses4000Level || this.details.courses5000Level || this.details.courses6000Level
+                    || this.details.courses7000Level || this.details.courses8000Level || this.details.courses9000Level
+                )
+                    this.is_invalid = false;
+            }
         }
     },
     template: '#generalGlobalRequirementTemplate'
