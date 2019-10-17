@@ -8,12 +8,17 @@ from django.shortcuts import render
 staff_url_prefix = "/staff/"
 
 
-def format_title(title):
-    new_title = ''
-    for c in title:
-        new_title += ' ' if c.istitle() else ''
-        new_title += c
-    return new_title.title()
+def format_title(column_name):
+    """
+    Reformats column name from camel case to a more readable state. eg. programType to Program Type
+    :param column_name:
+    :return: a readable column name
+    """
+    new_column_name = ''
+    for c in column_name:
+        new_column_name += ' ' if c.istitle() else ''
+        new_column_name += c
+    return new_column_name.title()
 
 
 def data_dict_as_displayable(data):
