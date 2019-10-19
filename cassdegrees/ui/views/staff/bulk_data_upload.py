@@ -364,7 +364,7 @@ def bulk_data_upload(request):
                                                      'item_name': f'(Malformed row number {row_counter})',
                                                      'error': "This row has missing data, skipping"})
                             continue
-                    
+
                     uploaded_file.append(row_data)
 
         else:
@@ -374,7 +374,6 @@ def bulk_data_upload(request):
             # % is used instead of comma since the course name may include commas (which would break this function)
             uploaded_file = csv.reader(uploaded_file, delimiter='%')
 
-        print(uploaded_file)
         # Stores the index of the column containing the data type of each row,
         # so that the right data is stored in the right column
         # This would also allow columns to be in any order, and courses/subplans would still be added.
